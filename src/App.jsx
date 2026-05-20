@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Html5QrcodeScanner } from "html5-qrcode";
 import pegawaiData from "./data/pegawai.json";
 import orgData from "./data/organization.json";
 import attendanceData from "./data/attendance.json";
@@ -265,47 +266,6 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
         <BackButton onClick={onBack} />
-        {DEV_MODE && (
-  <div className="flex gap-2 mb-4">
-    <button
-      onClick={() => setDemoStatus("before")}
-      className={`px-3 py-1 rounded-lg text-xs ${
-        demoStatus === "before"
-          ? "bg-slate-600 text-white"
-          : "bg-slate-800 text-slate-400"
-      }`}
-    >
-      Sebelum
-    </button>
-
-    <button
-      onClick={() => setDemoStatus("ongoing")}
-      className={`px-3 py-1 rounded-lg text-xs ${
-        demoStatus === "ongoing"
-          ? "bg-emerald-600 text-white"
-          : "bg-slate-800 text-slate-400"
-      }`}
-    >
-      Saat Apel
-    </button>
-
-    <button
-      onClick={() => setDemoStatus("ended")}
-      className={`px-3 py-1 rounded-lg text-xs ${
-        demoStatus === "ended"
-          ? "bg-red-600 text-white"
-          : "bg-slate-800 text-slate-400"
-      }`}
-    >
-      Setelah
-    </button>
-  </div>
-)}
-
-        <div className="mb-8">
-          <h2 className="text-2xl font-black text-white">Pilih Akun</h2>
-          <p className="text-slate-500 text-sm mt-1">Cari nama atau jabatan Anda</p>
-        </div>
 
         {/* Search */}
         <div className="relative mb-4">
@@ -374,12 +334,43 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
 // ══════════════════════════════════════════════════════════════════════════════
 const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   const [now, setNow] = useState(new Date());
+  const [showScanner, setShowScanner] = useState(false);
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
+  useEffect(() => {
+  if (!showScanner) return;
 
-  const apelStatus = getApelStatus(now);
+  const scanner = new Html5QrcodeScanner(
+    "qr-reader",
+    {
+      fps: 10,
+      qrbox: 250,
+    },
+    false
+  );
+
+  scanner.render(
+    (decodedText) => {
+      console.log("QR Terbaca:", decodedText);
+
+      onScan(pegawai.id);
+      setShowScanner(false);
+
+      scanner.clear().catch(() => {});
+    },
+    (error) => {
+      // abaikan error scan
+    }
+  );
+
+  return () => {
+    scanner.clear().catch(() => {});
+  };
+}, [showScanner]);
+
+  const apelStatus = "ongoing";
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
   const stats = calcStats(attendance);
   const sudahAbsen = myAttendance.status === "Hadir";
@@ -461,7 +452,8 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
 
         {/* Scan QR Button */}
         {!sudahAbsen ? (
-          <button onClick={() => apelStatus === "ongoing" && onScan(pegawai.id)}
+          <button
+  onClick={() => apelStatus === "ongoing" && setShowScanner(true)}
             disabled={apelStatus !== "ongoing"}
             className={`w-full py-4 rounded-2xl font-black text-lg tracking-tight transition-all duration-200 active:scale-[0.98] mb-6 ${apelStatus === "ongoing"
               ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40"
@@ -511,6 +503,27 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
           </Card>
         </div>
       </div>
+      {showScanner && (
+  <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
+    <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 w-full max-w-sm">
+      <h3 className="text-white font-bold mb-3">
+        Scan QR Absensi
+      </h3>
+
+     <div
+  id="qr-reader"
+  className="bg-white h-64 rounded-xl overflow-hidden"
+/>
+
+      <button
+        onClick={() => setShowScanner(false)}
+        className="w-full mt-4 py-3 rounded-xl bg-slate-800 text-white"
+      >
+        Tutup
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 };
