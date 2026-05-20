@@ -1,0 +1,56 @@
+{
+  "dinas": "Dinas Pekerjaan Umum dan Penataan Ruang",
+  "kabupaten": "Kabupaten Barito Utara",
+  "kepala_dinas": {
+    "nama": "H. Rody, S.T., M.I.P.",
+    "nip": "196907101995031004",
+    "jabatan": "Kepala Dinas"
+  },
+  "sekretaris": {
+    "nama": "",
+    "nip": "",
+    "jabatan": "Sekretaris"
+  },
+  "bidang": [
+    {
+      "id": "pimpinan",
+      "nama": "Pimpinan",
+      "kepala": "H. Rody, S.T., M.I.P."
+    },
+    {
+      "id": "sekretariat",
+      "nama": "Sekretariat",
+      "kepala": "Haris Hariyadi, S.T."
+    },
+    {
+      "id": "bina_marga",
+      "nama": "Bina Marga",
+      "kepala": "Dedi, S.T."
+    },
+    {
+      "id": "sumber_daya_air",
+      "nama": "Sumber Daya Air",
+      "kepala": "Subiyantoro, S.T., M.T."
+    },
+    {
+      "id": "cipta_karya",
+      "nama": "Cipta Karya",
+      "kepala": "Ignasius, S.T."
+    },
+    {
+      "id": "tata_ruang",
+      "nama": "Tata Ruang",
+      "kepala": "Patria, S.T., M.S."
+    },
+    {
+      "id": "tata_kota",
+      "nama": "Tata Kota",
+      "kepala": "Zero Sota Rosadi, S.Kep.Ns."
+    },
+    {
+      "id": "jasa_konstruksi",
+      "nama": "Jasa Konstruksi",
+      "kepala": "Andriano, S.T."
+    }
+  ]
+}
