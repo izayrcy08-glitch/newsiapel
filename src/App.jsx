@@ -55,11 +55,15 @@ const buildInitialAttendance = () => {
   return map;
 };
 
-// ─── STATS CALCULATOR ────────────────────────────────────────────────────────
 const calcStats = (attendance) => {
-  let hadir = 0, tanpaKet = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0, belum = 0;
+  let hadir = 0, tanpaKet = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0;
+
   for (const v of Object.values(attendance)) {
-    if (!v.status) { belum++; continue; }
+    if (!v.status) {
+      tanpaKet++;
+      continue;
+    }
+
     if (v.status === "Hadir") hadir++;
     else if (v.status === "Tanpa Keterangan") tanpaKet++;
     else if (v.status === "Dinas Dalam") dinasD++;
@@ -67,19 +71,11 @@ const calcStats = (attendance) => {
     else if (v.status === "Izin") izin++;
     else if (v.status === "Sakit") sakit++;
   }
+
   const total = pegawaiData.length;
   const persen = total > 0 ? Math.round((hadir / total) * 100) : 0;
-  console.log({
-  total,
-  hadir,
-  tanpaKet,
-  dinasD,
-  dinasL,
-  izin,
-  sakit,
-  belum
-});
-  return { total, hadir, tanpaKet, dinasD, dinasL, izin, sakit, belum, persen };
+
+  return { total, hadir, tanpaKet, dinasD, dinasL, izin, sakit, persen };
 };
 
 // ─── QR CODE GENERATOR ───────────────────────────────────────────────────────
@@ -359,7 +355,6 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
     { label: "Dinas Luar", value: stats.dinasL, color: "text-violet-400", icon: "🚗" },
     { label: "Izin", value: stats.izin, color: "text-amber-400", icon: "📄" },
     { label: "Sakit", value: stats.sakit, color: "text-orange-400", icon: "🤒" },
-    { label: "Belum Absen", value: stats.belum, color: "text-slate-400", icon: "⏳" },
   ];
 
   return (
