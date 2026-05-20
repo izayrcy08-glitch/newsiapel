@@ -247,10 +247,10 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
   const [selected, setSelected] = useState(null);
 
   const filtered = pegawaiData.filter(p =>
-    p.nama.toLowerCase().includes(search.toLowerCase()) ||
-    p.jabatan.toLowerCase().includes(search.toLowerCase()) ||
-    p.bidang.toLowerCase().includes(search.toLowerCase())
-  ).slice(0, 20);
+  p.nama.toLowerCase().startsWith(search.toLowerCase()) ||
+  p.jabatan.toLowerCase().startsWith(search.toLowerCase()) ||
+  p.bidang.toLowerCase().startsWith(search.toLowerCase())
+).slice(0, 20);
 
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-8">
@@ -277,7 +277,7 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
 
         {/* List */}
         <div className="space-y-2 max-h-[55vh] overflow-y-auto pr-1 scrollbar-thin">
-          {filtered.map(p => (
+          {search.trim() !== '' && filtered.map(p => (
             <button key={p.id} onClick={() => setSelected(p)}
               className={`w-full text-left p-3.5 rounded-xl border transition-all duration-150 active:scale-[0.98] ${selected?.id === p.id
                 ? "bg-emerald-500/20 border-emerald-500/50"
