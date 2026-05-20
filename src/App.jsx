@@ -490,7 +490,13 @@ const DashboardPimpinan = ({ attendance, onBack }) => {
 
   const stats = calcStats(attendance);
 
-  const getBidangStats = (bidangNama) => {
+const denganKeterangan =
+  stats.dinasD +
+  stats.dinasL +
+  stats.izin +
+  stats.sakit;
+
+const getBidangStats = (bidangNama) => {
     const members = pegawaiData.filter(p => p.bidang === bidangNama);
     let hadir = 0;
     for (const p of members) {
@@ -610,11 +616,11 @@ const DashboardPimpinan = ({ attendance, onBack }) => {
             <ProgressRing pct={stats.persen} size={100} stroke={9} color="#f59e0b" label="Kehadiran" />
             <div className="flex-1 space-y-2">
               {[
-                { label: "Total Pegawai", val: stats.total, color: "text-white" },
-                { label: "Hadir", val: stats.hadir, color: "text-emerald-400" },
-                { label: "Belum Hadir", val: stats.belum + stats.tanpaKet, color: "text-red-400" },
-                { label: "Tanpa Ket.", val: stats.tanpaKet, color: "text-red-400" },
-              ].map(s => (
+  { label: "Total Pegawai", val: stats.total, color: "text-white" },
+  { label: "Hadir", val: stats.hadir, color: "text-emerald-400" },
+  { label: "Tanpa Ket.", val: stats.tanpaKet, color: "text-red-400" },
+  { label: "Dengan Keterangan", val: denganKeterangan, color: "text-blue-400" },
+].map(s => (
                 <div key={s.label} className="flex items-center justify-between">
                   <span className="text-slate-400 text-xs">{s.label}</span>
                   <span className={`font-bold text-sm ${s.color}`}>{s.val}</span>
@@ -700,6 +706,7 @@ const DashboardAdmin = ({ attendance, onScanSimulate, onReset, onBack, onKoreksi
   const [now, setNow] = useState(new Date());
   const [qrSeed, setQrSeed] = useState(Math.floor(Date.now() / 15000));
   const [activeMenu, setActiveMenu] = useState(null);
+  const [demoStatus, setDemoStatus] = useState("ongoing");
   useEffect(() => {
     const t = setInterval(() => {
       setNow(new Date());
@@ -709,10 +716,16 @@ const DashboardAdmin = ({ attendance, onScanSimulate, onReset, onBack, onKoreksi
   }, []);
 
   const stats = calcStats(attendance);
-  const apelStatus = getApelStatus(now);
 
-  const qrActive = apelStatus === "ongoing";
-  const secsLeft = qrActive ? (15 - (Math.floor(Date.now() / 1000) % 15)) : 0;
+const DEV_MODE = true;
+
+const apelStatus = DEV_MODE
+  ? demoStatus
+  : getApelStatus(now);
+
+const qrActive = apelStatus === "ongoing";
+
+const secsLeft = qrActive ? (15 - (Math.floor(Date.now() / 1000) % 15)) : 0;
 
   if (activeMenu === "koreksi") {
     const tks = Object.entries(attendance)
@@ -875,29 +888,7 @@ const DashboardAdmin = ({ attendance, onScanSimulate, onReset, onBack, onKoreksi
           ))}
         </div>
 
-        {/* QR BESAR */}
-        <Card className={`p-5 mb-5 flex flex-col items-center ${qrActive ? "border-emerald-500/30" : "border-slate-700/50"}`}>
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">
-            {qrActive ? "QR Apel Aktif" : "QR Apel Nonaktif"}
-          </p>
-          <div className={`relative ${!qrActive && "opacity-30 grayscale"}`}>
-            <QRDisplay seed={qrSeed} />
-            {qrActive && (
-              <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold shadow-lg">
-                {secsLeft}
-              </div>
-            )}
-          </div>
-          {qrActive ? (
-            <p className="text-slate-500 text-xs mt-3 text-center">
-              Berganti setiap 15 detik · {apelStatus === "ongoing" ? `Aktif hingga 08:00` : ""}
-            </p>
-          ) : (
-            <p className="text-slate-600 text-xs mt-3 text-center">
-              {apelStatus === "before" ? "QR aktif otomatis pada pukul 07:00" : "Sesi apel telah berakhir pukul 08:00"}
-            </p>
-          )}
-        </Card>
+        
 
         {/* Menu Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
