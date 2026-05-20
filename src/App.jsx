@@ -69,6 +69,16 @@ const calcStats = (attendance) => {
   }
   const total = pegawaiData.length;
   const persen = total > 0 ? Math.round((hadir / total) * 100) : 0;
+  console.log({
+  total,
+  hadir,
+  tanpaKet,
+  dinasD,
+  dinasL,
+  izin,
+  sakit,
+  belum
+});
   return { total, hadir, tanpaKet, dinasD, dinasL, izin, sakit, belum, persen };
 };
 
@@ -349,6 +359,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
     { label: "Dinas Luar", value: stats.dinasL, color: "text-violet-400", icon: "🚗" },
     { label: "Izin", value: stats.izin, color: "text-amber-400", icon: "📄" },
     { label: "Sakit", value: stats.sakit, color: "text-orange-400", icon: "🤒" },
+    { label: "Belum Absen", value: stats.belum, color: "text-slate-400", icon: "⏳" },
   ];
 
   return (
