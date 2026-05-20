@@ -265,6 +265,42 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
         <BackButton onClick={onBack} />
+        {DEV_MODE && (
+  <div className="flex gap-2 mb-4">
+    <button
+      onClick={() => setDemoStatus("before")}
+      className={`px-3 py-1 rounded-lg text-xs ${
+        demoStatus === "before"
+          ? "bg-slate-600 text-white"
+          : "bg-slate-800 text-slate-400"
+      }`}
+    >
+      Sebelum
+    </button>
+
+    <button
+      onClick={() => setDemoStatus("ongoing")}
+      className={`px-3 py-1 rounded-lg text-xs ${
+        demoStatus === "ongoing"
+          ? "bg-emerald-600 text-white"
+          : "bg-slate-800 text-slate-400"
+      }`}
+    >
+      Saat Apel
+    </button>
+
+    <button
+      onClick={() => setDemoStatus("ended")}
+      className={`px-3 py-1 rounded-lg text-xs ${
+        demoStatus === "ended"
+          ? "bg-red-600 text-white"
+          : "bg-slate-800 text-slate-400"
+      }`}
+    >
+      Setelah
+    </button>
+  </div>
+)}
 
         <div className="mb-8">
           <h2 className="text-2xl font-black text-white">Pilih Akun</h2>
@@ -707,6 +743,7 @@ const DashboardAdmin = ({ attendance, onScanSimulate, onReset, onBack, onKoreksi
   const [qrSeed, setQrSeed] = useState(Math.floor(Date.now() / 15000));
   const [activeMenu, setActiveMenu] = useState(null);
   const [demoStatus, setDemoStatus] = useState("ongoing");
+  console.log("demoStatus:", demoStatus);
   useEffect(() => {
     const t = setInterval(() => {
       setNow(new Date());
@@ -862,6 +899,42 @@ const secsLeft = qrActive ? (15 - (Math.floor(Date.now() / 1000) % 15)) : 0;
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
         <BackButton onClick={onBack} />
+        {DEV_MODE && (
+  <div className="flex gap-2 mb-4">
+    <button
+      onClick={() => setDemoStatus("before")}
+      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+        demoStatus === "before"
+          ? "bg-slate-600 text-white"
+          : "bg-slate-800 text-slate-400"
+      }`}
+    >
+      Sebelum
+    </button>
+
+    <button
+      onClick={() => setDemoStatus("ongoing")}
+      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+        demoStatus === "ongoing"
+          ? "bg-emerald-600 text-white"
+          : "bg-slate-800 text-slate-400"
+      }`}
+    >
+      Saat Apel
+    </button>
+
+    <button
+      onClick={() => setDemoStatus("ended")}
+      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+        demoStatus === "ended"
+          ? "bg-red-600 text-white"
+          : "bg-slate-800 text-slate-400"
+      }`}
+    >
+      Setelah
+    </button>
+  </div>
+)}
 
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -877,17 +950,44 @@ const secsLeft = qrActive ? (15 - (Math.floor(Date.now() / 1000) % 15)) : 0;
         {/* Stats Bar */}
         <div className="grid grid-cols-3 gap-2 mb-5">
           {[
-            { label: "Hadir", val: stats.hadir, color: "text-emerald-400" },
-            { label: "Belum", val: stats.belum, color: "text-slate-400" },
-            { label: "Kehadiran", val: `${stats.persen}%`, color: "text-amber-400" },
-          ].map(s => (
+  { label: "Hadir", val: stats.hadir, color: "text-emerald-400" },
+  { label: "Tanpa Ket.", val: stats.tanpaKet, color: "text-red-400" },
+  { label: "Kehadiran", val: `${stats.persen}%`, color: "text-amber-400" },
+].map(s => (
             <Card key={s.label} className="p-3 text-center">
               <div className={`text-xl font-black ${s.color}`}>{s.val}</div>
               <div className="text-slate-600 text-[10px]">{s.label}</div>
             </Card>
           ))}
         </div>
+{/* QR BESAR */}
+<Card className={`p-5 mb-5 flex flex-col items-center ${qrActive ? "border-emerald-500/30" : "border-slate-700/50"}`}>
+  <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">
+    {qrActive ? "QR Apel Aktif" : "QR Apel Nonaktif"}
+  </p>
 
+  <div className={`relative ${!qrActive && "opacity-30 grayscale"}`}>
+    <QRDisplay seed={qrSeed} />
+
+    {qrActive && (
+      <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold shadow-lg">
+        {secsLeft}
+      </div>
+    )}
+  </div>
+
+  {qrActive ? (
+    <p className="text-slate-500 text-xs mt-3 text-center">
+      Berganti setiap 15 detik · Aktif hingga 08:00
+    </p>
+  ) : (
+    <p className="text-slate-600 text-xs mt-3 text-center">
+      {apelStatus === "before"
+        ? "QR aktif otomatis pada pukul 07:00"
+        : "Sesi apel telah berakhir pukul 08:00"}
+    </p>
+  )}
+</Card>
         
 
         {/* Menu Grid */}
