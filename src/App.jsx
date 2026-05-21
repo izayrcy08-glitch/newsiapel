@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 import pegawaiData from "./data/pegawai.json";
 import orgData from "./data/organization.json";
 import attendanceData from "./data/attendance.json";
@@ -359,6 +359,9 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
     {
       fps: 10,
       qrbox: 250,
+      supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+      rememberLastUsedCamera: true,
+      videoConstraints: { facingMode: { ideal: "environment" } },
     },
     false
   );
