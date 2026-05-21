@@ -527,7 +527,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
 
      <div
   id="qr-reader"
-  className="bg-white h-64 rounded-xl overflow-hidden"
+  className="bg-white rounded-xl w-full"
 />
 
       <button
