@@ -56,6 +56,18 @@ const buildInitialAttendance = () => {
   return map;
 };
 
+const STORAGE_KEY = "siapel:attendance";
+
+const loadAttendance = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {
+    // ignore parse/access errors and fall through to seed
+  }
+  return buildInitialAttendance();
+};
+
 const calcStats = (attendance) => {
   let hadir = 0, tanpaKet = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0;
 
@@ -1063,7 +1075,28 @@ export default function App() {
   const [page, setPage] = useState("role");
   const [role, setRole] = useState(null);
   const [activePegawai, setActivePegawai] = useState(null);
-  const [attendance, setAttendance] = useState(buildInitialAttendance);
+  const [attendance, setAttendance] = useState(loadAttendance);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(attendance));
+    } catch {
+      // ignore quota / access errors
+    }
+  }, [attendance]);
+
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key !== STORAGE_KEY || e.newValue == null) return;
+      try {
+        setAttendance(JSON.parse(e.newValue));
+      } catch {
+        // ignore malformed payload from another tab
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const handleRoleSelect = (r) => {
     setRole(r);
