@@ -727,59 +727,13 @@ const getBidangStats = (bidangNama) => {
     return { total: members.length, hadir, persen };
   };
 
-  const sanksiRank = { Merah: 4, Oranye: 3, Kuning: 2, Hijau: 1 };
   const perhatianList = sanctionsData.records
     .map(r => ({ ...r, pegawai: pegawaiData.find(p => p.id === r.pegawaiId) }))
     .filter(r => r.pegawai)
-    .sort((a, b) =>
-      (sanksiRank[b.kategori] || 0) - (sanksiRank[a.kategori] || 0) ||
-      b.totalTanpaKeterangan - a.totalTanpaKeterangan
-    );
+    .sort((a, b) => b.totalTanpaKeterangan - a.totalTanpaKeterangan);
   const visiblePerhatianList = showAllPerhatian ? perhatianList : perhatianList.slice(0, 5);
 
   const bidangList = orgData.bidang.filter(b => b.id !== "pimpinan");
-
-  if (false) {
-    return (
-      <div className="min-h-screen bg-[#080c14] px-4 py-6">
-        <div className="relative z-10 max-w-sm mx-auto">
-          <BackButton onClick={() => setShowPerhatian(false)} />
-          <h2 className="text-xl font-black text-white mb-1">Pegawai Perlu Perhatian</h2>
-          <p className="text-slate-500 text-xs mb-5">Kategori Oranye & Merah — bulan ini</p>
-          <div className="space-y-3">
-            {perhatianList.map(r => {
-              const c = SANKSI_COLORS[r.kategori];
-              return (
-                <Card key={r.pegawaiId} className={`p-4 border ${c.border}`}>
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="text-white text-sm font-semibold truncate">{r.pegawai.nama}</div>
-                      <div className="text-slate-500 text-xs truncate mt-0.5">{r.pegawai.jabatan}</div>
-                      <div className="text-slate-400 text-xs mt-1">{r.keterangan}</div>
-                    </div>
-                    <span className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-bold border ${c.bg} ${c.text} ${c.border}`}>
-                      {r.kategori}
-                    </span>
-                  </div>
-                  <div className="flex gap-3 mt-3 pt-3 border-t border-slate-700/50">
-                    <div className="flex-1 text-center">
-                      <div className="text-red-400 font-bold">{r.totalTanpaKeterangan}x</div>
-                      <div className="text-slate-600 text-[10px]">Tanpa Ket.</div>
-                    </div>
-                    <div className="w-px bg-slate-700" />
-                    <div className="flex-1 text-center">
-                      <div className="text-amber-400 font-bold">{r.totalTerlambat}x</div>
-                      <div className="text-slate-600 text-[10px]">Terlambat</div>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (selectedBidang) {
     const b = selectedBidang;
@@ -876,34 +830,39 @@ const getBidangStats = (bidangNama) => {
 
         {/* Perlu Perhatian */}
         <Card className="p-4 mb-4">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <div className="text-white font-bold text-sm">Pegawai Perlu Perhatian</div>
-              <div className="text-slate-500 text-xs mt-0.5">Top 5 berdasarkan sanksi bulan ini</div>
-            </div>
-            <span className="text-2xl font-black text-red-400">{perhatianList.length}</span>
+          <div className="mb-3">
+            <div className="text-white font-bold text-sm">Pegawai Perlu Perhatian</div>
+            <div className="text-slate-500 text-xs mt-0.5">Top 5 berdasarkan sanksi bulan ini</div>
           </div>
           <div className="space-y-2">
             {visiblePerhatianList.map(r => {
-              const c = SANKSI_COLORS[r.kategori];
+              const tanpaKeterangan = r.totalTanpaKeterangan;
+              const sanctionText =
+                tanpaKeterangan >= 5 ? "Pemotongan TPP 10%" :
+                  tanpaKeterangan === 4 ? "SP2" :
+                    tanpaKeterangan === 3 ? "SP1" :
+                      "Belum Ada Sanksi";
+              const indicatorClass =
+                tanpaKeterangan >= 5 ? "bg-red-500" :
+                  tanpaKeterangan === 4 ? "bg-orange-500" :
+                    tanpaKeterangan === 3 ? "bg-yellow-400" :
+                      "bg-slate-200";
               return (
                 <div key={r.pegawaiId} className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
+                  <div className="flex items-start gap-3">
+                    <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full ${indicatorClass}`} />
+                    <div className="min-w-0 flex-1">
                       <div className="text-white text-sm font-semibold truncate">{r.pegawai.nama}</div>
                       <div className="text-slate-500 text-[11px] mt-0.5 truncate">NIP {r.pegawai.nip}</div>
                       <div className="text-slate-400 text-xs mt-1 truncate">Bidang/UPT: {r.pegawai.bidang}</div>
                     </div>
-                    <div className="shrink-0 text-right">
-                      <div className="text-slate-500 text-[10px] mb-1">Sanksi saat ini</div>
-                      <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold border ${c.bg} ${c.text} ${c.border}`}>
-                        {r.kategori}
-                      </span>
-                    </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-slate-700/50 flex items-center justify-between">
-                    <span className="text-slate-500 text-xs">Jumlah Tanpa Keterangan</span>
-                    <span className="text-red-400 text-sm font-black">{r.totalTanpaKeterangan}x</span>
+                  <div className="mt-3 pt-3 border-t border-slate-700/50">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 text-xs">Tanpa Keterangan</span>
+                      <span className="text-red-400 text-sm font-black">{tanpaKeterangan}x</span>
+                    </div>
+                    <div className="mt-1 text-sm font-black text-white">{sanctionText}</div>
                   </div>
                 </div>
               );
