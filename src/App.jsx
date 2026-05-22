@@ -139,12 +139,6 @@ const TokenFeedback = ({ result }) => {
   );
 };
 
-const getErrorMessage = (error) => {
-  if (!error) return null;
-  if (typeof error === "string") return error;
-  return `${error.name || "Error"}: ${error.message || String(error)}`;
-};
-
 // ─── PROGRESS RING ────────────────────────────────────────────────────────────
 const ProgressRing = ({ pct, size = 120, stroke = 8, color = "#10b981", label, sublabel }) => {
   const r = (size - stroke) / 2;
@@ -377,15 +371,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   const [showManualCode, setShowManualCode] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const [scanResult, setScanResult] = useState(null);
-  const [scannerDiagnostics, setScannerDiagnostics] = useState({
-    secureContext: window.isSecureContext ? "secure" : "not secure",
-    permissionState: "unknown",
-    cameraCount: "unknown",
-    selectedCamera: "not initialized",
-    lastGetUserMediaError: null,
-    lastHtml5QrcodeError: null,
-    lastConstraintError: null,
-  });
+  const [attendanceSuccess, setAttendanceSuccess] = useState(false);
   const isValidatingScan = useRef(false);
   const apelStatus = "ongoing";
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
@@ -399,81 +385,8 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   useEffect(() => {
   if (!showScanner) return;
 
-  console.log("Scanner effect start");
   setScanResult(null);
   isValidatingScan.current = false;
-  setScannerDiagnostics({
-    secureContext: window.isSecureContext ? "secure" : "not secure",
-    permissionState: "checking",
-    cameraCount: "checking",
-    selectedCamera: "requested: environment camera",
-    lastGetUserMediaError: null,
-    lastHtml5QrcodeError: null,
-    lastConstraintError: null,
-  });
-
-  const updateDiagnostics = (patch) => {
-    setScannerDiagnostics(prev => ({ ...prev, ...patch }));
-  };
-
-  const runCameraDiagnostics = async () => {
-    if (navigator.permissions?.query) {
-      try {
-        const permission = await navigator.permissions.query({ name: "camera" });
-        console.log("Camera permission state:", permission.state);
-        updateDiagnostics({ permissionState: permission.state });
-        permission.onchange = () => {
-          console.log("Camera permission state changed:", permission.state);
-          updateDiagnostics({ permissionState: permission.state });
-        };
-      } catch (error) {
-        console.warn("Camera permission query failed:", error);
-        updateDiagnostics({ permissionState: `unavailable (${getErrorMessage(error)})` });
-      }
-    } else {
-      updateDiagnostics({ permissionState: "permissions API unavailable" });
-    }
-
-    if (!navigator.mediaDevices?.getUserMedia) {
-      const message = "mediaDevices.getUserMedia is unavailable";
-      console.error("getUserMedia error:", message);
-      updateDiagnostics({ lastGetUserMediaError: message });
-      return;
-    }
-
-    try {
-      const constraints = { video: { facingMode: { ideal: "environment" } } };
-      console.log("Testing getUserMedia constraints:", constraints);
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      stream.getTracks().forEach(track => track.stop());
-      updateDiagnostics({ lastGetUserMediaError: null });
-    } catch (error) {
-      console.error("getUserMedia error:", error);
-      console.error("Camera constraint error:", error.constraint || error.name || "unknown");
-      updateDiagnostics({
-        lastGetUserMediaError: getErrorMessage(error),
-        lastConstraintError: error.constraint || error.name || "unknown",
-      });
-    }
-
-    try {
-      const cameras = await Html5Qrcode.getCameras();
-      const selected = cameras.find(camera => /back|rear|environment/i.test(camera.label)) || cameras[0];
-      console.log("Html5Qrcode detected cameras:", cameras);
-      updateDiagnostics({
-        cameraCount: cameras.length,
-        selectedCamera: selected ? `${selected.label || "unnamed camera"} (${selected.id})` : "none detected",
-      });
-    } catch (error) {
-      console.error("Html5Qrcode camera detection error:", error);
-      updateDiagnostics({
-        cameraCount: "error",
-        lastHtml5QrcodeError: getErrorMessage(error),
-      });
-    }
-  };
-
-  runCameraDiagnostics();
 
   let scanner;
   let scannerStarted = false;
@@ -482,86 +395,72 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
     scanner = new Html5Qrcode("qr-reader");
   } catch (error) {
     console.error("Html5Qrcode constructor error:", error);
-    updateDiagnostics({ lastHtml5QrcodeError: getErrorMessage(error) });
     return;
   }
 
   const stopScanner = async () => {
     if (!scanner || !scannerStarted) return;
-    console.log("scanner stop");
     try {
       await scanner.stop();
       scannerStarted = false;
     } catch (error) {
       console.error("Html5Qrcode stop error:", error);
-      updateDiagnostics({ lastHtml5QrcodeError: getErrorMessage(error) });
     }
     try {
       await scanner.clear();
     } catch (error) {
       console.error("Html5Qrcode clear error:", error);
-      updateDiagnostics({ lastHtml5QrcodeError: getErrorMessage(error) });
     }
   };
 
   const startScanner = async () => {
     try {
       const cameras = await Html5Qrcode.getCameras();
-      const selectedCamera = cameras.find(camera => /back|rear|environment/i.test(camera.label)) || cameras[0];
+      const rearCamera = cameras.find(camera => /back|rear|environment/i.test(camera.label));
+      const selectedCamera = rearCamera || cameras[0];
 
       if (!selectedCamera) {
-        const message = "No camera available for Html5Qrcode.start";
-        console.error(message);
-        updateDiagnostics({
-          cameraCount: 0,
-          selectedCamera: "none detected",
-          lastHtml5QrcodeError: message,
-        });
+        console.error("No camera available for Html5Qrcode.start");
         return;
       }
 
-      console.log("camera selected:", selectedCamera);
-      updateDiagnostics({
-        cameraCount: cameras.length,
-        selectedCamera: `${selectedCamera.label || "unnamed camera"} (${selectedCamera.id})`,
-      });
-
       if (cancelled) return;
 
-      console.log("scanner start");
-      await scanner.start(
-        selectedCamera.id,
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        async (decodedText) => {
-          if (isValidatingScan.current) return;
-          isValidatingScan.current = true;
-          console.log("QR Terbaca:", decodedText);
+      const onScanSuccess = async (decodedText) => {
+        if (isValidatingScan.current) return;
+        isValidatingScan.current = true;
 
-          try {
-            handleValidationSuccess(await validateQrToken(decodedText));
-          } catch (error) {
-            console.error("Failed to validate QR token:", error);
-            setScanResult({ type: "invalid", label: "INVALID TOKEN" });
-          }
-
+        try {
+          const result = await validateQrToken(decodedText);
+          handleValidationSuccess(result);
           await stopScanner();
-        },
-        (error) => {
-          console.debug("Html5Qrcode scan error:", error);
+          if (result.type === "valid") {
+            setShowScanner(false);
+          }
+        } catch (error) {
+          console.error("Failed to validate QR token:", error);
+          setScanResult({ type: "invalid", label: "INVALID TOKEN" });
+          await stopScanner();
         }
-      );
+      };
+
+      const scanConfig = { fps: 10, qrbox: { width: 250, height: 250 } };
+      const preferredCameraConfig = rearCamera ? rearCamera.id : { facingMode: "environment" };
+      try {
+        await scanner.start(preferredCameraConfig, scanConfig, onScanSuccess);
+      } catch (error) {
+        if (cancelled || rearCamera) throw error;
+        await scanner.start(selectedCamera.id, scanConfig, onScanSuccess);
+      }
       scannerStarted = true;
-      console.log("Scanner render success");
     } catch (error) {
       console.error("Html5Qrcode start error:", error);
-      updateDiagnostics({ lastHtml5QrcodeError: getErrorMessage(error) });
     }
   };
 
   startScanner();
 
   return () => {
-    console.log("Scanner effect cleanup");
     cancelled = true;
     isValidatingScan.current = false;
     stopScanner();
@@ -569,10 +468,17 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
 }, [showScanner]);
 
   const handleValidationSuccess = (result) => {
-    setScanResult(result);
-    if (result.type === "valid" && !sudahAbsen) {
-      onScan(pegawai.id);
+    if (result.type === "valid") {
+      setScanResult(null);
+      setAttendanceSuccess(true);
+      if (!sudahAbsen) {
+        onScan(pegawai.id);
+      }
+      return;
     }
+
+    setAttendanceSuccess(false);
+    setScanResult(result);
   };
 
   const handleManualCodeSubmit = async () => {
@@ -668,6 +574,12 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
           )}
         </Card>
 
+        {attendanceSuccess && (
+          <div className="mb-6 rounded-xl border border-emerald-500/40 bg-emerald-500/15 px-4 py-3 text-center font-black tracking-wide text-emerald-300">
+            ✓ Kehadiran berhasil dicatat
+          </div>
+        )}
+
         {/* Scan QR Button */}
         {!sudahAbsen ? (
           <>
@@ -684,6 +596,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
             <button
               onClick={() => {
                 setScanResult(null);
+                setAttendanceSuccess(false);
                 setShowManualCode(prev => !prev);
               }}
               className="w-full py-3 rounded-xl bg-slate-800 text-white text-sm font-bold border border-slate-700 active:scale-[0.98]"
@@ -767,46 +680,6 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   id="qr-reader"
   className="relative z-0 bg-white rounded-xl w-full h-[48vh] min-h-[240px] max-h-[420px] overflow-hidden [&_*]:!max-w-full [&_video]:!relative [&_video]:!z-0 [&_video]:!h-full [&_video]:!max-h-full [&_video]:!object-cover"
 />
-
-      <div className="relative z-10 mt-4 rounded-xl border border-slate-700 bg-slate-950/70 p-3 text-xs">
-        <div className="text-slate-300 font-bold mb-2">Scanner Diagnostics</div>
-        <div className="space-y-1 text-slate-400">
-          <div className="flex justify-between gap-3">
-            <span>Secure context</span>
-            <span className="text-right text-slate-200">{scannerDiagnostics.secureContext}</span>
-          </div>
-          <div className="flex justify-between gap-3">
-            <span>Permission</span>
-            <span className="text-right text-slate-200">{scannerDiagnostics.permissionState}</span>
-          </div>
-          <div className="flex justify-between gap-3">
-            <span>Camera count</span>
-            <span className="text-right text-slate-200">{scannerDiagnostics.cameraCount}</span>
-          </div>
-          <div>
-            <div className="text-slate-500">Selected camera</div>
-            <div className="break-all text-slate-200">{scannerDiagnostics.selectedCamera}</div>
-          </div>
-          {scannerDiagnostics.lastGetUserMediaError && (
-            <div>
-              <div className="text-red-300">getUserMedia error</div>
-              <div className="break-words text-red-200">{scannerDiagnostics.lastGetUserMediaError}</div>
-            </div>
-          )}
-          {scannerDiagnostics.lastConstraintError && (
-            <div>
-              <div className="text-amber-300">Constraint error</div>
-              <div className="break-words text-amber-200">{scannerDiagnostics.lastConstraintError}</div>
-            </div>
-          )}
-          {scannerDiagnostics.lastHtml5QrcodeError && (
-            <div>
-              <div className="text-red-300">Html5Qrcode error</div>
-              <div className="break-words text-red-200">{scannerDiagnostics.lastHtml5QrcodeError}</div>
-            </div>
-          )}
-        </div>
-      </div>
 
       <div className="relative z-10">
         <TokenFeedback result={scanResult} />
