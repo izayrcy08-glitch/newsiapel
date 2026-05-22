@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import { QRCodeSVG } from "qrcode.react";
 import { ref, get, onValue, set, update } from "firebase/database";
 import { database } from "./firebase";
@@ -137,6 +137,12 @@ const TokenFeedback = ({ result }) => {
       {result.label}
     </div>
   );
+};
+
+const getErrorMessage = (error) => {
+  if (!error) return null;
+  if (typeof error === "string") return error;
+  return `${error.name || "Error"}: ${error.message || String(error)}`;
 };
 
 // ─── PROGRESS RING ────────────────────────────────────────────────────────────
@@ -371,6 +377,15 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   const [showManualCode, setShowManualCode] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const [scanResult, setScanResult] = useState(null);
+  const [scannerDiagnostics, setScannerDiagnostics] = useState({
+    secureContext: window.isSecureContext ? "secure" : "not secure",
+    permissionState: "unknown",
+    cameraCount: "unknown",
+    selectedCamera: "not initialized",
+    lastGetUserMediaError: null,
+    lastHtml5QrcodeError: null,
+    lastConstraintError: null,
+  });
   const isValidatingScan = useRef(false);
   const apelStatus = "ongoing";
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
@@ -384,46 +399,174 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   useEffect(() => {
   if (!showScanner) return;
 
+  console.log("Scanner effect start");
   setScanResult(null);
   isValidatingScan.current = false;
+  setScannerDiagnostics({
+    secureContext: window.isSecureContext ? "secure" : "not secure",
+    permissionState: "checking",
+    cameraCount: "checking",
+    selectedCamera: "requested: environment camera",
+    lastGetUserMediaError: null,
+    lastHtml5QrcodeError: null,
+    lastConstraintError: null,
+  });
 
-  const scanner = new Html5QrcodeScanner(
-    "qr-reader",
-    {
-      fps: 10,
-      qrbox: 250,
-      supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-      rememberLastUsedCamera: true,
-      videoConstraints: { facingMode: { ideal: "environment" } },
-    },
-    false
-  );
+  const updateDiagnostics = (patch) => {
+    setScannerDiagnostics(prev => ({ ...prev, ...patch }));
+  };
 
-  scanner.render(
-    async (decodedText) => {
-      if (isValidatingScan.current) return;
-      isValidatingScan.current = true;
-      console.log("QR Terbaca:", decodedText);
-
+  const runCameraDiagnostics = async () => {
+    if (navigator.permissions?.query) {
       try {
-        handleValidationSuccess(await validateQrToken(decodedText));
+        const permission = await navigator.permissions.query({ name: "camera" });
+        console.log("Camera permission state:", permission.state);
+        updateDiagnostics({ permissionState: permission.state });
+        permission.onchange = () => {
+          console.log("Camera permission state changed:", permission.state);
+          updateDiagnostics({ permissionState: permission.state });
+        };
       } catch (error) {
-        console.error("Failed to validate QR token:", error);
-        setScanResult({ type: "invalid", label: "INVALID TOKEN" });
+        console.warn("Camera permission query failed:", error);
+        updateDiagnostics({ permissionState: `unavailable (${getErrorMessage(error)})` });
+      }
+    } else {
+      updateDiagnostics({ permissionState: "permissions API unavailable" });
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      const message = "mediaDevices.getUserMedia is unavailable";
+      console.error("getUserMedia error:", message);
+      updateDiagnostics({ lastGetUserMediaError: message });
+      return;
+    }
+
+    try {
+      const constraints = { video: { facingMode: { ideal: "environment" } } };
+      console.log("Testing getUserMedia constraints:", constraints);
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      stream.getTracks().forEach(track => track.stop());
+      updateDiagnostics({ lastGetUserMediaError: null });
+    } catch (error) {
+      console.error("getUserMedia error:", error);
+      console.error("Camera constraint error:", error.constraint || error.name || "unknown");
+      updateDiagnostics({
+        lastGetUserMediaError: getErrorMessage(error),
+        lastConstraintError: error.constraint || error.name || "unknown",
+      });
+    }
+
+    try {
+      const cameras = await Html5Qrcode.getCameras();
+      const selected = cameras.find(camera => /back|rear|environment/i.test(camera.label)) || cameras[0];
+      console.log("Html5Qrcode detected cameras:", cameras);
+      updateDiagnostics({
+        cameraCount: cameras.length,
+        selectedCamera: selected ? `${selected.label || "unnamed camera"} (${selected.id})` : "none detected",
+      });
+    } catch (error) {
+      console.error("Html5Qrcode camera detection error:", error);
+      updateDiagnostics({
+        cameraCount: "error",
+        lastHtml5QrcodeError: getErrorMessage(error),
+      });
+    }
+  };
+
+  runCameraDiagnostics();
+
+  let scanner;
+  let scannerStarted = false;
+  let cancelled = false;
+  try {
+    scanner = new Html5Qrcode("qr-reader");
+  } catch (error) {
+    console.error("Html5Qrcode constructor error:", error);
+    updateDiagnostics({ lastHtml5QrcodeError: getErrorMessage(error) });
+    return;
+  }
+
+  const stopScanner = async () => {
+    if (!scanner || !scannerStarted) return;
+    console.log("scanner stop");
+    try {
+      await scanner.stop();
+      scannerStarted = false;
+    } catch (error) {
+      console.error("Html5Qrcode stop error:", error);
+      updateDiagnostics({ lastHtml5QrcodeError: getErrorMessage(error) });
+    }
+    try {
+      await scanner.clear();
+    } catch (error) {
+      console.error("Html5Qrcode clear error:", error);
+      updateDiagnostics({ lastHtml5QrcodeError: getErrorMessage(error) });
+    }
+  };
+
+  const startScanner = async () => {
+    try {
+      const cameras = await Html5Qrcode.getCameras();
+      const selectedCamera = cameras.find(camera => /back|rear|environment/i.test(camera.label)) || cameras[0];
+
+      if (!selectedCamera) {
+        const message = "No camera available for Html5Qrcode.start";
+        console.error(message);
+        updateDiagnostics({
+          cameraCount: 0,
+          selectedCamera: "none detected",
+          lastHtml5QrcodeError: message,
+        });
+        return;
       }
 
-      scanner.clear().catch(() => {});
-    },
-    (error) => {
-      // abaikan error scan
+      console.log("camera selected:", selectedCamera);
+      updateDiagnostics({
+        cameraCount: cameras.length,
+        selectedCamera: `${selectedCamera.label || "unnamed camera"} (${selectedCamera.id})`,
+      });
+
+      if (cancelled) return;
+
+      console.log("scanner start");
+      await scanner.start(
+        selectedCamera.id,
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        async (decodedText) => {
+          if (isValidatingScan.current) return;
+          isValidatingScan.current = true;
+          console.log("QR Terbaca:", decodedText);
+
+          try {
+            handleValidationSuccess(await validateQrToken(decodedText));
+          } catch (error) {
+            console.error("Failed to validate QR token:", error);
+            setScanResult({ type: "invalid", label: "INVALID TOKEN" });
+          }
+
+          await stopScanner();
+        },
+        (error) => {
+          console.debug("Html5Qrcode scan error:", error);
+        }
+      );
+      scannerStarted = true;
+      console.log("Scanner render success");
+    } catch (error) {
+      console.error("Html5Qrcode start error:", error);
+      updateDiagnostics({ lastHtml5QrcodeError: getErrorMessage(error) });
     }
-  );
+  };
+
+  startScanner();
 
   return () => {
+    console.log("Scanner effect cleanup");
+    cancelled = true;
     isValidatingScan.current = false;
-    scanner.clear().catch(() => {});
+    stopScanner();
   };
-}, [showScanner, sudahAbsen, onScan, pegawai.id]);
+}, [showScanner]);
 
   const handleValidationSuccess = (result) => {
     setScanResult(result);
@@ -450,6 +593,14 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
     { label: "Izin", value: stats.izin, color: "text-amber-400", icon: "📄" },
     { label: "Sakit", value: stats.sakit, color: "text-orange-400", icon: "🤒" },
   ];
+/*
+    { label: "Hadir", value: stats.hadir, color: "text-emerald-400", icon: "✅" },
+    { label: "Tanpa Ket.", value: stats.tanpaKet, color: "text-red-400", icon: "🚫" },
+    { label: "Dinas Dalam", value: stats.dinasD, color: "text-blue-400", icon: "🏢" },
+    { label: "Dinas Luar", value: stats.dinasL, color: "text-violet-400", icon: "🚗" },
+    { label: "Izin", value: stats.izin, color: "text-amber-400", icon: "📄" },
+    { label: "Sakit", value: stats.sakit, color: "text-orange-400", icon: "🤒" },
+*/
 
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-6">
@@ -615,6 +766,46 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   id="qr-reader"
   className="bg-white rounded-xl w-full min-h-[420px]"
 />
+
+      <div className="mt-4 rounded-xl border border-slate-700 bg-slate-950/70 p-3 text-xs">
+        <div className="text-slate-300 font-bold mb-2">Scanner Diagnostics</div>
+        <div className="space-y-1 text-slate-400">
+          <div className="flex justify-between gap-3">
+            <span>Secure context</span>
+            <span className="text-right text-slate-200">{scannerDiagnostics.secureContext}</span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>Permission</span>
+            <span className="text-right text-slate-200">{scannerDiagnostics.permissionState}</span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>Camera count</span>
+            <span className="text-right text-slate-200">{scannerDiagnostics.cameraCount}</span>
+          </div>
+          <div>
+            <div className="text-slate-500">Selected camera</div>
+            <div className="break-all text-slate-200">{scannerDiagnostics.selectedCamera}</div>
+          </div>
+          {scannerDiagnostics.lastGetUserMediaError && (
+            <div>
+              <div className="text-red-300">getUserMedia error</div>
+              <div className="break-words text-red-200">{scannerDiagnostics.lastGetUserMediaError}</div>
+            </div>
+          )}
+          {scannerDiagnostics.lastConstraintError && (
+            <div>
+              <div className="text-amber-300">Constraint error</div>
+              <div className="break-words text-amber-200">{scannerDiagnostics.lastConstraintError}</div>
+            </div>
+          )}
+          {scannerDiagnostics.lastHtml5QrcodeError && (
+            <div>
+              <div className="text-red-300">Html5Qrcode error</div>
+              <div className="break-words text-red-200">{scannerDiagnostics.lastHtml5QrcodeError}</div>
+            </div>
+          )}
+        </div>
+      </div>
 
       <TokenFeedback result={scanResult} />
 
