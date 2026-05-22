@@ -162,7 +162,7 @@ const FullscreenQR = ({ currentQr, qrActive, secsLeft, onExit }) => {
               }}
             />
             {qrActive && (
-              <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold shadow-lg">
+              <div className="absolute right-2 top-2 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold shadow-lg">
                 {secsLeft}s
               </div>
             )}
