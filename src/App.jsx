@@ -890,7 +890,7 @@ const getBidangStats = (bidangNama) => {
         <Card className="p-4 mb-4">
           <div className="mb-3">
             <div className="text-white font-bold text-sm">Pegawai Perlu Perhatian</div>
-            <div className="text-slate-500 text-xs mt-0.5">Top 5 berdasarkan sanksi bulan ini</div>
+            <div className="text-slate-500 text-xs mt-0.5">Top 3 berdasarkan sanksi bulan ini</div>
           </div>
           <div className="space-y-2">
             {visiblePerhatianList.map(r => {
