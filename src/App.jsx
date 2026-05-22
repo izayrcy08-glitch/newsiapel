@@ -756,18 +756,19 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
         </div>
       </div>
       {showScanner && (
-  <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
-    <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 w-full max-w-sm">
+  <div className="fixed inset-0 bg-black/80 z-50 overflow-y-auto overscroll-contain px-4 pt-4 [padding-bottom:calc(1rem+env(safe-area-inset-bottom))]">
+    <div className="flex min-h-full items-start justify-center sm:items-center">
+    <div className="relative z-10 bg-slate-900 border border-slate-700 rounded-2xl p-4 [padding-bottom:calc(1rem+env(safe-area-inset-bottom))] w-full max-w-sm max-h-[calc(100dvh_-_2rem_-_env(safe-area-inset-bottom))] overflow-y-auto">
       <h3 className="text-white font-bold mb-3">
         Scan QR Absensi
       </h3>
 
      <div
   id="qr-reader"
-  className="bg-white rounded-xl w-full min-h-[420px]"
+  className="relative z-0 bg-white rounded-xl w-full h-[48vh] min-h-[240px] max-h-[420px] overflow-hidden [&_*]:!max-w-full [&_video]:!relative [&_video]:!z-0 [&_video]:!h-full [&_video]:!max-h-full [&_video]:!object-cover"
 />
 
-      <div className="mt-4 rounded-xl border border-slate-700 bg-slate-950/70 p-3 text-xs">
+      <div className="relative z-10 mt-4 rounded-xl border border-slate-700 bg-slate-950/70 p-3 text-xs">
         <div className="text-slate-300 font-bold mb-2">Scanner Diagnostics</div>
         <div className="space-y-1 text-slate-400">
           <div className="flex justify-between gap-3">
@@ -807,14 +808,17 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
         </div>
       </div>
 
-      <TokenFeedback result={scanResult} />
+      <div className="relative z-10">
+        <TokenFeedback result={scanResult} />
+      </div>
 
       <button
         onClick={() => setShowScanner(false)}
-        className="w-full mt-4 py-3 rounded-xl bg-slate-800 text-white"
+        className="relative z-10 w-full mt-4 py-3 rounded-xl bg-slate-800 text-white"
       >
         Tutup
       </button>
+    </div>
     </div>
   </div>
 )}
