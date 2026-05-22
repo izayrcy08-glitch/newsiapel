@@ -727,10 +727,33 @@ const getBidangStats = (bidangNama) => {
     return { total: members.length, hadir, persen };
   };
 
-  const perhatianList = sanctionsData.records
-    .map(r => ({ ...r, pegawai: pegawaiData.find(p => p.id === r.pegawaiId) }))
-    .filter(r => r.pegawai)
-    .sort((a, b) => b.totalTanpaKeterangan - a.totalTanpaKeterangan);
+  const perhatianList = [
+    {
+      pegawaiId: "demo-1",
+      totalTanpaKeterangan: 5,
+      pegawai: { nama: "Bon Bendi", nip: "197903122008011001", bidang: "Sekretariat" },
+    },
+    {
+      pegawaiId: "demo-2",
+      totalTanpaKeterangan: 4,
+      pegawai: { nama: "Abdul Rohman", nip: "197903122008011002", bidang: "Sumber Daya Air" },
+    },
+    {
+      pegawaiId: "demo-3",
+      totalTanpaKeterangan: 3,
+      pegawai: { nama: "Roby Cahyadi, S.T.", nip: "197903122008011003", bidang: "Bina Marga" },
+    },
+    {
+      pegawaiId: "demo-4",
+      totalTanpaKeterangan: 2,
+      pegawai: { nama: "Ahmad Fauzi", nip: "197903122008011004", bidang: "Bidang Umum" },
+    },
+    {
+      pegawaiId: "demo-5",
+      totalTanpaKeterangan: 1,
+      pegawai: { nama: "Eko Prasetyo", nip: "197903122008011005", bidang: "UPT Pelayanan A" },
+    },
+  ];
   const visiblePerhatianList = showAllPerhatian ? perhatianList : perhatianList.slice(0, 5);
 
   const bidangList = orgData.bidang.filter(b => b.id !== "pimpinan");
@@ -845,7 +868,7 @@ const getBidangStats = (bidangNama) => {
               const indicatorClass =
                 tanpaKeterangan >= 5 ? "bg-red-500" :
                   tanpaKeterangan === 4 ? "bg-orange-500" :
-                    tanpaKeterangan === 3 ? "bg-yellow-400" :
+                    tanpaKeterangan >= 2 ? "bg-yellow-400" :
                       "bg-slate-200";
               return (
                 <div key={r.pegawaiId} className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-3">
@@ -868,14 +891,12 @@ const getBidangStats = (bidangNama) => {
               );
             })}
           </div>
-          {perhatianList.length > 5 && (
-            <button
-              onClick={() => setShowAllPerhatian(prev => !prev)}
-              className="mt-3 w-full py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold border border-slate-700 active:scale-[0.98]"
-            >
-              {showAllPerhatian ? "Tampilkan Top 5" : "Lihat Semua"}
-            </button>
-          )}
+          <button
+            onClick={() => setShowAllPerhatian(prev => !prev)}
+            className="mt-3 w-full py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold border border-slate-700 active:scale-[0.98]"
+          >
+            {showAllPerhatian ? "Tampilkan Top 5" : "Lihat Semua"}
+          </button>
         </Card>
 
         {/* Kehadiran per Bidang */}
