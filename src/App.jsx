@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
+import { ref, onValue, set, update } from "firebase/database";
+import { database } from "./firebase";
 import pegawaiData from "./data/pegawai.json";
 import orgData from "./data/organization.json";
 import attendanceData from "./data/attendance.json";
@@ -56,17 +58,7 @@ const buildInitialAttendance = () => {
   return map;
 };
 
-const STORAGE_KEY = "siapel:attendance";
-
-const loadAttendance = () => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {
-    // ignore parse/access errors and fall through to seed
-  }
-  return buildInitialAttendance();
-};
+const ATTENDANCE_PATH = "attendance/today";
 
 const calcStats = (attendance) => {
   let hadir = 0, tanpaKet = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0;
@@ -1078,27 +1070,22 @@ export default function App() {
   const [page, setPage] = useState("role");
   const [role, setRole] = useState(null);
   const [activePegawai, setActivePegawai] = useState(null);
-  const [attendance, setAttendance] = useState(loadAttendance);
+  const [attendance, setAttendance] = useState(buildInitialAttendance);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(attendance));
-    } catch {
-      // ignore quota / access errors
-    }
-  }, [attendance]);
-
-  useEffect(() => {
-    const onStorage = (e) => {
-      if (e.key !== STORAGE_KEY || e.newValue == null) return;
-      try {
-        setAttendance(JSON.parse(e.newValue));
-      } catch {
-        // ignore malformed payload from another tab
+    const attendanceRef = ref(database, ATTENDANCE_PATH);
+    return onValue(attendanceRef, (snapshot) => {
+      if (snapshot.val() === null) {
+        const initialAttendance = buildInitialAttendance();
+        setAttendance(initialAttendance);
+        set(attendanceRef, initialAttendance);
+        return;
       }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+
+      setAttendance(snapshot.val());
+    }, (error) => {
+      console.error("Failed to load realtime attendance:", error);
+    });
   }, []);
 
   const handleRoleSelect = (r) => {
@@ -1115,10 +1102,7 @@ export default function App() {
 
   const handleScan = (pegawaiId) => {
     const jamNow = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
-    setAttendance(prev => ({
-      ...prev,
-      [pegawaiId]: { status: "Hadir", jamHadir: jamNow },
-    }));
+    set(ref(database, `${ATTENDANCE_PATH}/${pegawaiId}`), { status: "Hadir", jamHadir: jamNow });
   };
 
   const handleScanSimulate = (count) => {
@@ -1126,17 +1110,16 @@ export default function App() {
     const toScan = belum.slice(0, count);
     if (toScan.length === 0) return;
     const jamNow = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
-    setAttendance(prev => {
-      const next = { ...prev };
-      for (const id of toScan) next[id] = { status: "Hadir", jamHadir: jamNow };
-      return next;
-    });
+    const updates = {};
+    for (const id of toScan) updates[id] = { status: "Hadir", jamHadir: jamNow };
+    update(ref(database, ATTENDANCE_PATH), updates);
   };
 
-  const handleReset = () => setAttendance(buildInitialAttendance());
+  const handleReset = () => set(ref(database, ATTENDANCE_PATH), buildInitialAttendance());
 
   const handleKoreksi = (pegawaiId, newStatus) => {
-    setAttendance(prev => ({ ...prev, [pegawaiId]: { ...prev[pegawaiId], status: newStatus } }));
+    const currentAttendance = attendance[pegawaiId] || { status: null, jamHadir: null };
+    set(ref(database, `${ATTENDANCE_PATH}/${pegawaiId}`), { ...currentAttendance, status: newStatus });
   };
 
   return (
