@@ -372,6 +372,11 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   const [manualCode, setManualCode] = useState("");
   const [scanResult, setScanResult] = useState(null);
   const isValidatingScan = useRef(false);
+  const apelStatus = "ongoing";
+  const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
+  const stats = calcStats(attendance);
+  const sudahAbsen = myAttendance.status === "Hadir";
+
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
@@ -401,7 +406,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
       console.log("QR Terbaca:", decodedText);
 
       try {
-        setScanResult(await validateQrToken(decodedText));
+        handleValidationSuccess(await validateQrToken(decodedText));
       } catch (error) {
         console.error("Failed to validate QR token:", error);
         setScanResult({ type: "invalid", label: "INVALID TOKEN" });
@@ -418,17 +423,19 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
     isValidatingScan.current = false;
     scanner.clear().catch(() => {});
   };
-}, [showScanner]);
+}, [showScanner, sudahAbsen, onScan, pegawai.id]);
 
-  const apelStatus = "ongoing";
-  const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
-  const stats = calcStats(attendance);
-  const sudahAbsen = myAttendance.status === "Hadir";
+  const handleValidationSuccess = (result) => {
+    setScanResult(result);
+    if (result.type === "valid" && !sudahAbsen) {
+      onScan(pegawai.id);
+    }
+  };
 
   const handleManualCodeSubmit = async () => {
     if (!manualCode.trim()) return;
     try {
-      setScanResult(await validateQrToken(manualCode));
+      handleValidationSuccess(await validateQrToken(manualCode));
     } catch (error) {
       console.error("Failed to validate manual QR code:", error);
       setScanResult({ type: "invalid", label: "INVALID TOKEN" });
@@ -1216,6 +1223,8 @@ export default function App() {
   };
 
   const handleScan = (pegawaiId) => {
+    if (attendance[pegawaiId]?.status === "Hadir") return;
+
     const jamNow = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
     set(ref(database, `${ATTENDANCE_PATH}/${pegawaiId}`), { status: "Hadir", jamHadir: jamNow });
   };
