@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
+import { QRCodeSVG } from "qrcode.react";
 import { ref, onValue, set, update } from "firebase/database";
 import { database } from "./firebase";
 import pegawaiData from "./data/pegawai.json";
@@ -59,6 +60,14 @@ const buildInitialAttendance = () => {
 };
 
 const ATTENDANCE_PATH = "attendance/today";
+const QR_PATH = "qr/current";
+const QR_TOKEN_TTL_MS = 15000;
+
+const createQrToken = () => {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+};
 
 const calcStats = (attendance) => {
   let hadir = 0, tanpaKet = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0;
@@ -84,29 +93,17 @@ const calcStats = (attendance) => {
 };
 
 // ─── QR CODE GENERATOR ───────────────────────────────────────────────────────
-const QRDisplay = ({ seed }) => {
-  const size = 200;
-  const cells = 21;
-  const cellSize = size / cells;
-  const pattern = [];
-  let s = seed * 9301 + 49297;
-  for (let i = 0; i < cells; i++) {
-    pattern[i] = [];
-    for (let j = 0; j < cells; j++) {
-      s = (s * 9301 + 49297) % 233280;
-      const corner = (i < 7 && j < 7) || (i < 7 && j >= cells - 7) || (i >= cells - 7 && j < 7);
-      if (corner) { pattern[i][j] = 1; continue; }
-      if (i === 6 || j === 6) { pattern[i][j] = (i + j) % 2 === 0 ? 1 : 0; continue; }
-      pattern[i][j] = s / 233280 > 0.5 ? 1 : 0;
-    }
-  }
+const QRDisplay = ({ token }) => {
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="rounded-xl">
-      <rect width={size} height={size} fill="white" rx="8" />
-      {pattern.map((row, i) => row.map((cell, j) =>
-        cell ? <rect key={`${i}-${j}`} x={j * cellSize} y={i * cellSize} width={cellSize} height={cellSize} fill="#0f172a" /> : null
-      ))}
-    </svg>
+    <QRCodeSVG
+      value={token || "SIAPEL-QR-INACTIVE"}
+      size={200}
+      bgColor="#ffffff"
+      fgColor="#0f172a"
+      level="M"
+      includeMargin
+      className="rounded-xl"
+    />
   );
 };
 
@@ -760,14 +757,13 @@ const getBidangStats = (bidangNama) => {
 // ══════════════════════════════════════════════════════════════════════════════
 const DashboardAdmin = ({ attendance, onScanSimulate, onReset, onBack, onKoreksi }) => {
   const [now, setNow] = useState(new Date());
-  const [qrSeed, setQrSeed] = useState(Math.floor(Date.now() / 15000));
+  const [currentQr, setCurrentQr] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
   const [demoStatus, setDemoStatus] = useState("ongoing");
   console.log("demoStatus:", demoStatus);
   useEffect(() => {
     const t = setInterval(() => {
       setNow(new Date());
-      setQrSeed(Math.floor(Date.now() / 15000));
     }, 1000);
     return () => clearInterval(t);
   }, []);
@@ -782,7 +778,28 @@ const apelStatus = DEV_MODE
 
 const qrActive = apelStatus === "ongoing";
 
-const secsLeft = qrActive ? (15 - (Math.floor(Date.now() / 1000) % 15)) : 0;
+  useEffect(() => {
+    if (!qrActive) return;
+
+    const generateAndStoreToken = () => {
+      const issuedAt = Date.now();
+      const qrData = {
+        token: createQrToken(),
+        issuedAt,
+        expiresAt: issuedAt + QR_TOKEN_TTL_MS,
+      };
+      setCurrentQr(qrData);
+      set(ref(database, QR_PATH), qrData).catch((error) => {
+        console.error("Failed to store QR token:", error);
+      });
+    };
+
+    generateAndStoreToken();
+    const tokenTimer = setInterval(generateAndStoreToken, QR_TOKEN_TTL_MS);
+    return () => clearInterval(tokenTimer);
+  }, [qrActive]);
+
+const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expiresAt - now.getTime()) / 1000)) : 0;
 
   if (activeMenu === "koreksi") {
     const tks = Object.entries(attendance)
@@ -987,7 +1004,7 @@ const secsLeft = qrActive ? (15 - (Math.floor(Date.now() / 1000) % 15)) : 0;
   </p>
 
   <div className={`relative ${!qrActive && "opacity-30 grayscale"}`}>
-    <QRDisplay seed={qrSeed} />
+    <QRDisplay token={currentQr?.token} />
 
     {qrActive && (
       <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold shadow-lg">
