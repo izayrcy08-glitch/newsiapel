@@ -789,7 +789,7 @@ const getBidangStats = (bidangNama) => {
       pegawai: { nama: "Rina Marlina", nip: "197903122008011012", bidang: "UPT Pelayanan A" },
     },
   ];
-  const visiblePerhatianList = showAllPerhatian ? perhatianList : perhatianList.slice(0, 5);
+  const visiblePerhatianList = showAllPerhatian ? perhatianList : perhatianList.slice(0, 3);
 
   const bidangList = orgData.bidang.filter(b => b.id !== "pimpinan");
 
