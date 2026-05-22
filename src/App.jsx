@@ -703,7 +703,8 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
 // PAGE: DASHBOARD PIMPINAN
 // ══════════════════════════════════════════════════════════════════════════════
 const DashboardPimpinan = ({ attendance, onBack }) => {
-  const [showPerhatian, setShowPerhatian] = useState(false);
+  const [showAllPerhatian, setShowAllPerhatian] = useState(false);
+  const [showBidangDetails, setShowBidangDetails] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
   const [now, setNow] = useState(new Date());
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
@@ -726,14 +727,19 @@ const getBidangStats = (bidangNama) => {
     return { total: members.length, hadir, persen };
   };
 
+  const sanksiRank = { Merah: 4, Oranye: 3, Kuning: 2, Hijau: 1 };
   const perhatianList = sanctionsData.records
-    .filter(r => r.kategori === "Oranye" || r.kategori === "Merah")
     .map(r => ({ ...r, pegawai: pegawaiData.find(p => p.id === r.pegawaiId) }))
-    .filter(r => r.pegawai);
+    .filter(r => r.pegawai)
+    .sort((a, b) =>
+      (sanksiRank[b.kategori] || 0) - (sanksiRank[a.kategori] || 0) ||
+      b.totalTanpaKeterangan - a.totalTanpaKeterangan
+    );
+  const visiblePerhatianList = showAllPerhatian ? perhatianList : perhatianList.slice(0, 5);
 
   const bidangList = orgData.bidang.filter(b => b.id !== "pimpinan");
 
-  if (showPerhatian) {
+  if (false) {
     return (
       <div className="min-h-screen bg-[#080c14] px-4 py-6">
         <div className="relative z-10 max-w-sm mx-auto">
@@ -869,50 +875,88 @@ const getBidangStats = (bidangNama) => {
         </div>
 
         {/* Perlu Perhatian */}
-        <Card className="p-4 mb-4" onClick={() => setShowPerhatian(true)}>
-          <div className="flex items-center justify-between">
+        <Card className="p-4 mb-4">
+          <div className="flex items-center justify-between mb-3">
             <div>
               <div className="text-white font-bold text-sm">Pegawai Perlu Perhatian</div>
-              <div className="text-slate-500 text-xs mt-0.5">Oranye & Merah bulan ini</div>
+              <div className="text-slate-500 text-xs mt-0.5">Top 5 berdasarkan sanksi bulan ini</div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-black text-red-400">{perhatianList.length}</span>
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            </div>
+            <span className="text-2xl font-black text-red-400">{perhatianList.length}</span>
           </div>
-          <button className="mt-3 text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors">
-            Lihat Detail <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </button>
+          <div className="space-y-2">
+            {visiblePerhatianList.map(r => {
+              const c = SANKSI_COLORS[r.kategori];
+              return (
+                <div key={r.pegawaiId} className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-white text-sm font-semibold truncate">{r.pegawai.nama}</div>
+                      <div className="text-slate-500 text-[11px] mt-0.5 truncate">NIP {r.pegawai.nip}</div>
+                      <div className="text-slate-400 text-xs mt-1 truncate">Bidang/UPT: {r.pegawai.bidang}</div>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <div className="text-slate-500 text-[10px] mb-1">Sanksi saat ini</div>
+                      <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold border ${c.bg} ${c.text} ${c.border}`}>
+                        {r.kategori}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-slate-700/50 flex items-center justify-between">
+                    <span className="text-slate-500 text-xs">Jumlah Tanpa Keterangan</span>
+                    <span className="text-red-400 text-sm font-black">{r.totalTanpaKeterangan}x</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {perhatianList.length > 5 && (
+            <button
+              onClick={() => setShowAllPerhatian(prev => !prev)}
+              className="mt-3 w-full py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold border border-slate-700 active:scale-[0.98]"
+            >
+              {showAllPerhatian ? "Tampilkan Top 5" : "Lihat Semua"}
+            </button>
+          )}
         </Card>
 
         {/* Kehadiran per Bidang */}
         <div className="mb-2">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">Kehadiran per Bidang</p>
-          <div className="space-y-2">
-            {bidangList.map(b => {
-              const bs = getBidangStats(b.nama);
-              if (bs.total === 0) return null;
-              return (
-                <Card key={b.id} className="p-3.5" onClick={() => setSelectedBidang(b)}>
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="text-white text-sm font-semibold">{b.nama}</div>
-                      <div className="text-slate-500 text-xs truncate">{b.kepala}</div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <div className="text-right">
-                        <div className={`text-base font-black ${bs.persen >= 80 ? "text-emerald-400" : bs.persen >= 60 ? "text-amber-400" : "text-red-400"}`}>{bs.persen}%</div>
-                        <div className="text-slate-600 text-[10px]">{bs.hadir}/{bs.total}</div>
+          <Card className="p-4">
+            <button
+              onClick={() => setShowBidangDetails(prev => !prev)}
+              className="w-full flex items-center justify-between text-left"
+            >
+              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Kehadiran per Bidang</span>
+              <span className="text-xs text-slate-300 font-bold">{showBidangDetails ? "Tutup Detail" : "Lihat Detail"}</span>
+            </button>
+            {showBidangDetails && (
+              <div className="space-y-2 mt-3">
+                {bidangList.map(b => {
+                  const bs = getBidangStats(b.nama);
+                  if (bs.total === 0) return null;
+                  return (
+                    <div key={b.id} className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-3.5">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-white text-sm font-semibold">{b.nama}</div>
+                          <div className="text-slate-500 text-xs truncate">{b.kepala}</div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="text-right">
+                            <div className={`text-base font-black ${bs.persen >= 80 ? "text-emerald-400" : bs.persen >= 60 ? "text-amber-400" : "text-red-400"}`}>{bs.persen}%</div>
+                            <div className="text-slate-600 text-[10px]">{bs.hadir}/{bs.total}</div>
+                          </div>
+                          <div className="w-12 bg-slate-900 rounded-full h-2 overflow-hidden">
+                            <div className={`h-2 rounded-full transition-all ${bs.persen >= 80 ? "bg-emerald-500" : bs.persen >= 60 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${bs.persen}%` }} />
+                          </div>
+                        </div>
                       </div>
-                      <div className="w-12 bg-slate-800 rounded-full h-2 overflow-hidden">
-                        <div className={`h-2 rounded-full transition-all ${bs.persen >= 80 ? "bg-emerald-500" : bs.persen >= 60 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${bs.persen}%` }} />
-                      </div>
                     </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            )}
+          </Card>
         </div>
       </div>
     </div>
