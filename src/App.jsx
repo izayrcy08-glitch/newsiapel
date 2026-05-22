@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 import { QRCodeSVG } from "qrcode.react";
-import { ref, onValue, set, update } from "firebase/database";
+import { ref, get, onValue, set, update } from "firebase/database";
 import { database } from "./firebase";
 import pegawaiData from "./data/pegawai.json";
 import orgData from "./data/organization.json";
@@ -64,9 +64,25 @@ const QR_PATH = "qr/current";
 const QR_TOKEN_TTL_MS = 15000;
 
 const createQrToken = () => {
-  const bytes = new Uint8Array(16);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  const values = new Uint32Array(1);
+  crypto.getRandomValues(values);
+  return String(values[0] % 1000000).padStart(6, "0");
+};
+
+const validateQrToken = async (token) => {
+  const submittedToken = token.trim();
+  const snapshot = await get(ref(database, QR_PATH));
+  const currentQr = snapshot.val();
+
+  if (!currentQr?.token || submittedToken !== currentQr.token) {
+    return { type: "invalid", label: "INVALID TOKEN" };
+  }
+
+  if (Date.now() > currentQr.expiresAt) {
+    return { type: "expired", label: "EXPIRED TOKEN" };
+  }
+
+  return { type: "valid", label: "VALID TOKEN" };
 };
 
 const calcStats = (attendance) => {
@@ -104,6 +120,22 @@ const QRDisplay = ({ token }) => {
       includeMargin
       className="rounded-xl"
     />
+  );
+};
+
+const TokenFeedback = ({ result }) => {
+  if (!result) return null;
+
+  return (
+    <div className={`mt-4 rounded-xl border px-4 py-3 text-center font-black tracking-wide ${
+      result.type === "valid"
+        ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
+        : result.type === "expired"
+          ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
+          : "border-red-500/40 bg-red-500/15 text-red-300"
+    }`}>
+      {result.label}
+    </div>
   );
 };
 
@@ -336,12 +368,19 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
 const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   const [now, setNow] = useState(new Date());
   const [showScanner, setShowScanner] = useState(false);
+  const [showManualCode, setShowManualCode] = useState(false);
+  const [manualCode, setManualCode] = useState("");
+  const [scanResult, setScanResult] = useState(null);
+  const isValidatingScan = useRef(false);
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
   useEffect(() => {
   if (!showScanner) return;
+
+  setScanResult(null);
+  isValidatingScan.current = false;
 
   const scanner = new Html5QrcodeScanner(
     "qr-reader",
@@ -356,11 +395,17 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   );
 
   scanner.render(
-    (decodedText) => {
+    async (decodedText) => {
+      if (isValidatingScan.current) return;
+      isValidatingScan.current = true;
       console.log("QR Terbaca:", decodedText);
 
-      onScan(pegawai.id);
-      setShowScanner(false);
+      try {
+        setScanResult(await validateQrToken(decodedText));
+      } catch (error) {
+        console.error("Failed to validate QR token:", error);
+        setScanResult({ type: "invalid", label: "INVALID TOKEN" });
+      }
 
       scanner.clear().catch(() => {});
     },
@@ -370,6 +415,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   );
 
   return () => {
+    isValidatingScan.current = false;
     scanner.clear().catch(() => {});
   };
 }, [showScanner]);
@@ -378,6 +424,16 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
   const stats = calcStats(attendance);
   const sudahAbsen = myAttendance.status === "Hadir";
+
+  const handleManualCodeSubmit = async () => {
+    if (!manualCode.trim()) return;
+    try {
+      setScanResult(await validateQrToken(manualCode));
+    } catch (error) {
+      console.error("Failed to validate manual QR code:", error);
+      setScanResult({ type: "invalid", label: "INVALID TOKEN" });
+    }
+  };
 
   const statItems = [
     { label: "Hadir", value: stats.hadir, color: "text-emerald-400", icon: "✅" },
@@ -456,6 +512,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
 
         {/* Scan QR Button */}
         {!sudahAbsen ? (
+          <>
           <button
   onClick={() => apelStatus === "ongoing" && setShowScanner(true)}
             disabled={apelStatus !== "ongoing"}
@@ -465,6 +522,39 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
             {apelStatus === "before" ? "🔒 Apel Belum Dimulai" :
               apelStatus === "ended" ? "🔒 Sesi Telah Berakhir" : "📱 SCAN QR ABSENSI"}
           </button>
+          <Card className="p-4 mb-6">
+            <button
+              onClick={() => {
+                setScanResult(null);
+                setShowManualCode(prev => !prev);
+              }}
+              className="w-full py-3 rounded-xl bg-slate-800 text-white text-sm font-bold border border-slate-700 active:scale-[0.98]"
+            >
+              Enter Code
+            </button>
+            {showManualCode && (
+              <div className="mt-3">
+                <div className="flex gap-2">
+                  <input
+                    value={manualCode}
+                    onChange={(e) => setManualCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="6 digit code"
+                    inputMode="numeric"
+                    maxLength={6}
+                    className="min-w-0 flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-emerald-500/50"
+                  />
+                  <button
+                    onClick={handleManualCodeSubmit}
+                    className="px-4 rounded-xl bg-emerald-600 text-white text-sm font-bold active:scale-[0.98]"
+                  >
+                    Validate
+                  </button>
+                </div>
+                <TokenFeedback result={scanResult} />
+              </div>
+            )}
+          </Card>
+          </>
         ) : (
           <Card className="p-4 mb-6 border-emerald-500/30 bg-emerald-500/10">
             <div className="flex items-center gap-3">
@@ -518,6 +608,8 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   id="qr-reader"
   className="bg-white rounded-xl w-full min-h-[420px]"
 />
+
+      <TokenFeedback result={scanResult} />
 
       <button
         onClick={() => setShowScanner(false)}
@@ -1012,6 +1104,12 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
       </div>
     )}
   </div>
+
+  {qrActive && currentQr?.token && (
+    <div className="mt-3 px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-2xl font-black font-mono">
+      {currentQr.token}
+    </div>
+  )}
 
   {qrActive ? (
     <p className="text-slate-500 text-xs mt-3 text-center">
