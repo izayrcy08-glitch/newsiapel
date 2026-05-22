@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+﻿import { useState, useEffect, useRef, useCallback } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { QRCodeSVG } from "qrcode.react";
 import { ref, get, onValue, set, update } from "firebase/database";
@@ -108,7 +108,44 @@ const calcStats = (attendance) => {
   return { total, hadir, tanpaKet, dinasD, dinasL, izin, sakit, persen };
 };
 
-// ─── QR CODE GENERATOR ───────────────────────────────────────────────────────
+const ATTENDANCE_STAT_ITEMS = [
+  { key: "hadir", status: "Hadir", label: "Hadir", icon: "✅", color: "text-emerald-400" },
+  { key: "unaccounted", status: "Tanpa Keterangan", label: "Tanpa Keterangan", icon: "🚫", color: "text-red-400" },
+  { key: "dinasD", status: "Dinas Dalam", label: "Dinas Dalam", icon: "🏢", color: "text-blue-400" },
+  { key: "dinasL", status: "Dinas Luar", label: "Dinas Luar", icon: "🚗", color: "text-violet-400" },
+  { key: "izin", status: "Izin", label: "Izin", icon: "📄", color: "text-amber-400" },
+  { key: "sakit", status: "Sakit", label: "Sakit", icon: "🤒", color: "text-orange-400" },
+];
+
+const getAttendanceStatItems = (apelStatus) =>
+  ATTENDANCE_STAT_ITEMS.map((item, index) => {
+    if (index !== 1 || apelStatus === "ended") return item;
+    return { ...item, status: "Belum Absen", label: "Belum Absen", icon: "⏳", color: "text-slate-400" };
+  });
+
+const calcAttendanceStats = (attendance, apelStatus, people = pegawaiData) => {
+  let hadir = 0, unaccounted = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0;
+
+  for (const p of people) {
+    const status = attendance[p.id]?.status;
+
+    if (status === "Hadir") hadir++;
+    else if (status === "Dinas Dalam") dinasD++;
+    else if (status === "Dinas Luar") dinasL++;
+    else if (status === "Izin") izin++;
+    else if (status === "Sakit") sakit++;
+    else unaccounted++;
+  }
+
+  const total = people.length;
+  const persen = total > 0 ? Math.round((hadir / total) * 100) : 0;
+  const tanpaKet = apelStatus === "ended" ? unaccounted : 0;
+  const belumAbsen = apelStatus === "ended" ? 0 : unaccounted;
+
+  return { total, hadir, unaccounted, tanpaKet, belumAbsen, dinasD, dinasL, izin, sakit, persen };
+};
+
+// â”€â”€â”€ QR CODE GENERATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const QRDisplay = ({ token, size = 200, className = "rounded-xl", style }) => {
   return (
     <QRCodeSVG
@@ -430,7 +467,7 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PEGAWAI
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
+const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) => {
   const [now, setNow] = useState(new Date());
   const [showScanner, setShowScanner] = useState(false);
   const [showManualCode, setShowManualCode] = useState(false);
@@ -438,9 +475,8 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
   const [scanResult, setScanResult] = useState(null);
   const [attendanceSuccess, setAttendanceSuccess] = useState(false);
   const isValidatingScan = useRef(false);
-  const apelStatus = "ongoing";
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
-  const stats = calcStats(attendance);
+  const stats = calcAttendanceStats(attendance, apelStatus);
   const sudahAbsen = myAttendance.status === "Hadir";
 
   useEffect(() => {
@@ -556,22 +592,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
     }
   };
 
-  const statItems = [
-    { label: "Hadir", value: stats.hadir, color: "text-emerald-400", icon: "✅" },
-    { label: "Tanpa Ket.", value: stats.tanpaKet, color: "text-red-400", icon: "🚫" },
-    { label: "Dinas Dalam", value: stats.dinasD, color: "text-blue-400", icon: "🏢" },
-    { label: "Dinas Luar", value: stats.dinasL, color: "text-violet-400", icon: "🚗" },
-    { label: "Izin", value: stats.izin, color: "text-amber-400", icon: "📄" },
-    { label: "Sakit", value: stats.sakit, color: "text-orange-400", icon: "🤒" },
-  ];
-/*
-    { label: "Hadir", value: stats.hadir, color: "text-emerald-400", icon: "✅" },
-    { label: "Tanpa Ket.", value: stats.tanpaKet, color: "text-red-400", icon: "🚫" },
-    { label: "Dinas Dalam", value: stats.dinasD, color: "text-blue-400", icon: "🏢" },
-    { label: "Dinas Luar", value: stats.dinasL, color: "text-violet-400", icon: "🚗" },
-    { label: "Izin", value: stats.izin, color: "text-amber-400", icon: "📄" },
-    { label: "Sakit", value: stats.sakit, color: "text-orange-400", icon: "🤒" },
-*/
+  const statItems = getAttendanceStatItems(apelStatus).map(item => ({ ...item, value: stats[item.key] }));
 
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-6">
@@ -641,7 +662,7 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
 
         {attendanceSuccess && (
           <div className="mb-6 rounded-xl border border-emerald-500/40 bg-emerald-500/15 px-4 py-3 text-center font-black tracking-wide text-emerald-300">
-            ✓ Kehadiran berhasil dicatat
+            âœ“ Kehadiran berhasil dicatat
           </div>
         )}
 
@@ -767,29 +788,19 @@ const DashboardPegawai = ({ pegawai, attendance, onScan, onBack }) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PIMPINAN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPimpinan = ({ attendance, onBack }) => {
+const DashboardPimpinan = ({ attendance, apelStatus, onBack }) => {
   const [showAllPerhatian, setShowAllPerhatian] = useState(false);
   const [showBidangDetails, setShowBidangDetails] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
   const [now, setNow] = useState(new Date());
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
 
-  const stats = calcStats(attendance);
-
-const denganKeterangan =
-  stats.dinasD +
-  stats.dinasL +
-  stats.izin +
-  stats.sakit;
+  const stats = calcAttendanceStats(attendance, apelStatus);
+  const unaccountedItem = getAttendanceStatItems(apelStatus)[1];
 
 const getBidangStats = (bidangNama) => {
     const members = pegawaiData.filter(p => p.bidang === bidangNama);
-    let hadir = 0;
-    for (const p of members) {
-      if (attendance[p.id]?.status === "Hadir") hadir++;
-    }
-    const persen = members.length > 0 ? Math.round((hadir / members.length) * 100) : 0;
-    return { total: members.length, hadir, persen };
+    return calcAttendanceStats(attendance, apelStatus, members);
   };
 
   const perhatianList = [
@@ -921,8 +932,7 @@ const getBidangStats = (bidangNama) => {
               {[
   { label: "Total Pegawai", val: stats.total, color: "text-white" },
   { label: "Hadir", val: stats.hadir, color: "text-emerald-400" },
-  { label: "Tanpa Ket.", val: stats.tanpaKet, color: "text-red-400" },
-  { label: "Dengan Keterangan", val: denganKeterangan, color: "text-blue-400" },
+  { label: unaccountedItem.label, val: stats[unaccountedItem.key], color: unaccountedItem.color },
 ].map(s => (
                 <div key={s.label} className="flex items-center justify-between">
                   <span className="text-slate-400 text-xs">{s.label}</span>
@@ -935,14 +945,7 @@ const getBidangStats = (bidangNama) => {
 
         {/* Status breakdown */}
         <div className="grid grid-cols-3 gap-2 mb-4">
-          {[
-            { label: "Dinas Dalam", val: stats.dinasD, icon: "🏢", color: "text-blue-400" },
-            { label: "Dinas Luar", val: stats.dinasL, icon: "🚗", color: "text-violet-400" },
-            { label: "Izin", val: stats.izin, icon: "📄", color: "text-amber-400" },
-            { label: "Sakit", val: stats.sakit, icon: "🤒", color: "text-orange-400" },
-            { label: "Hadir", val: stats.hadir, icon: "✅", color: "text-emerald-400" },
-            { label: "Tanpa Ket.", val: stats.tanpaKet, icon: "🚫", color: "text-red-400" },
-          ].map(s => (
+          {getAttendanceStatItems(apelStatus).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
             <Card key={s.label} className="p-3 text-center">
               <div className="text-xl mb-1">{s.icon}</div>
               <div className={`text-lg font-black ${s.color}`}>{s.val}</div>
@@ -1046,13 +1049,12 @@ const getBidangStats = (bidangNama) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD ADMIN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardAdmin = ({ attendance, onScanSimulate, onReset, onBack, onKoreksi }) => {
+const DashboardAdmin = ({ attendance, apelStatus, onAppealPhaseChange, onScanSimulate, onReset, onBack, onKoreksi }) => {
   const [now, setNow] = useState(new Date());
   const [currentQr, setCurrentQr] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
-  const [demoStatus, setDemoStatus] = useState("ongoing");
   const [showFullscreenQr, setShowFullscreenQr] = useState(false);
-  console.log("demoStatus:", demoStatus);
+  const [attendanceSearch, setAttendanceSearch] = useState("");
   useEffect(() => {
     const t = setInterval(() => {
       setNow(new Date());
@@ -1060,13 +1062,9 @@ const DashboardAdmin = ({ attendance, onScanSimulate, onReset, onBack, onKoreksi
     return () => clearInterval(t);
   }, []);
 
-  const stats = calcStats(attendance);
+  const stats = calcAttendanceStats(attendance, apelStatus);
 
 const DEV_MODE = true;
-
-const apelStatus = DEV_MODE
-  ? demoStatus
-  : getApelStatus(now);
 
 const qrActive = apelStatus === "ongoing";
 
@@ -1135,6 +1133,60 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
 
   if (showFullscreenQr) {
     return <FullscreenQR currentQr={currentQr} qrActive={qrActive} secsLeft={secsLeft} onExit={exitFullscreenQr} />;
+  }
+
+  if (activeMenu === "absensi") {
+    const q = attendanceSearch.trim().toLowerCase();
+    const filteredPegawai = pegawaiData.filter(p => {
+      const searchable = `${p.nama} ${p.nip} ${p.bidang} ${p.jabatan}`.toLowerCase();
+      return !q || searchable.includes(q);
+    });
+
+    return (
+      <div className="min-h-screen bg-[#080c14] px-4 py-6">
+        <div className="relative z-10 max-w-sm mx-auto">
+          <BackButton onClick={() => setActiveMenu(null)} />
+          <h2 className="text-xl font-black text-white mb-1">Absensi Hari Ini</h2>
+          <p className="text-slate-500 text-xs mb-5">{now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
+
+          <div className="relative mb-4">
+            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              value={attendanceSearch}
+              onChange={e => setAttendanceSearch(e.target.value)}
+              placeholder="Cari nama, NIP, bidang atau UPT..."
+              className="w-full bg-slate-800/80 border border-slate-700/60 rounded-xl pl-10 pr-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:bg-slate-800"
+            />
+          </div>
+
+          <div className="space-y-2">
+            {filteredPegawai.map(p => {
+              const att = attendance[p.id];
+              return (
+                <Card key={p.id} className="p-3.5">
+                  <div className="mb-3">
+                    <div className="text-white text-sm font-semibold leading-snug">{p.nama}</div>
+                    <div className="text-slate-500 text-xs mt-1">NIP: {p.nip}</div>
+                    <div className="text-slate-500 text-xs">Bidang / UPT: {p.bidang}</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-500 text-[10px] uppercase font-semibold tracking-wider mb-1">Status Saat Ini</div>
+                    {att?.status ? <StatusBadge status={att.status} /> : <StatusBadge status="Belum" />}
+                  </div>
+                </Card>
+              );
+            })}
+            {filteredPegawai.length === 0 && (
+              <Card className="p-6 text-center">
+                <div className="text-slate-400 text-sm">Pegawai tidak ditemukan</div>
+              </Card>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (activeMenu === "koreksi") {
@@ -1275,9 +1327,9 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
         {DEV_MODE && (
   <div className="flex gap-2 mb-4">
     <button
-      onClick={() => setDemoStatus("before")}
+      onClick={() => onAppealPhaseChange("before")}
       className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-        demoStatus === "before"
+        apelStatus === "before"
           ? "bg-slate-600 text-white"
           : "bg-slate-800 text-slate-400"
       }`}
@@ -1286,9 +1338,9 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
     </button>
 
     <button
-      onClick={() => setDemoStatus("ongoing")}
+      onClick={() => onAppealPhaseChange("ongoing")}
       className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-        demoStatus === "ongoing"
+        apelStatus === "ongoing"
           ? "bg-emerald-600 text-white"
           : "bg-slate-800 text-slate-400"
       }`}
@@ -1297,9 +1349,9 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
     </button>
 
     <button
-      onClick={() => setDemoStatus("ended")}
+      onClick={() => onAppealPhaseChange("ended")}
       className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-        demoStatus === "ended"
+        apelStatus === "ended"
           ? "bg-red-600 text-white"
           : "bg-slate-800 text-slate-400"
       }`}
@@ -1322,12 +1374,9 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
 
         {/* Stats Bar */}
         <div className="grid grid-cols-3 gap-2 mb-5">
-          {[
-  { label: "Hadir", val: stats.hadir, color: "text-emerald-400" },
-  { label: "Tanpa Ket.", val: stats.tanpaKet, color: "text-red-400" },
-  { label: "Kehadiran", val: `${stats.persen}%`, color: "text-amber-400" },
-].map(s => (
+          {getAttendanceStatItems(apelStatus).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
             <Card key={s.label} className="p-3 text-center">
+              <div className="text-lg mb-0.5">{s.icon}</div>
               <div className={`text-xl font-black ${s.color}`}>{s.val}</div>
               <div className="text-slate-600 text-[10px]">{s.label}</div>
             </Card>
@@ -1383,6 +1432,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
         {/* Menu Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           {[
+            { id: "absensi", label: "Absensi Hari Ini", icon: "📋", color: "from-cyan-500/20 to-sky-500/10", border: "hover:border-cyan-500/50" },
             { id: "kelola", label: "Kelola Pegawai", icon: "👥", color: "from-blue-500/20 to-indigo-500/10", border: "hover:border-blue-500/50" },
             { id: "koreksi", label: "Koreksi Absensi", icon: "✏️", color: "from-amber-500/20 to-yellow-500/10", border: "hover:border-amber-500/50" },
             { id: "laporan", label: "Laporan Harian", icon: "📊", color: "from-emerald-500/20 to-teal-500/10", border: "hover:border-emerald-500/50" },
@@ -1441,6 +1491,7 @@ export default function App() {
   const [role, setRole] = useState(null);
   const [activePegawai, setActivePegawai] = useState(null);
   const [attendance, setAttendance] = useState(buildInitialAttendance);
+  const [apelStatus, setApelStatus] = useState("ongoing");
 
   useEffect(() => {
     const attendanceRef = ref(database, ATTENDANCE_PATH);
@@ -1499,14 +1550,14 @@ export default function App() {
       {page === "role" && <RoleSelector onSelect={handleRoleSelect} />}
       {page === "pegawai_login" && <PegawaiLogin onBack={() => setPage("role")} onLogin={handlePegawaiLogin} />}
       {page === "pegawai_dashboard" && activePegawai && (
-        <DashboardPegawai pegawai={activePegawai} attendance={attendance} onScan={handleScan}
+        <DashboardPegawai pegawai={activePegawai} attendance={attendance} apelStatus={apelStatus} onScan={handleScan}
           onBack={() => setPage("pegawai_login")} />
       )}
       {page === "pimpinan" && (
-        <DashboardPimpinan attendance={attendance} onBack={() => setPage("role")} />
+        <DashboardPimpinan attendance={attendance} apelStatus={apelStatus} onBack={() => setPage("role")} />
       )}
       {page === "admin" && (
-        <DashboardAdmin attendance={attendance} onScanSimulate={handleScanSimulate}
+        <DashboardAdmin attendance={attendance} apelStatus={apelStatus} onAppealPhaseChange={setApelStatus} onScanSimulate={handleScanSimulate}
           onReset={handleReset} onBack={() => setPage("role")} onKoreksi={handleKoreksi} />
       )}
     </div>
