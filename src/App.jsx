@@ -753,6 +753,41 @@ const getBidangStats = (bidangNama) => {
       totalTanpaKeterangan: 1,
       pegawai: { nama: "Eko Prasetyo", nip: "197903122008011005", bidang: "UPT Pelayanan A" },
     },
+    {
+      pegawaiId: "demo-6",
+      totalTanpaKeterangan: 1,
+      pegawai: { nama: "Siti Nurhayati", nip: "197903122008011006", bidang: "Sekretariat" },
+    },
+    {
+      pegawaiId: "demo-7",
+      totalTanpaKeterangan: 1,
+      pegawai: { nama: "Dedi Kurniawan", nip: "197903122008011007", bidang: "Sumber Daya Air" },
+    },
+    {
+      pegawaiId: "demo-8",
+      totalTanpaKeterangan: 1,
+      pegawai: { nama: "Maya Lestari", nip: "197903122008011008", bidang: "Bina Marga" },
+    },
+    {
+      pegawaiId: "demo-9",
+      totalTanpaKeterangan: 1,
+      pegawai: { nama: "Rizal Maulana", nip: "197903122008011009", bidang: "Cipta Karya" },
+    },
+    {
+      pegawaiId: "demo-10",
+      totalTanpaKeterangan: 1,
+      pegawai: { nama: "Dian Puspita", nip: "197903122008011010", bidang: "UPT Pelayanan B" },
+    },
+    {
+      pegawaiId: "demo-11",
+      totalTanpaKeterangan: 1,
+      pegawai: { nama: "Fajar Nugroho", nip: "197903122008011011", bidang: "Tata Ruang" },
+    },
+    {
+      pegawaiId: "demo-12",
+      totalTanpaKeterangan: 1,
+      pegawai: { nama: "Rina Marlina", nip: "197903122008011012", bidang: "UPT Pelayanan A" },
+    },
   ];
   const visiblePerhatianList = showAllPerhatian ? perhatianList : perhatianList.slice(0, 5);
 
