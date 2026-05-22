@@ -930,7 +930,7 @@ const getBidangStats = (bidangNama) => {
             onClick={() => setShowAllPerhatian(prev => !prev)}
             className="mt-3 w-full py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold border border-slate-700 active:scale-[0.98]"
           >
-            {showAllPerhatian ? "Tampilkan Top 5" : "Lihat Semua"}
+            {showAllPerhatian ? "Tutup Detail" : "Lihat Semua"}
           </button>
         </Card>
 
