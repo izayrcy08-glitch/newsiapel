@@ -109,17 +109,80 @@ const calcStats = (attendance) => {
 };
 
 // ─── QR CODE GENERATOR ───────────────────────────────────────────────────────
-const QRDisplay = ({ token }) => {
+const QRDisplay = ({ token, size = 200, className = "rounded-xl", style }) => {
   return (
     <QRCodeSVG
       value={token || "SIAPEL-QR-INACTIVE"}
-      size={200}
+      size={size}
       bgColor="#ffffff"
       fgColor="#0f172a"
       level="M"
       includeMargin
-      className="rounded-xl"
+      className={className}
+      style={style}
     />
+  );
+};
+
+const FullscreenQR = ({ currentQr, qrActive, onExit }) => {
+  return (
+    <div className="fixed inset-0 z-[100] min-h-screen overflow-hidden bg-[#080c14] text-white">
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#080c14] via-[#101827] to-[#06111f]" />
+        <div className="absolute -top-32 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
+        <div className="absolute bottom-[-180px] right-[-120px] h-[460px] w-[460px] rounded-full bg-emerald-500/10 blur-3xl" />
+      </div>
+
+      <button
+        onClick={onExit}
+        className="fixed right-4 top-4 z-20 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-black text-white shadow-lg backdrop-blur-xl transition-all hover:bg-white/15 active:scale-[0.98] md:right-6 md:top-6"
+      >
+        Keluar
+      </button>
+
+      <div className="relative z-10 flex h-screen w-full flex-col items-center px-4 py-4 text-center sm:px-8 sm:py-6 lg:px-12">
+        <header className="flex basis-[10%] flex-col items-center justify-center">
+          <h1 className="text-[clamp(1.9rem,5vw,5.5rem)] font-black leading-none tracking-normal text-white">
+            APEL PAGI
+          </h1>
+          <p className="mt-2 text-[clamp(1rem,2.4vw,2.6rem)] font-black leading-tight tracking-normal text-blue-100/90">
+            DINAS PUPR
+            <br />
+            KABUPATEN BARITO UTARA
+          </p>
+        </header>
+
+        <main className="flex basis-[75%] w-full items-center justify-center">
+          <div className={`flex items-center justify-center rounded-[2rem] border border-white/15 bg-white/10 p-[clamp(0.75rem,2vw,2rem)] shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl ${!qrActive && "opacity-30 grayscale"}`}>
+            <QRDisplay
+              token={currentQr?.token}
+              size={1024}
+              className="rounded-[1.5rem] shadow-2xl"
+              style={{
+                width: "min(88vw, 68vh, 980px)",
+                height: "min(88vw, 68vh, 980px)",
+              }}
+            />
+          </div>
+        </main>
+
+        <section className="flex basis-[10%] w-full items-center justify-center">
+          <div className="min-w-[min(92vw,520px)] rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-6 py-3 shadow-[0_18px_50px_rgba(16,185,129,0.14)] backdrop-blur-xl sm:px-10 sm:py-4">
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-200/80 sm:text-sm">
+              KODE ABSENSI
+            </p>
+            <div className="mt-1 font-mono text-[clamp(2.1rem,6vw,5.25rem)] font-black leading-none tracking-normal text-white">
+              {qrActive && currentQr?.token ? currentQr.token : "------"}
+            </div>
+          </div>
+        </section>
+
+        <footer className="flex basis-[5%] flex-col items-center justify-center text-[clamp(0.75rem,1.4vw,1.2rem)] font-semibold leading-tight text-slate-400">
+          <p>Berganti setiap 15 detik</p>
+          <p>Aktif hingga 08:00</p>
+        </footer>
+      </div>
+    </div>
   );
 };
 
@@ -986,6 +1049,7 @@ const DashboardAdmin = ({ attendance, onScanSimulate, onReset, onBack, onKoreksi
   const [currentQr, setCurrentQr] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
   const [demoStatus, setDemoStatus] = useState("ongoing");
+  const [showFullscreenQr, setShowFullscreenQr] = useState(false);
   console.log("demoStatus:", demoStatus);
   useEffect(() => {
     const t = setInterval(() => {
@@ -1003,6 +1067,22 @@ const apelStatus = DEV_MODE
   : getApelStatus(now);
 
 const qrActive = apelStatus === "ongoing";
+
+  const exitFullscreenQr = useCallback(() => {
+    setShowFullscreenQr(false);
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch((error) => {
+        console.error("Failed to exit fullscreen QR mode:", error);
+      });
+    }
+  }, []);
+
+  const enterFullscreenQr = useCallback(() => {
+    setShowFullscreenQr(true);
+    document.documentElement.requestFullscreen?.().catch((error) => {
+      console.error("Failed to enter fullscreen QR mode:", error);
+    });
+  }, []);
 
   useEffect(() => {
     if (!qrActive) return;
@@ -1025,7 +1105,35 @@ const qrActive = apelStatus === "ongoing";
     return () => clearInterval(tokenTimer);
   }, [qrActive]);
 
+  useEffect(() => {
+    if (!showFullscreenQr) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setShowFullscreenQr(false);
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setShowFullscreenQr(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, [showFullscreenQr]);
+
 const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expiresAt - now.getTime()) / 1000)) : 0;
+
+  if (showFullscreenQr) {
+    return <FullscreenQR currentQr={currentQr} qrActive={qrActive} onExit={exitFullscreenQr} />;
+  }
 
   if (activeMenu === "koreksi") {
     const tks = Object.entries(attendance)
@@ -1256,6 +1364,17 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
         : "Sesi apel telah berakhir pukul 08:00"}
     </p>
   )}
+  <button
+    onClick={enterFullscreenQr}
+    disabled={!qrActive}
+    className={`mt-4 w-full rounded-xl py-3 text-sm font-black transition-all active:scale-[0.98] ${
+      qrActive
+        ? "bg-white text-slate-950 hover:bg-slate-200"
+        : "cursor-not-allowed bg-slate-800 text-slate-600"
+    }`}
+  >
+    Fullscreen QR
+  </button>
 </Card>
         
 
