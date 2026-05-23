@@ -664,7 +664,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
 
         {attendanceSuccess && (
           <div className="mb-6 rounded-xl border border-emerald-500/40 bg-emerald-500/15 px-4 py-3 text-center font-black tracking-wide text-emerald-300">
-            âœ“ Kehadiran berhasil dicatat
+            ✓ Kehadiran berhasil dicatat
           </div>
         )}
 
