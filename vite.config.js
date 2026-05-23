@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo-siapel.png'],
+      includeAssets: ['siapel-pwa.png'],
       manifest: {
         name: 'SIAPEL',
         short_name: 'SIAPEL',
@@ -18,12 +18,12 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: '/logo-siapel.png',
+            src: '/siapel-pwa.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/logo-siapel.png',
+            src: '/siapel-pwa.png',
             sizes: '512x512',
             type: 'image/png'
           }
