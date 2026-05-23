@@ -145,7 +145,7 @@ const calcAttendanceStats = (attendance, apelStatus, people = pegawaiData) => {
   return { total, hadir, unaccounted, tanpaKet, belumAbsen, dinasD, dinasL, izin, sakit, persen };
 };
 
-// â”€â”€â”€ QR CODE GENERATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── QR CODE GENERATOR ────────────────────────────────────────────────
 const QRDisplay = ({ token, size = 200, className = "rounded-xl", style }) => {
   return (
     <QRCodeSVG
@@ -343,11 +343,13 @@ const RoleSelector = ({ onSelect }) => {
       <div className="relative z-10 w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/30 to-indigo-600/30 border border-blue-500/30 mb-4 shadow-lg shadow-blue-500/10">
-            <span className="text-3xl">🏛️</span>
-          </div>
-          <h1 className="text-4xl font-black text-white tracking-tight">SIAPEL</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium tracking-wide">Sistem Informasi Apel Pegawai</p>
+          <img
+  src="/logo-siapel.png"
+  alt="SIAPEL"
+  className="w-40 h-40 mx-auto mb-4 drop-shadow-2xl"
+/>
+          <h1 className="text-5xl font-black text-white tracking-tight">SIAPEL</h1>
+          <p className="text-slate-400 text-sm mt-2 font-medium tracking-wider">Sistem Informasi Apel Pegawai</p>
           <div className="mt-2 flex items-center justify-center gap-2">
             <span className="text-xs text-slate-600">Dinas PUPR</span>
             <span className="text-slate-700">·</span>
