@@ -145,6 +145,25 @@ const calcAttendanceStats = (attendance, apelStatus, people = pegawaiData) => {
   return { total, hadir, unaccounted, tanpaKet, belumAbsen, dinasD, dinasL, izin, sakit, persen };
 };
 
+const getBidangPerformanceStatus = (persen) => {
+  if (persen >= 90) return { label: "Sangat Baik", color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/30" };
+  if (persen >= 80) return { label: "Baik", color: "text-blue-300", bg: "bg-blue-500/15", border: "border-blue-500/30" };
+  if (persen >= 70) return { label: "Perlu Perhatian", color: "text-amber-300", bg: "bg-amber-500/15", border: "border-amber-500/30" };
+  return { label: "Perlu Tindak Lanjut", color: "text-red-300", bg: "bg-red-500/15", border: "border-red-500/30" };
+};
+
+const LAST_MONTH_DISCIPLINE = {
+  sekretariat: 96,
+  tata_kota: 94,
+  tata_ruang: 92,
+  cipta_karya: 89,
+  bina_marga: 86,
+  sumber_daya_air: 84,
+  jasa_konstruksi: 81,
+};
+
+const RANK_MEDALS = ["🥇", "🥈", "🥉"];
+
 // ─── QR CODE GENERATOR ────────────────────────────────────────────────
 const QRDisplay = ({ token, size = 200, className = "rounded-xl", style }) => {
   return (
@@ -792,7 +811,8 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
 // ══════════════════════════════════════════════════════════════════════════════
 const DashboardPimpinan = ({ attendance, apelStatus, onBack }) => {
   const [showAllPerhatian, setShowAllPerhatian] = useState(false);
-  const [showBidangDetails, setShowBidangDetails] = useState(false);
+  const [showAllBidangToday, setShowAllBidangToday] = useState(false);
+  const [showAllLastMonth, setShowAllLastMonth] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
   const [now, setNow] = useState(new Date());
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
@@ -870,64 +890,92 @@ const getBidangStats = (bidangNama) => {
   const visiblePerhatianList = showAllPerhatian ? perhatianList : perhatianList.slice(0, 3);
 
   const bidangList = orgData.bidang.filter(b => b.id !== "pimpinan");
+  const bidangAnalytics = bidangList
+    .map(b => ({ ...b, stats: getBidangStats(b.nama) }))
+    .filter(b => b.stats.total > 0);
+  const todayRanking = [...bidangAnalytics].sort((a, b) => b.stats.persen - a.stats.persen || b.stats.hadir - a.stats.hadir || a.nama.localeCompare(b.nama));
+  const visibleTodayRanking = showAllBidangToday ? todayRanking : todayRanking.slice(0, 3);
+  const lastMonthRanking = bidangList
+    .map(b => ({ ...b, persen: LAST_MONTH_DISCIPLINE[b.id] ?? 80 }))
+    .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
+  const visibleLastMonthRanking = showAllLastMonth ? lastMonthRanking : lastMonthRanking.slice(0, 3);
 
   if (selectedBidang) {
     const b = selectedBidang;
     const bStats = getBidangStats(b.nama);
-    const members = pegawaiData.filter(p => p.bidang === b.nama);
+    const unaccountedLabel = unaccountedItem.label;
+    const bidangStatus = getBidangPerformanceStatus(bStats.persen);
+    const detailRows = [
+      { label: "Hadir", value: bStats.hadir, color: "text-emerald-400" },
+      { label: unaccountedLabel, value: bStats[unaccountedItem.key], color: unaccountedItem.color },
+      { label: "Dinas Dalam", value: bStats.dinasD, color: "text-blue-400" },
+      { label: "Dinas Luar", value: bStats.dinasL, color: "text-violet-400" },
+      { label: "Izin", value: bStats.izin, color: "text-amber-400" },
+      { label: "Sakit", value: bStats.sakit, color: "text-orange-400" },
+    ];
     return (
-      <div className="min-h-screen bg-[#080c14] px-4 py-6">
+      <div className="min-h-screen bg-[#070b13] px-4 py-6">
         <div className="relative z-10 max-w-sm mx-auto">
           <BackButton onClick={() => setSelectedBidang(null)} />
-          <h2 className="text-xl font-black text-white mb-0.5">Bidang {b.nama}</h2>
-          <p className="text-slate-500 text-xs mb-5">{b.kepala}</p>
-          <Card className="p-4 mb-4 flex items-center gap-4">
-            <ProgressRing pct={bStats.persen} size={80} stroke={7} />
-            <div>
-              <div className="text-white text-xl font-black">{bStats.persen}%</div>
-              <div className="text-slate-400 text-xs">{bStats.hadir}/{bStats.total} hadir</div>
+
+          <Card className="p-5 mb-4 border-slate-600/40 bg-slate-950/70 shadow-[0_18px_60px_rgba(0,0,0,0.32)]">
+            <div className="flex items-start justify-between gap-3 mb-5">
+              <div>
+                <h2 className="text-xl font-black text-slate-50 uppercase leading-tight">{b.nama}</h2>
+                <p className="text-slate-400 text-xs mt-1">{b.kepala}</p>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="text-2xl font-black text-amber-200">{bStats.persen}%</div>
+                <div className="text-slate-500 text-[10px] uppercase tracking-wider">Hadir</div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between border-b border-amber-200/10 pb-3 mb-3">
+              <span className="text-slate-400 text-sm">Total Pegawai</span>
+              <span className="text-white text-lg font-black">{bStats.total}</span>
+            </div>
+
+            <div className="space-y-2">
+              {detailRows.map(row => (
+                <div key={row.label} className="flex items-center justify-between">
+                  <span className="text-slate-400 text-sm">{row.label}</span>
+                  <span className={`text-sm font-black ${row.color}`}>{row.value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-5 border-t border-amber-200/10 pt-4">
+              <div className="text-slate-500 text-xs font-semibold uppercase tracking-[0.18em] mb-2">Status Bidang</div>
+              <div className={`inline-flex items-center rounded-xl border px-3 py-2 text-sm font-black ${bidangStatus.bg} ${bidangStatus.border} ${bidangStatus.color}`}>
+                {bStats.persen < 80 ? "⚠ " : ""}{bidangStatus.label}
+              </div>
             </div>
           </Card>
-          <div className="space-y-2">
-            {members.map(p => {
-              const att = attendance[p.id];
-              return (
-                <Card key={p.id} className="p-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="min-w-0">
-                      <div className="text-white text-xs font-semibold truncate">{p.nama}</div>
-                      <div className="text-slate-600 text-[10px] truncate">{p.jabatan}</div>
-                    </div>
-                    {att?.status ? <StatusBadge status={att.status} /> : <StatusBadge status="Belum" />}
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#080c14] px-4 py-6">
+    <div className="min-h-screen bg-[#070b13] px-4 py-6">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-80 h-80 bg-amber-600/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.08),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(148,163,184,0.08),transparent_32%)]" />
+        <div className="absolute top-0 left-0 w-80 h-80 bg-amber-500/6 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-slate-300/5 rounded-full blur-3xl" />
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
         <BackButton onClick={onBack} />
 
         {/* Header */}
-        <div className="mb-6">
-          <p className="text-slate-400 text-sm">{getGreeting()},</p>
-          <h1 className="text-xl font-black text-white leading-tight">{orgData.kepala_dinas.nama}</h1>
-          <p className="text-slate-500 text-xs mt-0.5">{orgData.kepala_dinas.jabatan} · {orgData.dinas}</p>
+        <div className="mb-6 border-b border-amber-200/10 pb-4">
+          <p className="text-amber-200/80 text-sm font-medium">{getGreeting()},</p>
+          <h1 className="text-xl font-black text-slate-50 leading-tight">{orgData.kepala_dinas.nama}</h1>
+          <p className="text-slate-400 text-xs mt-0.5">{orgData.kepala_dinas.jabatan} · {orgData.dinas}</p>
           <p className="text-slate-600 text-xs">{now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
         </div>
 
         {/* Main Stats + Ring */}
-        <Card className="p-5 mb-4">
+        <Card className="p-5 mb-4 border-amber-200/15 bg-slate-950/70 shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
           <div className="flex items-center gap-5">
             <ProgressRing pct={stats.persen} size={100} stroke={9} color="#f59e0b" label="Kehadiran" />
             <div className="flex-1 space-y-2">
@@ -948,7 +996,7 @@ const getBidangStats = (bidangNama) => {
         {/* Status breakdown */}
         <div className="grid grid-cols-3 gap-2 mb-4">
           {getAttendanceStatItems(apelStatus).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
-            <Card key={s.label} className="p-3 text-center">
+            <Card key={s.label} className="p-3 text-center border-slate-600/35 bg-slate-950/55 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
               <div className="text-xl mb-1">{s.icon}</div>
               <div className={`text-lg font-black ${s.color}`}>{s.val}</div>
               <div className="text-slate-600 text-[10px] leading-tight">{s.label}</div>
@@ -957,9 +1005,9 @@ const getBidangStats = (bidangNama) => {
         </div>
 
         {/* Perlu Perhatian */}
-        <Card className="p-4 mb-4">
-          <div className="mb-3">
-            <div className="text-white font-bold text-sm">Pegawai Perlu Perhatian</div>
+        <Card className="p-4 mb-4 border-slate-600/40 bg-slate-950/65 shadow-[0_14px_42px_rgba(0,0,0,0.24)]">
+          <div className="mb-3 border-b border-slate-700/50 pb-3">
+            <div className="text-slate-50 font-bold text-sm">Pegawai Perlu Perhatian</div>
             <div className="text-slate-500 text-xs mt-0.5">Top 3 berdasarkan sanksi bulan ini</div>
           </div>
           <div className="space-y-2">
@@ -976,7 +1024,7 @@ const getBidangStats = (bidangNama) => {
                     tanpaKeterangan >= 2 ? "bg-yellow-400" :
                       "bg-slate-200";
               return (
-                <div key={r.pegawaiId} className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-3">
+                <div key={r.pegawaiId} className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                   <div className="flex items-start gap-3">
                     <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full ${indicatorClass}`} />
                     <div className="min-w-0 flex-1">
@@ -985,7 +1033,7 @@ const getBidangStats = (bidangNama) => {
                       <div className="text-slate-400 text-xs mt-1 truncate">Bidang/UPT: {r.pegawai.bidang}</div>
                     </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-slate-700/50">
+                  <div className="mt-3 pt-3 border-t border-amber-200/10">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-500 text-xs">Tanpa Keterangan</span>
                       <span className="text-red-400 text-sm font-black">{tanpaKeterangan}x</span>
@@ -998,7 +1046,7 @@ const getBidangStats = (bidangNama) => {
           </div>
           <button
             onClick={() => setShowAllPerhatian(prev => !prev)}
-            className="mt-3 w-full py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold border border-slate-700 active:scale-[0.98]"
+            className="mt-3 w-full py-2.5 rounded-xl bg-slate-900/80 text-slate-300 text-xs font-bold border border-slate-700/70 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
           >
             {showAllPerhatian ? "Tutup Detail" : "Lihat Semua"}
           </button>
@@ -1006,41 +1054,88 @@ const getBidangStats = (bidangNama) => {
 
         {/* Kehadiran per Bidang */}
         <div className="mb-2">
-          <Card className="p-4">
-            <button
-              onClick={() => setShowBidangDetails(prev => !prev)}
-              className="w-full flex items-center justify-between text-left"
-            >
-              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Kehadiran per Bidang</span>
-              <span className="text-xs text-slate-300 font-bold">{showBidangDetails ? "Tutup Detail" : "Lihat Detail"}</span>
-            </button>
-            {showBidangDetails && (
-              <div className="space-y-2 mt-3">
-                {bidangList.map(b => {
-                  const bs = getBidangStats(b.nama);
-                  if (bs.total === 0) return null;
+          <Card className="p-4 border-amber-200/15 bg-slate-950/65 shadow-[0_18px_55px_rgba(0,0,0,0.26)]">
+            <div className="mb-4 border-b border-amber-200/10 pb-3">
+              <div className="text-amber-100/90 text-xs font-semibold uppercase tracking-[0.18em]">Kehadiran Per Bidang</div>
+              <div className="text-slate-600 text-[11px] mt-0.5">Analitik performa bidang hari ini dan bulan lalu</div>
+            </div>
+
+            <div className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3.5 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <div className="text-slate-50 text-sm font-black">🏆 Peringkat Hari Ini</div>
+                  <div className="text-slate-500 text-[11px]">Berdasarkan data absensi realtime</div>
+                </div>
+                <button
+                  onClick={() => setShowAllBidangToday(prev => !prev)}
+                  className="text-xs text-slate-300 font-bold rounded-lg bg-slate-950/80 border border-slate-700/70 px-2.5 py-1.5 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
+                >
+                  {showAllBidangToday ? "Tutup" : "Lihat Semua"}
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {visibleTodayRanking.map((b, index) => {
+                  const status = getBidangPerformanceStatus(b.stats.persen);
                   return (
-                    <div key={b.id} className="rounded-xl border border-slate-700/60 bg-slate-800/40 p-3.5">
+                    <button
+                      key={b.id}
+                      onClick={() => setSelectedBidang(b)}
+                      className="w-full rounded-xl border border-slate-700/55 bg-slate-950/55 p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-slate-900/70"
+                    >
                       <div className="flex items-center gap-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="text-white text-sm font-semibold">{b.nama}</div>
-                          <div className="text-slate-500 text-xs truncate">{b.kepala}</div>
+                        <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-white text-sm font-bold truncate">{b.nama}</div>
+                          <div className={`text-[11px] font-semibold ${status.color}`}>{status.label}</div>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <div className="text-right">
-                            <div className={`text-base font-black ${bs.persen >= 80 ? "text-emerald-400" : bs.persen >= 60 ? "text-amber-400" : "text-red-400"}`}>{bs.persen}%</div>
-                            <div className="text-slate-600 text-[10px]">{bs.hadir}/{bs.total}</div>
-                          </div>
-                          <div className="w-12 bg-slate-900 rounded-full h-2 overflow-hidden">
-                            <div className={`h-2 rounded-full transition-all ${bs.persen >= 80 ? "bg-emerald-500" : bs.persen >= 60 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${bs.persen}%` }} />
-                          </div>
+                        <div className="text-right shrink-0">
+                          <div className={`text-lg font-black ${b.stats.persen >= 80 ? "text-emerald-400" : b.stats.persen >= 60 ? "text-amber-400" : "text-red-400"}`}>{b.stats.persen}%</div>
+                          <div className="text-slate-600 text-[10px]">{b.stats.hadir}/{b.stats.total}</div>
                         </div>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
-            )}
+            </div>
+
+            <div className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <div className="text-slate-50 text-sm font-black">🏅 Disiplin Bulan Lalu</div>
+                  <div className="text-slate-500 text-[11px]">Data dummy untuk tahap prototipe</div>
+                </div>
+                <button
+                  onClick={() => setShowAllLastMonth(prev => !prev)}
+                  className="text-xs text-slate-300 font-bold rounded-lg bg-slate-950/80 border border-slate-700/70 px-2.5 py-1.5 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
+                >
+                  {showAllLastMonth ? "Tutup" : "Lihat Semua"}
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {visibleLastMonthRanking.map((b, index) => {
+                  const status = getBidangPerformanceStatus(b.persen);
+                  return (
+                    <button
+                      key={b.id}
+                      onClick={() => setSelectedBidang(b)}
+                      className="w-full rounded-xl border border-slate-700/55 bg-slate-950/55 p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-slate-900/70"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-white text-sm font-bold truncate">{b.nama}</div>
+                          <div className={`text-[11px] font-semibold ${status.color}`}>{status.label}</div>
+                        </div>
+                        <div className="text-lg font-black text-blue-300 shrink-0">{b.persen}%</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </Card>
         </div>
       </div>
@@ -1531,7 +1626,10 @@ export default function App() {
   };
 
   const handleScanSimulate = (count) => {
-    const belum = Object.entries(attendance).filter(([, v]) => !v.status).map(([id]) => parseInt(id));
+    const finalStatuses = new Set(["Hadir", "Dinas Dalam", "Dinas Luar", "Izin", "Sakit"]);
+    const belum = pegawaiData
+      .filter(p => !finalStatuses.has(attendance[p.id]?.status))
+      .map(p => p.id);
     const toScan = belum.slice(0, count);
     if (toScan.length === 0) return;
     const jamNow = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
