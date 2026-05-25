@@ -150,6 +150,16 @@ const getStatusIcon = (status) => {
   return STATUS_ICONS[status] || { icon: "❓", label: status };
 };
 
+// ─── DISCIPLINE STATUS HELPER ────────────────────────────────────────────────
+const tanpaKeteranganBulanIni = 2;
+
+const getDisciplineStatus = (count) => {
+  if (count === 0) return { icon: "🟢", label: "Sangat Baik" };
+  if (count <= 2) return { icon: "🟡", label: "Perlu Perhatian" };
+  if (count <= 4) return { icon: "🟠", label: "Pembinaan" };
+  return { icon: "🔴", label: "Tindak Lanjut" };
+};
+
 // ─── DUMMY DATA PENGJUAN STATUS ──────────────────────────────────────────────
 const PENGJUAN_STATUS_DATA = [
   {
@@ -786,6 +796,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
   const [manualCode, setManualCode] = useState("");
   const [scanResult, setScanResult] = useState(null);
   const [attendanceSuccess, setAttendanceSuccess] = useState(false);
+  const [showAturanModal, setShowAturanModal] = useState(false);
   const isValidatingScan = useRef(false);
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
   const stats = calcAttendanceStats(attendance, apelStatus);
@@ -960,27 +971,86 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
           </Card>
         ) : (
         <>
-        {/* Status Card */}
+        {/* Status Card - Two Column Layout */}
         <Card className="p-4 mb-4">
           <div className="flex items-center justify-between mb-3">
             <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Status Hari Ini</span>
             <span className="text-slate-500 text-xs">{now.toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short" })}</span>
           </div>
 
-          {displayStatus ? (
-            <div className="flex items-center justify-between">
-              <StatusBadge status={displayStatus} />
-              {showAttendanceTime && (
-                <div className="text-right">
-                  <div className="text-white font-bold">{myAttendance.jamHadir} WIB</div>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Left Column: Hadir / Status */}
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 flex flex-col items-center text-center">
+              {/* Icon + Status */}
+              <div className="flex flex-col items-center mb-2">
+                <span className="text-lg mb-1">🟢</span>
+                <span className="text-emerald-400 text-xs font-semibold">
+                  {displayStatus === "Hadir" ? "Hadir" : displayStatus}
+                </span>
+              </div>
+
+              {/* Tanggal */}
+              <div className="text-white text-sm font-bold mb-2">
+                {now.toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short" })}
+              </div>
+
+              {/* Jam Hadir / Belum Absen */}
+              {showAttendanceTime ? (
+                <div>
                   <div className="text-slate-500 text-xs">Jam Hadir</div>
+                  <div className="text-white text-xl font-black">{myAttendance.jamHadir} WIB</div>
                 </div>
+              ) : (
+                <div className="text-slate-500 text-xs">Belum Absen</div>
               )}
             </div>
-          ) : null}
+
+            {/* Right Column: Tanpa Keterangan Bulan Ini */}
+            {(() => {
+              const discipline = getDisciplineStatus(tanpaKeteranganBulanIni);
+              return (
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 flex flex-col items-center text-center">
+                  {/* Icon + Bulan Ini */}
+                  <div className="flex flex-col items-center mb-2">
+                    <span className="text-lg mb-1">{discipline.icon}</span>
+                    <span className="text-amber-400 text-xs font-semibold">Bulan Ini</span>
+                  </div>
+
+                  {/* Jumlah - Fokus Utama */}
+                  <div className="text-white text-xl font-black leading-tight">
+                    {tanpaKeteranganBulanIni} Kali
+                  </div>
+
+                  {/* Subtitle */}
+                  <div className="text-slate-400 text-xs mt-1">
+                    Tanpa Keterangan
+                  </div>
+
+                  {/* Label Status */}
+                  <div className={`text-xs font-semibold mt-2 ${
+                    tanpaKeteranganBulanIni === 0 ? "text-emerald-400" :
+                    tanpaKeteranganBulanIni <= 2 ? "text-amber-400" :
+                    tanpaKeteranganBulanIni <= 4 ? "text-orange-400" :
+                    "text-red-400"
+                  }`}>
+                    {discipline.label}
+                  </div>
+
+                  {/* Tombol */}
+                  <button
+                    onClick={() => setShowAturanModal(true)}
+                    className="mt-3 w-full py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700/50 transition-all active:scale-[0.98]"
+                  >
+                    Lihat Aturan
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
         </Card>
 
-        {/* Apel Status */}
+        {/* Apel Status - Sembunyikan setelah absen */}
+        {!sudahAbsen && (
         <Card className="p-4 mb-4">
           <div className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">Sesi Apel</div>
           {apelStatus === "before" && (
@@ -1005,6 +1075,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
             </div>
           )}
         </Card>
+        )}
 
         {attendanceSuccess && (
           <div className="mb-6 rounded-xl border border-emerald-500/40 bg-emerald-500/15 px-4 py-3 text-center font-black tracking-wide text-emerald-300">
@@ -1108,6 +1179,74 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
 
         {/* ─── PENGAJUAN PERUBAHAN STATUS ─── */}
         <PengajuanStatusForm myStatus={displayStatus} />
+
+        {/* ATURAN MODAL */}
+        {showAturanModal && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 w-full max-w-sm max-h-[85vh] overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-white font-bold">📖 Aturan Ketidakhadiran Bulan Berjalan</h3>
+                <button onClick={() => setShowAturanModal(false)} className="text-slate-400 hover:text-white">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Posisi Saat Ini */}
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-4 text-center">
+                <div className="text-slate-400 text-xs mb-1">Posisi Anda Saat Ini</div>
+                <div className="text-2xl font-black text-amber-400">
+                  {tanpaKeteranganBulanIni} Kali
+                </div>
+              </div>
+
+              <div className="border-t border-slate-700/50 my-3" />
+
+              {/* Aturan Table */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 py-2 px-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                  <span className="text-xl">🟢</span>
+                  <div className="flex-1">
+                    <span className="text-white text-sm font-semibold">0 Kali</span>
+                  </div>
+                  <span className="text-emerald-400 text-sm font-bold">Sangat Baik</span>
+                </div>
+
+                <div className="flex items-center gap-3 py-2 px-3 rounded-xl bg-yellow-500/10 border border-yellow-500/30">
+                  <span className="text-xl">🟡</span>
+                  <div className="flex-1">
+                    <span className="text-white text-sm font-semibold">1 - 2 Kali</span>
+                  </div>
+                  <span className="text-yellow-400 text-sm font-bold">Perlu Perhatian</span>
+                </div>
+
+                <div className="flex items-center gap-3 py-2 px-3 rounded-xl bg-orange-500/10 border border-orange-500/30">
+                  <span className="text-xl">🟠</span>
+                  <div className="flex-1">
+                    <span className="text-white text-sm font-semibold">3 - 4 Kali</span>
+                  </div>
+                  <span className="text-orange-400 text-sm font-bold">Pembinaan</span>
+                </div>
+
+                <div className="flex items-center gap-3 py-2 px-3 rounded-xl bg-red-500/10 border border-red-500/30">
+                  <span className="text-xl">🔴</span>
+                  <div className="flex-1">
+                    <span className="text-white text-sm font-semibold">≥ 5 Kali</span>
+                  </div>
+                  <span className="text-red-400 text-sm font-bold">Tindak Lanjut</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowAturanModal(false)}
+                className="w-full mt-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors border border-slate-700/50"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        )}
 
         </>
         )}
