@@ -1170,7 +1170,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
                 <div key={s.label} className="bg-slate-800/60 rounded-xl p-2.5 text-center">
                   <div className="text-base mb-0.5">{s.icon}</div>
                   <div className={`text-base font-bold ${s.color}`}>{s.value}</div>
-                  <div className="text-slate-600 text-[10px] leading-tight">{s.label}</div>
+                  <div className="text-slate-400 text-xs leading-tight">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -1542,7 +1542,7 @@ const getBidangStats = (bidangNama) => {
             <Card key={s.label} className="p-3 text-center border-slate-600/35 bg-slate-950/55 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
               <div className="text-xl mb-1">{s.icon}</div>
               <div className={`text-lg font-black ${s.color}`}>{s.val}</div>
-              <div className="text-slate-600 text-[10px] leading-tight">{s.label}</div>
+              <div className="text-slate-400 text-xs leading-tight">{s.label}</div>
             </Card>
           ))}
         </div>
@@ -2178,7 +2178,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
               <Card key={s.label} className="p-3 text-center">
                 <div className="text-lg mb-0.5">{s.icon}</div>
                 <div className={`text-xl font-black ${s.color}`}>{s.val}</div>
-                <div className="text-slate-600 text-[10px]">{s.label}</div>
+                <div className="text-slate-400 text-xs">{s.label}</div>
               </Card>
             ))}
           </div>
