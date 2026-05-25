@@ -815,7 +815,31 @@ const DashboardPimpinan = ({ attendance, apelStatus, onBack }) => {
   const [showAllLastMonth, setShowAllLastMonth] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
   const [now, setNow] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update greeting every 30 seconds
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
+
+  // Update clock every second with proper cleanup
+  useEffect(() => {
+    const tick = () => setCurrentTime(new Date());
+    tick(); // Initial update
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format date: "Senin, 25 Mei 2026"
+  const formatDateIndonesia = (date) => {
+    const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    return `${hari[date.getDay()]}, ${date.getDate()} ${bulan[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  // Format time: "07:28:43"
+  const formatTimeWIB = (date) => {
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  };
 
   const stats = calcAttendanceStats(attendance, apelStatus);
   const unaccountedItem = getAttendanceStatItems(apelStatus)[1];
@@ -968,10 +992,23 @@ const getBidangStats = (bidangNama) => {
 
         {/* Header */}
         <div className="mb-6 border-b border-amber-200/10 pb-4">
-          <p className="text-amber-200/80 text-sm font-medium">{getGreeting()},</p>
-          <h1 className="text-xl font-black text-slate-50 leading-tight">{orgData.kepala_dinas.nama}</h1>
-          <p className="text-slate-400 text-xs mt-0.5">{orgData.kepala_dinas.jabatan} · {orgData.dinas}</p>
-          <p className="text-slate-600 text-xs">{now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-amber-200/80 text-sm font-medium">{getGreeting()},</p>
+              <h1 className="text-xl font-black text-slate-50 leading-tight">{orgData.kepala_dinas.nama}</h1>
+              <p className="text-slate-400 text-xs mt-0.5">{orgData.kepala_dinas.jabatan} · {orgData.dinas}</p>
+            </div>
+            {/* Date & Time Display */}
+            <div className="text-right shrink-0 hidden sm:block">
+              <div className="text-amber-200/90 text-xs font-medium leading-tight">{formatDateIndonesia(currentTime)}</div>
+              <div className="text-white text-lg font-bold font-mono tracking-wide mt-1">{formatTimeWIB(currentTime)} <span className="text-amber-200/60 text-xs font-normal">WIB</span></div>
+            </div>
+          </div>
+          {/* Mobile Date/Time (below title) */}
+          <div className="sm:hidden mt-3 pt-3 border-t border-amber-200/10 flex items-center justify-between">
+            <span className="text-amber-200/80 text-xs">{formatDateIndonesia(currentTime)}</span>
+            <span className="text-white text-sm font-bold font-mono">{formatTimeWIB(currentTime)} <span className="text-amber-200/60 text-xs font-normal">WIB</span></span>
+          </div>
         </div>
 
         {/* Main Stats + Ring */}
