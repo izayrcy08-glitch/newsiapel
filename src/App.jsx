@@ -8,6 +8,51 @@ import orgData from "./data/organization.json";
 import attendanceData from "./data/attendance.json";
 import sanctionsData from "./data/sanctions.json";
 
+// ─── DUMMY DATA: PENGJUAN PERUBAHAN STATUS ────────────────────────────────────
+const DUMMY_PENGJUAN = [
+  {
+    id: 1,
+    pegawaiId: 15,
+    nama: "Rasyid",
+    statusLama: "Tanpa Keterangan",
+    statusBaru: "Dinas Luar",
+    dokumen: "surat_tugas.pdf",
+    tanggal: "25 Mei 2026 09:15",
+    statusVerifikasi: "menunggu",
+    analisisAI: null,
+  },
+  {
+    id: 2,
+    pegawaiId: 22,
+    nama: "Ahmad Fauzi",
+    statusLama: "Tanpa Keterangan",
+    statusBaru: "Sakit",
+    dokumen: "surat_dokter.pdf",
+    tanggal: "25 Mei 2026 08:45",
+    statusVerifikasi: "menunggu",
+    analisisAI: null,
+  },
+  {
+    id: 3,
+    pegawaiId: 33,
+    nama: "Siti Rahma",
+    statusLama: "Tanpa Keterangan",
+    statusBaru: "Izin",
+    dokumen: "surat_izin.pdf",
+    tanggal: "25 Mei 2026 07:30",
+    statusVerifikasi: "disetujui",
+    analisisAI: null,
+  },
+];
+
+const STATUS_VERIFIKASI_COLORS = {
+  menunggu: { bg: "bg-amber-500/20", text: "text-amber-400", icon: "🟡", label: "Menunggu Verifikasi" },
+  disetujui: { bg: "bg-emerald-500/20", text: "text-emerald-400", icon: "🟢", label: "Disetujui" },
+  ditolak: { bg: "bg-red-500/20", text: "text-red-400", icon: "🔴", label: "Ditolak" },
+};
+
+const STATUS_OPTIONS = ["Dinas Dalam", "Dinas Luar", "Izin", "Sakit"];
+
 // ─── UTILS ───────────────────────────────────────────────────────────────────
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -74,7 +119,7 @@ const ATTENDANCE_PATH = "attendance/today";
 const APEL_SESSION_PATH = "apel/session";
 const APEL_REASON_PATH = "apel/reason";
 const QR_PATH = "qr/current";
-const QR_TOKEN_TTL_MS = 15000;
+const QR_TOKEN_TTL_MS = 10000;
 
 // ─── APEL SESSION TYPES ────────────────────────────────────────────────────────
 const APEL_SESSIONS = {
@@ -90,6 +135,63 @@ const APEL_SESSION_LABELS = {
   [APEL_SESSIONS.ENDED]: "Setelah Apel",
   [APEL_SESSIONS.DITIADAKAN]: "Ditiadakan",
 };
+
+// ─── STATUS ICONS ─────────────────────────────────────────────────────────────
+const STATUS_ICONS = {
+  "Dinas Luar": { icon: "🚗", label: "Dinas Luar" },
+  "Dinas Dalam": { icon: "🏢", label: "Dinas Dalam" },
+  "Izin": { icon: "📝", label: "Izin" },
+  "Sakit": { icon: "🤒", label: "Sakit" },
+  "Hadir": { icon: "✅", label: "Hadir" },
+  "Tanpa Keterangan": { icon: "❌", label: "Tanpa Keterangan" },
+};
+
+const getStatusIcon = (status) => {
+  return STATUS_ICONS[status] || { icon: "❓", label: status };
+};
+
+// ─── DUMMY DATA PENGJUAN STATUS ──────────────────────────────────────────────
+const PENGJUAN_STATUS_DATA = [
+  {
+    id: "1",
+    pegawaiId: "peg-001",
+    nip: "198901010001",
+    nama: "Rasyid",
+    statusLama: "Tanpa Keterangan",
+    statusBaru: "Dinas Luar",
+    dokumen: "surat_tugas.pdf",
+    tanggal: "25 Mei 2026 09:15",
+    waktu: "09:15",
+    statusVerifikasi: "menunggu",
+    analisisAI: null,
+  },
+  {
+    id: "2",
+    pegawaiId: "peg-002",
+    nip: "199205050002",
+    nama: "Ahmad Fauzi",
+    statusLama: "Tanpa Keterangan",
+    statusBaru: "Sakit",
+    dokumen: "surat_dokter.pdf",
+    tanggal: "25 Mei 2026 08:45",
+    waktu: "08:45",
+    statusVerifikasi: "menunggu",
+    analisisAI: null,
+  },
+  {
+    id: "3",
+    pegawaiId: "peg-003",
+    nip: "199508120003",
+    nama: "Siti Rahma",
+    statusLama: "Tanpa Keterangan",
+    statusBaru: "Izin",
+    dokumen: "surat_izin.pdf",
+    tanggal: "25 Mei 2026 07:30",
+    waktu: "07:30",
+    statusVerifikasi: "disetujui",
+    analisisAI: null,
+  },
+];
 
 const REASON_OPTIONS = [
   { id: "hujan", label: "Hujan Deras", icon: "🌧️" },
@@ -209,6 +311,150 @@ const LAST_MONTH_DISCIPLINE = {
 
 const RANK_MEDALS = ["🥇", "🥈", "🥉"];
 
+// ─── PENGJUAN PERUBAHAN STATUS ────────────────────────────────────────────────
+const PengajuanStatusForm = ({ myStatus }) => {
+  const [showForm, setShowForm] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [keterangan, setKeterangan] = useState("");
+  const [toast, setToast] = useState(null);
+  const [fileName, setFileName] = useState("");
+
+  const showToast = (message) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const handleSubmit = () => {
+    if (!selectedStatus) {
+      showToast("Pilih status baru terlebih dahulu");
+      return;
+    }
+    if (!keterangan.trim()) {
+      showToast("Keterangan tidak boleh kosong");
+      return;
+    }
+    // Demo: hanya tampilkan toast
+    showToast("Pengajuan berhasil dikirim (Demo)");
+    setSelectedStatus(null);
+    setKeterangan("");
+    setFileName("");
+    setShowForm(false);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+    }
+  };
+
+  if (!showForm) {
+    return (
+      <Card className="p-4 mb-4" onClick={() => setShowForm(true)}>
+        <div className="flex items-center gap-3 cursor-pointer">
+          <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">📄</div>
+          <div className="flex-1">
+            <div className="text-white text-sm font-semibold">Pengajuan Perubahan Status</div>
+            <div className="text-slate-400 text-xs">Ajukan perubahan status absensi</div>
+          </div>
+          <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="p-4 mb-4 border-blue-500/30">
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-500/90 border border-emerald-400/40 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg backdrop-blur-xl">
+          ✓ {toast}
+        </div>
+      )}
+
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-white text-sm font-bold">📄 Pengajuan Perubahan Status</h3>
+        <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-white">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Status Saat Ini */}
+      <div className="mb-4">
+        <div className="text-slate-500 text-xs mb-1">Status Saat Ini</div>
+        <div className="flex items-center gap-2">
+          <StatusBadge status={myStatus || "Tanpa Keterangan"} />
+        </div>
+      </div>
+
+      {/* Status Baru */}
+      <div className="mb-4">
+        <div className="text-slate-500 text-xs mb-2">Ajukan Status Baru:</div>
+        <div className="grid grid-cols-2 gap-2">
+          {STATUS_OPTIONS.map(status => (
+            <button
+              key={status}
+              onClick={() => setSelectedStatus(status)}
+              className={`p-3 rounded-xl border text-xs font-semibold transition-all active:scale-[0.97] ${
+                selectedStatus === status
+                  ? "bg-blue-500/20 border-blue-500/50 text-blue-300"
+                  : "bg-slate-800 border-slate-700/50 text-slate-300 hover:border-slate-600"
+              }`}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Dokumen Pendukung */}
+      <div className="mb-4">
+        <div className="text-slate-500 text-xs mb-2">Dokumen Pendukung</div>
+        <label className="block">
+          <div className={`flex items-center gap-3 p-3 rounded-xl border border-slate-700/50 bg-slate-800 cursor-pointer hover:border-slate-600 transition-colors ${
+            fileName ? "border-emerald-500/30" : ""
+          }`}>
+            <div className="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center text-sm">📎</div>
+            <div className="flex-1 min-w-0">
+              <div className="text-slate-400 text-xs truncate">{fileName || "Pilih File"}</div>
+            </div>
+          </div>
+          <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} />
+        </label>
+      </div>
+
+      {/* Keterangan */}
+      <div className="mb-4">
+        <div className="text-slate-500 text-xs mb-2">Keterangan</div>
+        <textarea
+          value={keterangan}
+          onChange={(e) => setKeterangan(e.target.value)}
+          placeholder="Tuliskan alasan pengajuan..."
+          rows={3}
+          className="w-full bg-slate-800 border border-slate-700/50 rounded-xl px-3 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/50 resize-none"
+        />
+      </div>
+
+      {/* Tombol Kirim */}
+      <button
+        onClick={handleSubmit}
+        disabled={!selectedStatus || !keterangan.trim()}
+        className={`w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-[0.98] ${
+          selectedStatus && keterangan.trim()
+            ? "bg-blue-600 hover:bg-blue-500 text-white"
+            : "bg-slate-800 text-slate-600 cursor-not-allowed"
+        }`}
+      >
+        Kirim Pengajuan
+      </button>
+    </Card>
+  );
+};
+
 // ─── QR CODE GENERATOR ────────────────────────────────────────────────
 const QRDisplay = ({ token, size = 200, className = "rounded-xl", style }) => {
   return (
@@ -280,7 +526,7 @@ const FullscreenQR = ({ currentQr, qrActive, secsLeft, onExit }) => {
             </div>
           </div>
           <footer className="mt-2 flex flex-col items-center justify-center text-[clamp(0.72rem,1.25vw,1rem)] font-semibold leading-tight text-slate-400 sm:mt-3">
-            <p>Berganti setiap 15 detik</p>
+            <p>Berganti setiap 10 detik</p>
             <p>Aktif hingga 08:00</p>
           </footer>
         </section>
@@ -859,6 +1105,10 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
             </div>
           </Card>
         </div>
+
+        {/* ─── PENGAJUAN PERUBAHAN STATUS ─── */}
+        <PengajuanStatusForm myStatus={displayStatus} />
+
         </>
         )}
       </div>
@@ -900,6 +1150,7 @@ const DashboardPimpinan = ({ attendance, apelStatus, apelSession, apelReason, ap
   const [showAllPerhatian, setShowAllPerhatian] = useState(false);
   const [showAllBidangToday, setShowAllBidangToday] = useState(false);
   const [showAllLastMonth, setShowAllLastMonth] = useState(false);
+  const [showDetailPengajuan, setShowDetailPengajuan] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
   const [now, setNow] = useState(new Date());
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -1293,6 +1544,121 @@ const getBidangStats = (bidangNama) => {
               </div>
             </div>
           </Card>
+
+          {/* ─── PERUBAHAN STATUS HARI INI - PIMPINAN (RINGKASAN) ─── */}
+          {!isDitiadakan && (
+          <Card className="p-4 mb-4 border-slate-600/40 bg-slate-950/65">
+            <div className="mb-3 border-b border-slate-700/50 pb-3">
+              <div className="text-slate-50 font-bold text-sm">📋 Perubahan Status Hari Ini</div>
+              <div className="text-slate-500 text-xs mt-0.5">Monitoring perubahan absensi pegawai</div>
+            </div>
+
+            {PENGJUAN_STATUS_DATA.length === 0 ? (
+              <div className="text-slate-500 text-xs text-center py-4">
+                Belum ada perubahan status hari ini
+              </div>
+            ) : (
+              <>
+                {/* Summary */}
+                <div className="text-center mb-4">
+                  <div className="text-2xl font-black text-white mb-1">{PENGJUAN_STATUS_DATA.length}</div>
+                  <div className="text-slate-500 text-xs">Perubahan Status</div>
+                </div>
+
+                {/* Status Breakdown */}
+                <div className="flex justify-center gap-6 mb-4">
+                  {[
+                    { status: "Dinas Luar", icon: "🚗" },
+                    { status: "Izin", icon: "📝" },
+                    { status: "Sakit", icon: "🤒" },
+                  ].map(item => {
+                    const count = PENGJUAN_STATUS_DATA.filter(p => p.statusBaru === item.status).length;
+                    if (count === 0) return null;
+                    return (
+                      <div key={item.status} className="text-center">
+                        <div className="text-xl mb-0.5">{item.icon}</div>
+                        <div className="text-white text-sm font-bold">{count}</div>
+                        <div className="text-slate-600 text-[10px]">{item.status}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Button */}
+                <button
+                  onClick={() => setShowDetailPengajuan(true)}
+                  className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors border border-slate-700/50"
+                >
+                  Lihat Detail
+                </button>
+              </>
+            )}
+          </Card>
+          )}
+
+          {/* DETAIL PENGJUAN MODAL - PIMPINAN */}
+          {showDetailPengajuan && (
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end justify-center p-4">
+              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 w-full max-w-sm max-h-[85vh] overflow-y-auto">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-white font-bold">📋 Perubahan Status Hari Ini</h3>
+                    <p className="text-slate-500 text-xs mt-0.5">Monitoring perubahan absensi pegawai</p>
+                  </div>
+                  <button onClick={() => setShowDetailPengajuan(false)} className="text-slate-400 hover:text-white">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {PENGJUAN_STATUS_DATA.map((p, i) => (
+                    <div key={p.id} className="border-t border-slate-800/60 pt-3 first:border-t-0 first:pt-0">
+                      {/* Header */}
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-slate-400">🔄</span>
+                        <span className="text-white text-sm font-semibold">{p.nama}</span>
+                      </div>
+                      <div className="text-slate-600 text-[10px] mb-2 ml-6">NIP: {p.nip}</div>
+
+                      {/* Status Change */}
+                      <div className="bg-slate-800/60 rounded-xl p-3 mb-2 ml-6">
+                        <div className="flex items-center gap-2">
+                          <span className="text-slate-500 text-xs">{p.statusLama}</span>
+                          <span className="text-slate-600">↓</span>
+                          <span className="text-sm">{getStatusIcon(p.statusBaru).icon}</span>
+                          <span className="text-blue-300 text-xs">{getStatusIcon(p.statusBaru).label}</span>
+                        </div>
+                      </div>
+
+                      {/* Document & Time */}
+                      <div className="flex items-center gap-4 text-slate-500 text-xs ml-6 mb-2">
+                        <span>📄 {p.dokumen}</span>
+                        <span>🕘 {p.waktu} WIB</span>
+                      </div>
+
+                      {/* Status Badge */}
+                      <div className="ml-6">
+                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          p.statusVerifikasi === "disetujui"
+                            ? "bg-emerald-500/20 text-emerald-400"
+                            : "bg-amber-500/20 text-amber-400"
+                        }`}>
+                          {p.statusVerifikasi === "disetujui" ? "🟢 Disetujui" : "🟡 Menunggu Verifikasi"}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setShowDetailPengajuan(false)}
+                  className="w-full mt-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors border border-slate-700/50"
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -1703,7 +2069,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
 
   {qrActive ? (
     <p className="text-slate-500 text-xs mt-3 text-center">
-      Berganti setiap 15 detik · Aktif hingga 08:00
+      Berganti setiap 10 detik · Aktif hingga 08:00
     </p>
   ) : (
     <p className="text-slate-600 text-xs mt-3 text-center">
@@ -1734,6 +2100,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
             { id: "kelola", label: "Kelola Pegawai", icon: "👥", color: "from-blue-500/20 to-indigo-500/10", border: "hover:border-blue-500/50" },
             { id: "koreksi", label: "Koreksi Absensi", icon: "✏️", color: "from-amber-500/20 to-yellow-500/10", border: "hover:border-amber-500/50" },
             { id: "laporan", label: "Laporan Harian", icon: "📊", color: "from-emerald-500/20 to-teal-500/10", border: "hover:border-emerald-500/50" },
+            { id: "pengajuan", label: "Pengajuan Status", icon: "📥", color: "from-orange-500/20 to-red-500/10", border: "hover:border-orange-500/50" },
             { id: "demo", label: "Demo Tools", icon: "🧪", color: "from-violet-500/20 to-purple-500/10", border: "hover:border-violet-500/50" },
           ].map(m => (
             <button key={m.id} onClick={() => setActiveMenu(m.id)}
@@ -1827,6 +2194,80 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
             >
               Batalkan Ditiadakan
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* PENGJUAN STATUS MODAL - Admin */}
+      {activeMenu === "pengajuan" && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 w-full max-w-sm max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-bold">📥 Pengajuan Perubahan Status</h3>
+              <button onClick={() => setActiveMenu(null)} className="text-slate-400 hover:text-white">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <p className="text-slate-500 text-xs mb-4">Verifikasi pengajuan perubahan status pegawai</p>
+
+            {/* List pengajuan using dummy data */}
+            {PENGJUAN_STATUS_DATA.map((p, i) => (
+              <div key={p.id}>
+                {i > 0 && <div className="border-t border-slate-800 my-4" />}
+                {/* Pegawai Info */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-slate-400">👤</span>
+                  <span className="text-white text-sm font-semibold">{p.nama}</span>
+                </div>
+                <div className="text-slate-600 text-[10px] mb-3 ml-6">NIP: {p.nip}</div>
+
+                {/* Status Saat Ini */}
+                <div className="text-slate-500 text-[10px] mb-1 ml-6">Status Saat Ini:</div>
+                <div className="bg-slate-800/60 rounded-xl p-2 mb-2 ml-6">
+                  <span className="text-slate-400 text-xs">{p.statusLama}</span>
+                </div>
+
+                {/* Pengajuan */}
+                <div className="text-slate-500 text-[10px] mb-1 ml-6">Pengajuan:</div>
+                <div className="bg-slate-800/60 rounded-xl p-2 mb-2 ml-6">
+                  <span className="text-sm">{getStatusIcon(p.statusBaru).icon}</span>
+                  <span className="text-blue-300 text-xs ml-1">{getStatusIcon(p.statusBaru).label}</span>
+                </div>
+
+                {/* Dokumen */}
+                <div className="flex items-center gap-2 text-slate-500 text-xs mb-2 ml-6">
+                  <span>📄</span>
+                  <span>{p.dokumen}</span>
+                </div>
+
+                {/* Waktu & Status */}
+                <div className="flex items-center gap-3 text-slate-500 text-xs mb-3 ml-6">
+                  <span>🕘 {p.waktu} WIB</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                    p.statusVerifikasi === "disetujui"
+                      ? "bg-emerald-500/20 text-emerald-400"
+                      : "bg-amber-500/20 text-amber-400"
+                  }`}>
+                    {p.statusVerifikasi === "disetujui" ? "🟢 Disetujui" : "🟡 Menunggu"}
+                  </span>
+                </div>
+
+                {/* Action Buttons */}
+                {p.statusVerifikasi === "menunggu" && (
+                  <div className="flex gap-2 ml-6">
+                    <button className="flex-1 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium hover:bg-slate-700 transition-colors">
+                      Lihat
+                    </button>
+                    <button className="flex-1 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/30 transition-colors border border-emerald-500/30">
+                      Setujui
+                    </button>
+                    <button className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-colors border border-red-500/30">
+                      Tolak
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}
