@@ -17,7 +17,17 @@ const getGreeting = () => {
   return "Selamat Malam";
 };
 
-const getApelStatus = (now) => {
+const getApelStatus = (now, apelSession) => {
+  // Jika apel ditiadakan, langsung return "ditiadakan"
+  if (apelSession === "ditiadakan") return "ditiadakan";
+
+  // Gunakan apelSession sebagai source of truth (dari tombol admin)
+  // Hanya fallback ke waktu jika apelSession adalah nilai default atau invalid
+  if (apelSession && ["before", "ongoing", "ended"].includes(apelSession)) {
+    return apelSession;
+  }
+
+  // Fallback ke waktu (untuk backward compatibility / initial state)
   const h = now.getHours(), m = now.getMinutes();
   const total = h * 60 + m;
   if (total < 7 * 60) return "before";
@@ -34,6 +44,7 @@ const formatTimeShort = (date) =>
 const STATUS_COLORS = {
   Hadir: { bg: "bg-emerald-500/20", text: "text-emerald-400", border: "border-emerald-500/30", dot: "bg-emerald-400" },
   "Tanpa Keterangan": { bg: "bg-red-500/20", text: "text-red-400", border: "border-red-500/30", dot: "bg-red-400" },
+  "Belum Melakukan Absensi": { bg: "bg-slate-500/20", text: "text-slate-400", border: "border-slate-500/30", dot: "bg-slate-400" },
   "Dinas Dalam": { bg: "bg-blue-500/20", text: "text-blue-400", border: "border-blue-500/30", dot: "bg-blue-400" },
   "Dinas Luar": { bg: "bg-violet-500/20", text: "text-violet-400", border: "border-violet-500/30", dot: "bg-violet-400" },
   Izin: { bg: "bg-amber-500/20", text: "text-amber-400", border: "border-amber-500/30", dot: "bg-amber-400" },
@@ -60,8 +71,33 @@ const buildInitialAttendance = () => {
 };
 
 const ATTENDANCE_PATH = "attendance/today";
+const APEL_SESSION_PATH = "apel/session";
+const APEL_REASON_PATH = "apel/reason";
 const QR_PATH = "qr/current";
 const QR_TOKEN_TTL_MS = 15000;
+
+// ─── APEL SESSION TYPES ────────────────────────────────────────────────────────
+const APEL_SESSIONS = {
+  BEFORE: "before",
+  ONGOING: "ongoing",
+  ENDED: "ended",
+  DITIADAKAN: "ditiadakan",
+};
+
+const APEL_SESSION_LABELS = {
+  [APEL_SESSIONS.BEFORE]: "Sebelum Apel",
+  [APEL_SESSIONS.ONGOING]: "Saat Apel",
+  [APEL_SESSIONS.ENDED]: "Setelah Apel",
+  [APEL_SESSIONS.DITIADAKAN]: "Ditiadakan",
+};
+
+const REASON_OPTIONS = [
+  { id: "hujan", label: "Hujan Deras", icon: "🌧️" },
+  { id: "libur_nasional", label: "Libur Nasional", icon: "🇮🇩" },
+  { id: "cuti_bersama", label: "Cuti Bersama", icon: "📅" },
+  { id: "apel_gabungan", label: "Apel Gabungan", icon: "🤝" },
+  { id: "lainnya", label: "Lainnya", icon: "✏️" },
+];
 
 const createQrToken = () => {
   const values = new Uint32Array(1);
@@ -117,11 +153,20 @@ const ATTENDANCE_STAT_ITEMS = [
   { key: "sakit", status: "Sakit", label: "Sakit", icon: "🤒", color: "text-orange-400" },
 ];
 
-const getAttendanceStatItems = (apelStatus) =>
-  ATTENDANCE_STAT_ITEMS.map((item, index) => {
+const getAttendanceStatItems = (apelStatus) => {
+  // Jika ditiadakan, tampilkan pesan khusus
+  if (apelStatus === "ditiadakan") {
+    return [
+      { key: "info", status: "info", label: "Apel Ditiadakan", icon: "⚠️", color: "text-amber-400" },
+    ];
+  }
+  return ATTENDANCE_STAT_ITEMS.map((item, index) => {
     if (index !== 1 || apelStatus === "ended") return item;
     return { ...item, status: "Belum Absen", label: "Belum Absen", icon: "⏳", color: "text-slate-400" };
   });
+};
+
+const isApelDitiadakan = (apelStatus) => apelStatus === "ditiadakan";
 
 const calcAttendanceStats = (attendance, apelStatus, people = pegawaiData) => {
   let hadir = 0, unaccounted = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0;
@@ -293,19 +338,19 @@ const StatusBadge = ({ status }) => {
 };
 
 // ─── COUNTDOWN ───────────────────────────────────────────────────────────────
-const Countdown = ({ targetHour }) => {
+const Countdown = ({ targetHour, targetMinute = 0 }) => {
   const [secs, setSecs] = useState(0);
   useEffect(() => {
     const update = () => {
       const now = new Date();
       const target = new Date();
-      target.setHours(targetHour, 0, 0, 0);
-      setSecs(Math.max(0, Math.floor((target - now) / 1000)));
+      target.setHours(targetHour, targetMinute, 0, 0);
+      setSecs(Math.max(0, Math.ceil((target - now) / 1000)));
     };
     update();
     const t = setInterval(update, 1000);
     return () => clearInterval(t);
-  }, [targetHour]);
+  }, [targetHour, targetMinute]);
   const h = Math.floor(secs / 3600);
   const m = Math.floor((secs % 3600) / 60);
   const s = secs % 60;
@@ -488,7 +533,7 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PEGAWAI
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) => {
+const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelReasonText, onScan, onBack }) => {
   const [now, setNow] = useState(new Date());
   const [showScanner, setShowScanner] = useState(false);
   const [showManualCode, setShowManualCode] = useState(false);
@@ -499,11 +544,31 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
   const stats = calcAttendanceStats(attendance, apelStatus);
   const sudahAbsen = myAttendance.status === "Hadir";
+  const canSubmitAttendance = apelStatus === "ongoing";
+  const isDitiadakan = isApelDitiadakan(apelStatus);
+  const getReasonDisplay = () => {
+    if (apelReason === "lainnya") return apelReasonText || "Lainnya";
+    const reason = REASON_OPTIONS.find(r => r.id === apelReason);
+    return reason ? reason.label : "Ditiadakan";
+  };
+  const isUnrecordedStatus = !myAttendance.status || myAttendance.status === "Tanpa Keterangan";
+  const displayStatus = isUnrecordedStatus
+    ? (apelStatus === "ended" ? "Tanpa Keterangan" : "Belum Melakukan Absensi")
+    : myAttendance.status;
+  const showAttendanceTime = !isUnrecordedStatus && myAttendance.jamHadir;
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    if (!canSubmitAttendance) {
+      setShowManualCode(false);
+      setShowScanner(false);
+    }
+  }, [canSubmitAttendance]);
+
   useEffect(() => {
   if (!showScanner) return;
 
@@ -590,6 +655,8 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
 }, [showScanner]);
 
   const handleValidationSuccess = (result) => {
+    if (!canSubmitAttendance) return;
+
     if (result.type === "valid") {
       setScanResult(null);
       setAttendanceSuccess(true);
@@ -604,6 +671,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
   };
 
   const handleManualCodeSubmit = async () => {
+    if (!canSubmitAttendance) return;
     if (!manualCode.trim()) return;
     try {
       handleValidationSuccess(await validateQrToken(manualCode));
@@ -630,6 +698,22 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
           <p className="text-slate-500 text-xs mt-0.5 line-clamp-1">{pegawai.jabatan}</p>
         </div>
 
+        {isDitiadakan ? (
+          <Card className="p-4 border-amber-500/30 bg-amber-500/10">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-xl">⚠️</div>
+              <div>
+                <div className="text-amber-400 font-bold text-sm">Apel Hari Ini Ditiadakan</div>
+                <div className="text-amber-300/70 text-xs">{getReasonDisplay()}</div>
+              </div>
+            </div>
+            <div className="text-slate-400 text-xs leading-relaxed">
+              Apel hari ini tidak dilaksanakan.<br />
+              Absensi dan statistik kehadiran tidak tersedia.
+            </div>
+          </Card>
+        ) : (
+        <>
         {/* Status Card */}
         <Card className="p-4 mb-4">
           <div className="flex items-center justify-between mb-3">
@@ -637,22 +721,17 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
             <span className="text-slate-500 text-xs">{now.toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short" })}</span>
           </div>
 
-          {myAttendance.status ? (
+          {displayStatus ? (
             <div className="flex items-center justify-between">
-              <StatusBadge status={myAttendance.status} />
-              {myAttendance.jamHadir && (
+              <StatusBadge status={displayStatus} />
+              {showAttendanceTime && (
                 <div className="text-right">
                   <div className="text-white font-bold">{myAttendance.jamHadir} WIB</div>
                   <div className="text-slate-500 text-xs">Jam Hadir</div>
                 </div>
               )}
             </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-600 animate-pulse" />
-              <span className="text-slate-500 text-sm">Belum Hadir</span>
-            </div>
-          )}
+          ) : null}
         </Card>
 
         {/* Apel Status */}
@@ -691,9 +770,9 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
         {!sudahAbsen ? (
           <>
           <button
-  onClick={() => apelStatus === "ongoing" && setShowScanner(true)}
-            disabled={apelStatus !== "ongoing"}
-            className={`w-full py-4 rounded-2xl font-black text-lg tracking-tight transition-all duration-200 active:scale-[0.98] mb-6 ${apelStatus === "ongoing"
+  onClick={() => canSubmitAttendance && setShowScanner(true)}
+            disabled={!canSubmitAttendance}
+            className={`w-full py-4 rounded-2xl font-black text-lg tracking-tight transition-all duration-200 active:scale-[0.98] mb-6 ${canSubmitAttendance
               ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40"
               : "bg-slate-800/60 border border-slate-700/50 text-slate-600 cursor-not-allowed"}`}>
             {apelStatus === "before" ? "🔒 Apel Belum Dimulai" :
@@ -702,11 +781,17 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
           <Card className="p-4 mb-6">
             <button
               onClick={() => {
+                if (!canSubmitAttendance) return;
                 setScanResult(null);
                 setAttendanceSuccess(false);
                 setShowManualCode(prev => !prev);
               }}
-              className="w-full py-3 rounded-xl bg-slate-800 text-white text-sm font-bold border border-slate-700 active:scale-[0.98]"
+              disabled={!canSubmitAttendance}
+              className={`w-full py-3 rounded-xl text-sm font-bold border active:scale-[0.98] ${
+                canSubmitAttendance
+                  ? "bg-slate-800 text-white border-slate-700"
+                  : "bg-slate-800/60 text-slate-600 border-slate-700/50 cursor-not-allowed"
+              }`}
             >
               Enter Code
             </button>
@@ -774,6 +859,8 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
             </div>
           </Card>
         </div>
+        </>
+        )}
       </div>
       {showScanner && (
   <div className="fixed inset-0 bg-black/80 z-50 overflow-y-auto overscroll-contain px-4 pt-4 [padding-bottom:calc(1rem+env(safe-area-inset-bottom))]">
@@ -809,13 +896,23 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, onScan, onBack }) =
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PIMPINAN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPimpinan = ({ attendance, apelStatus, onBack }) => {
+const DashboardPimpinan = ({ attendance, apelStatus, apelSession, apelReason, apelReasonText, onBack }) => {
   const [showAllPerhatian, setShowAllPerhatian] = useState(false);
   const [showAllBidangToday, setShowAllBidangToday] = useState(false);
   const [showAllLastMonth, setShowAllLastMonth] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
   const [now, setNow] = useState(new Date());
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Check if apel is ditiadakan
+  const isDitiadakan = isApelDitiadakan(apelStatus);
+
+  // Get reason label for display
+  const getReasonDisplay = () => {
+    if (apelReason === "lainnya") return apelReasonText || "Lainnya";
+    const reason = REASON_OPTIONS.find(r => r.id === apelReason);
+    return reason ? reason.label : "Ditiadakan";
+  };
 
   // Update greeting every 30 seconds
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
@@ -1011,7 +1108,24 @@ const getBidangStats = (bidangNama) => {
           </div>
         </div>
 
-        {/* Main Stats + Ring */}
+        {/* Banner Apel Ditiadakan */}
+        {isDitiadakan && (
+          <Card className="p-4 mb-4 border-amber-500/30 bg-amber-500/10">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-xl">⚠️</div>
+              <div>
+                <div className="text-amber-400 font-bold text-sm">Apel Hari Ini Ditiadakan</div>
+                <div className="text-amber-300/70 text-xs">{getReasonDisplay()}</div>
+              </div>
+            </div>
+            <div className="text-slate-400 text-xs">
+              Statistik kehadiran normal tidak ditampilkan karena apel ditiadakan.
+            </div>
+          </Card>
+        )}
+
+        {/* Main Stats + Ring - Jika ditiadakan, sembunyikan */}
+        {!isDitiadakan && (
         <Card className="p-5 mb-4 border-amber-200/15 bg-slate-950/70 shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
           <div className="flex items-center gap-5">
             <ProgressRing pct={stats.persen} size={100} stroke={9} color="#f59e0b" label="Kehadiran" />
@@ -1029,8 +1143,10 @@ const getBidangStats = (bidangNama) => {
             </div>
           </div>
         </Card>
+        )}
 
-        {/* Status breakdown */}
+        {/* Status breakdown - Jika ditiadakan, sembunyikan */}
+        {!isDitiadakan && (
         <div className="grid grid-cols-3 gap-2 mb-4">
           {getAttendanceStatItems(apelStatus).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
             <Card key={s.label} className="p-3 text-center border-slate-600/35 bg-slate-950/55 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
@@ -1040,6 +1156,7 @@ const getBidangStats = (bidangNama) => {
             </Card>
           ))}
         </div>
+        )}
 
         {/* Perlu Perhatian */}
         <Card className="p-4 mb-4 border-slate-600/40 bg-slate-950/65 shadow-[0_14px_42px_rgba(0,0,0,0.24)]">
@@ -1097,6 +1214,7 @@ const getBidangStats = (bidangNama) => {
               <div className="text-slate-600 text-[11px] mt-0.5">Analitik performa bidang hari ini dan bulan lalu</div>
             </div>
 
+            {!isDitiadakan && (
             <div className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3.5 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div className="flex items-center justify-between mb-3">
                 <div>
@@ -1136,6 +1254,7 @@ const getBidangStats = (bidangNama) => {
                 })}
               </div>
             </div>
+            )}
 
             <div className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div className="flex items-center justify-between mb-3">
@@ -1183,12 +1302,14 @@ const getBidangStats = (bidangNama) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD ADMIN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardAdmin = ({ attendance, apelStatus, onAppealPhaseChange, onScanSimulate, onReset, onBack, onKoreksi }) => {
+const DashboardAdmin = ({ attendance, apelStatus, apelSession, apelReason, apelReasonText, onAppealPhaseChange, onApelReasonChange, onScanSimulate, onReset, onBack, onKoreksi }) => {
   const [now, setNow] = useState(new Date());
   const [currentQr, setCurrentQr] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
   const [showFullscreenQr, setShowFullscreenQr] = useState(false);
   const [attendanceSearch, setAttendanceSearch] = useState("");
+  const [showReasonModal, setShowReasonModal] = useState(false);
+  const [customReasonText, setCustomReasonText] = useState("");
   useEffect(() => {
     const t = setInterval(() => {
       setNow(new Date());
@@ -1461,7 +1582,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
         {DEV_MODE && (
   <div className="flex gap-2 mb-4">
     <button
-      onClick={() => onAppealPhaseChange("before")}
+      onClick={() => onAppealPhaseChange(APEL_SESSIONS.BEFORE)}
       className={`px-3 py-1 rounded-lg text-xs font-semibold ${
         apelStatus === "before"
           ? "bg-slate-600 text-white"
@@ -1472,7 +1593,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
     </button>
 
     <button
-      onClick={() => onAppealPhaseChange("ongoing")}
+      onClick={() => onAppealPhaseChange(APEL_SESSIONS.ONGOING)}
       className={`px-3 py-1 rounded-lg text-xs font-semibold ${
         apelStatus === "ongoing"
           ? "bg-emerald-600 text-white"
@@ -1483,7 +1604,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
     </button>
 
     <button
-      onClick={() => onAppealPhaseChange("ended")}
+      onClick={() => onAppealPhaseChange(APEL_SESSIONS.ENDED)}
       className={`px-3 py-1 rounded-lg text-xs font-semibold ${
         apelStatus === "ended"
           ? "bg-red-600 text-white"
@@ -1491,6 +1612,20 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
       }`}
     >
       Setelah
+    </button>
+
+    <button
+      onClick={() => {
+        onAppealPhaseChange(APEL_SESSIONS.DITIADAKAN);
+        setShowReasonModal(true);
+      }}
+      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+        apelStatus === "ditiadakan"
+          ? "bg-amber-600 text-white"
+          : "bg-slate-800 text-slate-400"
+      }`}
+    >
+      Ditiadakan
     </button>
   </div>
 )}
@@ -1500,24 +1635,52 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
             <h1 className="text-xl font-black text-white">Admin Panel</h1>
             <p className="text-slate-500 text-xs">{formatTime(now)}</p>
           </div>
-          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${qrActive ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400" : "bg-slate-800 border-slate-700 text-slate-500"}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${qrActive ? "bg-emerald-400 animate-pulse" : "bg-slate-600"}`} />
-            {qrActive ? "Apel Aktif" : apelStatus === "before" ? "Menunggu" : "Selesai"}
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${
+            apelStatus === "ditiadakan"
+              ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
+              : qrActive
+                ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                : "bg-slate-800 border-slate-700 text-slate-500"
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${
+              apelStatus === "ditiadakan"
+                ? "bg-amber-400"
+                : qrActive
+                  ? "bg-emerald-400 animate-pulse"
+                  : "bg-slate-600"
+            }`} />
+            {apelStatus === "ditiadakan" ? "Ditiadakan" : qrActive ? "Apel Aktif" : apelStatus === "before" ? "Menunggu" : "Selesai"}
           </div>
         </div>
 
-        {/* Stats Bar */}
-        <div className="grid grid-cols-3 gap-2 mb-5">
-          {getAttendanceStatItems(apelStatus).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
-            <Card key={s.label} className="p-3 text-center">
-              <div className="text-lg mb-0.5">{s.icon}</div>
-              <div className={`text-xl font-black ${s.color}`}>{s.val}</div>
-              <div className="text-slate-600 text-[10px]">{s.label}</div>
-            </Card>
-          ))}
-        </div>
-{/* QR BESAR */}
-<Card className={`p-5 mb-5 flex flex-col items-center ${qrActive ? "border-emerald-500/30" : "border-slate-700/50"}`}>
+        {/* Stats Bar - Jika Ditiadakan, tampilkan alasan */}
+        {apelStatus === "ditiadakan" ? (
+          <Card className="p-4 mb-5 border-amber-500/30 bg-amber-500/10">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-xl">⚠️</div>
+              <div>
+                <div className="text-amber-400 font-bold text-sm">Apel Hari Ini Ditiadakan</div>
+                <div className="text-amber-300/70 text-xs">{apelReason === "lainnya" ? apelReasonText : REASON_OPTIONS.find(r => r.id === apelReason)?.label || "Ditiadakan"}</div>
+              </div>
+            </div>
+            <div className="text-slate-400 text-xs">
+              Status dan alasan ditiadakan berhasil disimpan.
+            </div>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-3 gap-2 mb-5">
+            {getAttendanceStatItems(apelStatus).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
+              <Card key={s.label} className="p-3 text-center">
+                <div className="text-lg mb-0.5">{s.icon}</div>
+                <div className={`text-xl font-black ${s.color}`}>{s.val}</div>
+                <div className="text-slate-600 text-[10px]">{s.label}</div>
+              </Card>
+            ))}
+          </div>
+        )}
+{/* QR BESAR - Jika ditiadakan, sembunyikan */}
+        {apelStatus !== "ditiadakan" && (
+        <Card className={`p-5 mb-5 flex flex-col items-center ${qrActive ? "border-emerald-500/30" : "border-slate-700/50"}`}>
   <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">
     {qrActive ? "QR Apel Aktif" : "QR Apel Nonaktif"}
   </p>
@@ -1561,7 +1724,8 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
     Fullscreen QR
   </button>
 </Card>
-        
+        )}
+
 
         {/* Menu Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
@@ -1580,6 +1744,92 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
           ))}
         </div>
       </div>
+
+      {/* REASON MODAL - Untuk memilih alasan ditiadakan */}
+      {showReasonModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 w-full max-w-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-bold">⚠️ Alasan Apel Ditiadakan</h3>
+              <button onClick={() => {
+                setShowReasonModal(false);
+                // Jika tidak ada alasan dipilih, revert ke ongoing
+                if (!apelReason) {
+                  onAppealPhaseChange(APEL_SESSIONS.ONGOING);
+                }
+              }} className="text-slate-400 hover:text-white">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <p className="text-slate-500 text-xs mb-4">Pilih alasan mengapa apel ditiadakan</p>
+
+            <div className="space-y-2 mb-4">
+              {REASON_OPTIONS.map(reason => (
+                <button
+                  key={reason.id}
+                  onClick={() => {
+                    if (reason.id === "lainnya") {
+                      setCustomReasonText(apelReasonText);
+                      // Show custom text input inline
+                    } else {
+                      onApelReasonChange(reason.id);
+                      setShowReasonModal(false);
+                    }
+                  }}
+                  className={`w-full text-left p-3 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] ${
+                    apelReason === reason.id
+                      ? "bg-amber-500/20 border border-amber-500/40 text-amber-300"
+                      : "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50"
+                  }`}
+                >
+                  <span className="mr-2">{reason.icon}</span>
+                  {reason.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Custom text input for "Lainnya" */}
+            {apelReason === "lainnya" && (
+              <div className="mb-4">
+                <label className="text-slate-400 text-xs mb-2 block">Ketik alasan:</label>
+                <textarea
+                  value={customReasonText}
+                  onChange={(e) => setCustomReasonText(e.target.value)}
+                  placeholder="Masukkan alasan lainnya..."
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-500/50 resize-none"
+                  rows={3}
+                />
+                <button
+                  onClick={() => {
+                    if (customReasonText.trim()) {
+                      onApelReasonChange("lainnya", customReasonText);
+                      setShowReasonModal(false);
+                    }
+                  }}
+                  disabled={!customReasonText.trim()}
+                  className={`mt-2 w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-[0.98] ${
+                    customReasonText.trim()
+                      ? "bg-amber-600 hover:bg-amber-500 text-white"
+                      : "bg-slate-800 text-slate-600 cursor-not-allowed"
+                  }`}
+                >
+                  Simpan Alasan
+                </button>
+              </div>
+            )}
+
+            <button
+              onClick={() => {
+                onAppealPhaseChange(APEL_SESSIONS.ONGOING);
+                setShowReasonModal(false);
+              }}
+              className="w-full py-3 rounded-xl font-semibold text-sm bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 transition-all active:scale-[0.98]"
+            >
+              Batalkan Ditiadakan
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* DEMO TOOLS MODAL */}
       {activeMenu === "demo" && (
@@ -1625,7 +1875,12 @@ export default function App() {
   const [role, setRole] = useState(null);
   const [activePegawai, setActivePegawai] = useState(null);
   const [attendance, setAttendance] = useState(buildInitialAttendance);
-  const [apelStatus, setApelStatus] = useState("ongoing");
+  const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING); // sebelum/saat/sesudah/ditiadakan
+  const [apelReason, setApelReason] = useState(null); // alasan penaltiadakan
+  const [apelReasonText, setApelReasonText] = useState(""); // teks alasan custom (jika lainnya)
+
+  // Calculate apelStatus based on session and time
+  const apelStatus = getApelStatus(new Date(), apelSession);
 
   useEffect(() => {
     const attendanceRef = ref(database, ATTENDANCE_PATH);
@@ -1642,6 +1897,57 @@ export default function App() {
       console.error("Failed to load realtime attendance:", error);
     });
   }, []);
+
+  // Firebase subscription untuk session dan alasan apel
+  useEffect(() => {
+    const sessionRef = ref(database, APEL_SESSION_PATH);
+    const reasonRef = ref(database, APEL_REASON_PATH);
+
+    const unsubSession = onValue(sessionRef, (snapshot) => {
+      const val = snapshot.val();
+      if (val) setApelSession(val);
+    });
+
+    const unsubReason = onValue(reasonRef, (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        if (typeof val === "object") {
+          setApelReason(val.id || "lainnya");
+          setApelReasonText(val.text || "");
+        } else {
+          setApelReason(val);
+          setApelReasonText("");
+        }
+      }
+    });
+
+    return () => {
+      unsubSession();
+      unsubReason();
+    };
+  }, []);
+
+  const handleApelSessionChange = (session) => {
+    setApelSession(session);
+    set(ref(database, APEL_SESSION_PATH), session);
+    // Jika bukan ditiadakan, hapus reason
+    if (session !== APEL_SESSIONS.DITIADAKAN) {
+      setApelReason(null);
+      setApelReasonText("");
+      set(ref(database, APEL_REASON_PATH), null);
+    }
+  };
+
+  const handleApelReasonChange = (reasonId, customText = "") => {
+    setApelReason(reasonId);
+    if (reasonId === "lainnya") {
+      setApelReasonText(customText);
+      set(ref(database, APEL_REASON_PATH), { id: "lainnya", text: customText });
+    } else {
+      setApelReasonText("");
+      set(ref(database, APEL_REASON_PATH), reasonId);
+    }
+  };
 
   const handleRoleSelect = (r) => {
     setRole(r);
@@ -1687,15 +1993,41 @@ export default function App() {
       {page === "role" && <RoleSelector onSelect={handleRoleSelect} />}
       {page === "pegawai_login" && <PegawaiLogin onBack={() => setPage("role")} onLogin={handlePegawaiLogin} />}
       {page === "pegawai_dashboard" && activePegawai && (
-        <DashboardPegawai pegawai={activePegawai} attendance={attendance} apelStatus={apelStatus} onScan={handleScan}
-          onBack={() => setPage("pegawai_login")} />
+        <DashboardPegawai
+          pegawai={activePegawai}
+          attendance={attendance}
+          apelStatus={apelStatus}
+          apelSession={apelSession}
+          apelReason={apelReason}
+          apelReasonText={apelReasonText}
+          onScan={handleScan}
+          onBack={() => setPage("pegawai_login")}
+        />
       )}
       {page === "pimpinan" && (
-        <DashboardPimpinan attendance={attendance} apelStatus={apelStatus} onBack={() => setPage("role")} />
+        <DashboardPimpinan
+          attendance={attendance}
+          apelStatus={apelStatus}
+          apelSession={apelSession}
+          apelReason={apelReason}
+          apelReasonText={apelReasonText}
+          onBack={() => setPage("role")}
+        />
       )}
       {page === "admin" && (
-        <DashboardAdmin attendance={attendance} apelStatus={apelStatus} onAppealPhaseChange={setApelStatus} onScanSimulate={handleScanSimulate}
-          onReset={handleReset} onBack={() => setPage("role")} onKoreksi={handleKoreksi} />
+        <DashboardAdmin
+          attendance={attendance}
+          apelStatus={apelStatus}
+          apelSession={apelSession}
+          apelReason={apelReason}
+          apelReasonText={apelReasonText}
+          onAppealPhaseChange={handleApelSessionChange}
+          onApelReasonChange={handleApelReasonChange}
+          onScanSimulate={handleScanSimulate}
+          onReset={handleReset}
+          onBack={() => setPage("role")}
+          onKoreksi={handleKoreksi}
+        />
       )}
     </div>
   );
