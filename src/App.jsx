@@ -1483,6 +1483,9 @@ const getBidangStats = (bidangNama) => {
             <div>
               <p className="text-amber-200/80 text-sm font-medium">{getGreeting()},</p>
               <h1 className="text-xl font-black text-slate-50 leading-tight">{orgData.kepala_dinas.nama}</h1>
+              {orgData.kepala_dinas.nip && (
+                <p className="text-slate-400 text-xs mt-0.5">NIP. {orgData.kepala_dinas.nip}</p>
+              )}
               <p className="text-slate-400 text-xs mt-0.5">{orgData.kepala_dinas.jabatan} · {orgData.dinas}</p>
             </div>
             {/* Date & Time Display */}
