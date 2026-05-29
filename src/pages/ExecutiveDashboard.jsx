@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import pegawaiData from "../data/pegawai.json";
 import orgData from "../data/organization.json";
 import { REASON_OPTIONS } from "../constants/reasons";
@@ -88,7 +88,7 @@ export default function ExecutiveDashboard({ attendance, apelStatus, apelReason,
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const isDitiadakan = isApelDitiadakan(apelStatus);
-  const stats = calcAttendanceStats(attendance, apelStatus);
+  const stats = useMemo(() => calcAttendanceStats(attendance, apelStatus), [attendance, apelStatus]);
   const unaccountedItem = getAttendanceStatItems(apelStatus)[1];
 
   useEffect(() => {
@@ -110,16 +110,22 @@ export default function ExecutiveDashboard({ attendance, apelStatus, apelReason,
   };
 
   const bidangList = orgData.bidang.filter((bidang) => bidang.id !== "pimpinan");
-  const bidangAnalytics = bidangList
-    .map((bidang) => ({ ...bidang, stats: getBidangStats(bidang.nama) }))
-    .filter((bidang) => bidang.stats.total > 0);
-  const todayRanking = [...bidangAnalytics].sort(
-    (a, b) => b.stats.persen - a.stats.persen || b.stats.hadir - a.stats.hadir || a.nama.localeCompare(b.nama),
-  );
+  const bidangAnalytics = useMemo(() => {
+    return bidangList
+      .map((bidang) => ({ ...bidang, stats: getBidangStats(bidang.nama) }))
+      .filter((bidang) => bidang.stats.total > 0);
+  }, [bidangList, attendance, apelStatus]);
+  const todayRanking = useMemo(() => {
+    return [...bidangAnalytics].sort(
+      (a, b) => b.stats.persen - a.stats.persen || b.stats.hadir - a.stats.hadir || a.nama.localeCompare(b.nama),
+    );
+  }, [bidangAnalytics]);
   const visibleTodayRanking = showAllBidangToday ? todayRanking : todayRanking.slice(0, 3);
-  const lastMonthRanking = bidangList
-    .map((bidang) => ({ ...bidang, persen: LAST_MONTH_DISCIPLINE[bidang.id] ?? 80 }))
-    .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
+  const lastMonthRanking = useMemo(() => {
+    return [...bidangList]
+      .map((bidang) => ({ ...bidang, persen: LAST_MONTH_DISCIPLINE[bidang.id] ?? 80 }))
+      .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
+  }, [bidangList]);
   const visibleLastMonthRanking = showAllLastMonth ? lastMonthRanking : lastMonthRanking.slice(0, 3);
 
   if (selectedBidang) {
