@@ -98,41 +98,18 @@ const createQrToken = () => {
 
 const validateQrToken = async (token) => {
   const submittedToken = token.trim();
-  console.info("[validateQrToken] called", {
-    rawToken: token,
-    submittedToken,
-  });
   const snapshot = await get(ref(database, QR_PATH));
   const currentQr = snapshot.val();
-  console.info("[validateQrToken] snapshot loaded", {
-    hasCurrentQr: Boolean(currentQr),
-    currentToken: currentQr?.token ?? null,
-    issuedAt: currentQr?.issuedAt ?? null,
-    expiresAt: currentQr?.expiresAt ?? null,
-    now: Date.now(),
-  });
 
   if (!currentQr?.token || submittedToken !== currentQr.token) {
-    console.info("[validateQrToken] returning invalid", {
-      reason: !currentQr?.token ? "missing-current-token" : "token-mismatch",
-      submittedToken,
-      currentToken: currentQr?.token ?? null,
-    });
     return { type: "invalid", label: "INVALID TOKEN" };
   }
 
   if (Date.now() > currentQr.expiresAt) {
-    console.info("[validateQrToken] returning expired", {
-      submittedToken,
-      expiresAt: currentQr.expiresAt,
-      now: Date.now(),
-    });
     return { type: "expired", label: "EXPIRED TOKEN" };
   }
 
-  const result = { type: "valid", label: "VALID TOKEN" };
-  console.info("[validateQrToken] returning valid", result);
-  return result;
+  return { type: "valid", label: "VALID TOKEN" };
 };
 
 // ─── PENGJUAN PERUBAHAN STATUS ────────────────────────────────────────────────
@@ -1193,6 +1170,8 @@ export default function App() {
   const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING); // sebelum/saat/sesudah/ditiadakan
   const [apelReason, setApelReason] = useState(null); // alasan penaltiadakan
   const [apelReasonText, setApelReasonText] = useState(""); // teks alasan custom (jika lainnya)
+  const [currentQr, setCurrentQr] = useState(null); // QR current dari Firebase
+  const [isQrReady, setIsQrReady] = useState(false); // QR readiness state
 
   // Calculate apelStatus based on session and time
   const apelStatus = getApelStatus(new Date(), apelSession);
@@ -1240,6 +1219,17 @@ export default function App() {
       unsubSession();
       unsubReason();
     };
+  }, []);
+
+  // Firebase subscription untuk qr/current - QR readiness state
+  useEffect(() => {
+    const qrRef = ref(database, QR_PATH);
+    const unsubscribe = onValue(qrRef, (snapshot) => {
+      const val = snapshot.val();
+      setCurrentQr(val);
+      setIsQrReady(!!val);
+    });
+    return unsubscribe;
   }, []);
 
   const handleApelSessionChange = (session) => {
@@ -1320,6 +1310,8 @@ export default function App() {
           validateQrToken={validateQrToken}
           PengajuanStatusForm={PengajuanStatusForm}
           TokenFeedback={TokenFeedback}
+          currentQr={currentQr}
+          isQrReady={isQrReady}
         />
       )}
       {page === "pimpinan" && (

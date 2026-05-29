@@ -26,6 +26,8 @@ export default function EmployeeDashboard({
   validateQrToken,
   PengajuanStatusForm,
   TokenFeedback,
+  currentQr,
+  isQrReady,
 }) {
   const [now, setNow] = useState(new Date());
   const [showScanner, setShowScanner] = useState(false);
@@ -54,16 +56,6 @@ export default function EmployeeDashboard({
   const showAttendanceTime = !isUnrecordedStatus && myAttendance.jamHadir;
 
   useEffect(() => {
-    console.info("[EmployeeDashboard] mounted", {
-      pegawaiId: pegawai?.id,
-      pegawaiNama: pegawai?.nama,
-      validateQrTokenType: typeof validateQrToken,
-      pengajuanStatusFormType: typeof PengajuanStatusForm,
-      tokenFeedbackType: typeof TokenFeedback,
-    });
-  }, [pegawai?.id, pegawai?.nama, validateQrToken, PengajuanStatusForm, TokenFeedback]);
-
-  useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
@@ -78,11 +70,6 @@ export default function EmployeeDashboard({
   useEffect(() => {
     if (!showScanner) return;
 
-    console.info("[EmployeeDashboard] scanner effect started", {
-      showScanner,
-      canSubmitAttendance,
-      pegawaiId: pegawai?.id,
-    });
     setScanResult(null);
     isValidatingScan.current = false;
 
@@ -90,55 +77,35 @@ export default function EmployeeDashboard({
     let scannerStarted = false;
     let cancelled = false;
     try {
-      const scannerElement = document.getElementById("qr-reader");
-      console.info("[EmployeeDashboard] scanner container lookup", {
-        found: Boolean(scannerElement),
-      });
       scanner = new Html5Qrcode("qr-reader");
-      console.info("[EmployeeDashboard] Html5Qrcode constructor success");
     } catch (error) {
       console.error("Html5Qrcode constructor error:", error);
-      console.error("[EmployeeDashboard] Html5Qrcode constructor failed", error);
       return;
     }
 
     const stopScanner = async () => {
-      console.info("[EmployeeDashboard] stopScanner called", {
-        scannerStarted,
-        cancelled,
-      });
       if (!scanner || !scannerStarted) return;
       try {
         await scanner.stop();
         scannerStarted = false;
-        console.info("[EmployeeDashboard] scanner.stop success");
       } catch (error) {
         console.error("Html5Qrcode stop error:", error);
-        console.error("[EmployeeDashboard] scanner.stop failed", error);
       }
       try {
         await scanner.clear();
-        console.info("[EmployeeDashboard] scanner.clear success");
       } catch (error) {
         console.error("Html5Qrcode clear error:", error);
-        console.error("[EmployeeDashboard] scanner.clear failed", error);
       }
     };
 
     const startScanner = async () => {
       try {
-        console.info("[EmployeeDashboard] Html5Qrcode.getCameras called");
         const cameras = await Html5Qrcode.getCameras();
-        console.info("[EmployeeDashboard] Html5Qrcode.getCameras success", {
-          count: cameras.length,
-          labels: cameras.map((camera) => camera.label),
-        });
         const rearCamera = cameras.find((camera) => /back|rear|environment/i.test(camera.label));
         const selectedCamera = rearCamera || cameras[0];
 
         if (!selectedCamera) {
           console.error("No camera available for Html5Qrcode.start");
-          console.error("[EmployeeDashboard] no camera available for scanner.start");
           return;
         }
 
@@ -147,16 +114,9 @@ export default function EmployeeDashboard({
         const onScanSuccess = async (decodedText) => {
           if (isValidatingScan.current) return;
           isValidatingScan.current = true;
-          console.info("[EmployeeDashboard] scanner decoded QR", {
-            decodedText,
-          });
 
           try {
-            console.info("[EmployeeDashboard] scanner calling validateQrToken", {
-              decodedText,
-            });
             const result = await validateQrToken(decodedText);
-            console.info("[EmployeeDashboard] scanner validateQrToken result", result);
             handleValidationSuccess(result);
             await stopScanner();
             if (result.type === "valid") {
@@ -164,7 +124,6 @@ export default function EmployeeDashboard({
             }
           } catch (error) {
             console.error("Failed to validate QR token:", error);
-            console.error("[EmployeeDashboard] scanner validateQrToken threw", error);
             setScanResult({ type: "invalid", label: "INVALID TOKEN" });
             await stopScanner();
           }
@@ -173,41 +132,21 @@ export default function EmployeeDashboard({
         const scanConfig = { fps: 10, qrbox: { width: 250, height: 250 } };
         const preferredCameraConfig = rearCamera ? rearCamera.id : { facingMode: "environment" };
         try {
-          console.info("[EmployeeDashboard] scanner.start called", {
-            mode: rearCamera ? "rear-camera-id" : "facingMode-environment",
-            preferredCameraConfig,
-            scanConfig,
-          });
           await scanner.start(preferredCameraConfig, scanConfig, onScanSuccess);
-          console.info("[EmployeeDashboard] scanner.start success", {
-            strategy: rearCamera ? "rear-camera-id" : "facingMode-environment",
-          });
         } catch (error) {
           console.error("[EmployeeDashboard] scanner.start primary failed", error);
           if (cancelled || rearCamera) throw error;
-          console.info("[EmployeeDashboard] scanner.start fallback called", {
-            selectedCameraId: selectedCamera.id,
-            scanConfig,
-          });
           await scanner.start(selectedCamera.id, scanConfig, onScanSuccess);
-          console.info("[EmployeeDashboard] scanner.start fallback success", {
-            selectedCameraId: selectedCamera.id,
-          });
         }
         scannerStarted = true;
       } catch (error) {
         console.error("Html5Qrcode start error:", error);
-        console.error("[EmployeeDashboard] Html5Qrcode start failed", error);
       }
     };
 
     startScanner();
 
     return () => {
-      console.info("[EmployeeDashboard] scanner effect cleanup", {
-        scannerStarted,
-        cancelled,
-      });
       cancelled = true;
       isValidatingScan.current = false;
       stopScanner();
@@ -215,21 +154,12 @@ export default function EmployeeDashboard({
   }, [showScanner, canSubmitAttendance, pegawai?.id, validateQrToken]);
 
   const handleValidationSuccess = (result) => {
-    console.info("[EmployeeDashboard] handleValidationSuccess called", {
-      result,
-      canSubmitAttendance,
-      sudahAbsen,
-      pegawaiId: pegawai?.id,
-    });
     if (!canSubmitAttendance) return;
 
     if (result.type === "valid") {
       setScanResult(null);
       setAttendanceSuccess(true);
       if (!sudahAbsen) {
-        console.info("[EmployeeDashboard] handleValidationSuccess triggering onScan", {
-          pegawaiId: pegawai.id,
-        });
         onScan(pegawai.id);
       }
       return;
@@ -240,23 +170,13 @@ export default function EmployeeDashboard({
   };
 
   const handleManualCodeSubmit = async () => {
-    console.info("[EmployeeDashboard] handleManualCodeSubmit called", {
-      manualCode,
-      canSubmitAttendance,
-      pegawaiId: pegawai?.id,
-    });
     if (!canSubmitAttendance) return;
     if (!manualCode.trim()) return;
     try {
-      console.info("[EmployeeDashboard] handleManualCodeSubmit calling validateQrToken", {
-        manualCode,
-      });
       const result = await validateQrToken(manualCode);
-      console.info("[EmployeeDashboard] handleManualCodeSubmit validateQrToken result", result);
       handleValidationSuccess(result);
     } catch (error) {
       console.error("Failed to validate manual QR code:", error);
-      console.error("[EmployeeDashboard] handleManualCodeSubmit caught error", error);
       setScanResult({ type: "invalid", label: "INVALID TOKEN" });
     }
   };
@@ -315,32 +235,32 @@ export default function EmployeeDashboard({
             {!sudahAbsen ? (
               <>
                 <button
-                  onClick={() => canSubmitAttendance && setShowScanner(true)}
-                  disabled={!canSubmitAttendance}
+                  onClick={() => canSubmitAttendance && isQrReady && setShowScanner(true)}
+                  disabled={!canSubmitAttendance || !isQrReady}
                   className={`w-full py-4 rounded-2xl font-black text-lg tracking-tight transition-all duration-200 active:scale-[0.98] mb-6 ${
-                    canSubmitAttendance
+                    canSubmitAttendance && isQrReady
                       ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40"
                       : "bg-slate-800/60 border border-slate-700/50 text-slate-600 cursor-not-allowed"
                   }`}
                 >
-                  {apelStatus === "before" ? "🔒 Apel Belum Dimulai" : apelStatus === "ended" ? "🔒 Sesi Telah Berakhir" : "📱 SCAN QR ABSENSI"}
+                  {!isQrReady ? "⏳ Memuat QR..." : apelStatus === "before" ? "🔒 Apel Belum Dimulai" : apelStatus === "ended" ? "🔒 Sesi Telah Berakhir" : "📱 SCAN QR ABSENSI"}
                 </button>
                 <Card className="p-4 mb-6">
                   <button
                     onClick={() => {
-                      if (!canSubmitAttendance) return;
+                      if (!canSubmitAttendance || !isQrReady) return;
                       setScanResult(null);
                       setAttendanceSuccess(false);
                       setShowManualCode((prev) => !prev);
                     }}
-                    disabled={!canSubmitAttendance}
+                    disabled={!canSubmitAttendance || !isQrReady}
                     className={`w-full py-3 rounded-xl text-sm font-bold border active:scale-[0.98] ${
-                      canSubmitAttendance
+                      canSubmitAttendance && isQrReady
                         ? "bg-slate-800 text-white border-slate-700"
                         : "bg-slate-800/60 text-slate-600 border-slate-700/50 cursor-not-allowed"
                     }`}
                   >
-                    Enter Code
+                    {!isQrReady ? "⏳ Memuat QR..." : "Enter Code"}
                   </button>
                   {showManualCode && (
                     <div className="mt-3">
