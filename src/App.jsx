@@ -53,6 +53,145 @@ const STATUS_VERIFIKASI_COLORS = {
 
 const STATUS_OPTIONS = ["Dinas Dalam", "Dinas Luar", "Izin", "Sakit"];
 
+const UNIT_LABELS = {
+  DINAS: "Dinas",
+  SEKRETARIAT: "Sekretariat",
+  ALKAL: "UPT ALKAL",
+  BINA_MARGA: "Bina Marga",
+  SDA: "Sumber Daya Air",
+  CIPTA_KARYA: "Cipta Karya",
+  TATA_RUANG: "Tata Ruang",
+  TATA_KOTA: "Tata Kota",
+  JASA_KONSTRUKSI: "Jasa Konstruksi",
+};
+
+const getUnitLabel = (unitCode) => UNIT_LABELS[unitCode] || unitCode || "";
+
+const PIMPINAN_ACCESS_ROLES = [
+  {
+    id: "exec-kadis",
+    group: "EXECUTIVE",
+    name: "H. Rody, S.T., M.I.P.",
+    nip: "196710151993031008",
+    jabatan: "Kadis PUPR",
+    unit: "SEKRETARIAT",
+    scope: "ALL",
+    description: "Kepala Dinas",
+  },
+  {
+    id: "exec-sekdis",
+    group: "EXECUTIVE",
+    name: "Sekretaris Dinas",
+    nip: "",
+    jabatan: "",
+    unit: "DINAS",
+    scope: "ALL",
+    description: "Belum diisi",
+  },
+  {
+    id: "ul-sekretariat-mira",
+    group: "UNIT_LEADER",
+    name: "Mira Apriyantinada, S.T.",
+    nip: "198004272011012008",
+    jabatan: "Kasubbag Tata Usaha, Data dan Informasi Publik",
+    unit: "SEKRETARIAT",
+    scope: "UNIT",
+    description: "Sekretariat",
+  },
+  {
+    id: "ul-sekretariat-muslimah",
+    group: "UNIT_LEADER",
+    name: "Muslimah Murni, S.T.",
+    nip: "",
+    jabatan: "Kasubbag Perencanaan dan Keuangan",
+    unit: "SEKRETARIAT",
+    scope: "UNIT",
+    description: "Sekretariat",
+  },
+  {
+    id: "ul-alkal-hartadi",
+    group: "UNIT_LEADER",
+    name: "Hartadi",
+    nip: "",
+    jabatan: "Kepala UPT Balai ALKAL",
+    unit: "ALKAL",
+    scope: "UNIT",
+    description: "UPT ALKAL",
+  },
+  {
+    id: "ul-alkal-syahbudi",
+    group: "UNIT_LEADER",
+    name: "Syahbudi Nor, A.Md.",
+    nip: "198506292014031001",
+    jabatan: "Kasubbag TU UPT Balai ALKAL",
+    unit: "ALKAL",
+    scope: "UNIT",
+    description: "UPT ALKAL",
+  },
+  {
+    id: "ul-binamarga-dedi",
+    group: "UNIT_LEADER",
+    name: "Dedi, S.T.",
+    nip: "197407172008011020",
+    jabatan: "Kepala Bidang Bina Marga",
+    unit: "BINA_MARGA",
+    scope: "UNIT",
+    description: "Bina Marga",
+  },
+  {
+    id: "ul-sda-subiyantoro",
+    group: "UNIT_LEADER",
+    name: "Subiyantoro, S.T., M.T.",
+    nip: "198107312008041002",
+    jabatan: "Kepala Bidang Sumber Daya Air",
+    unit: "SDA",
+    scope: "UNIT",
+    description: "Sumber Daya Air",
+  },
+  {
+    id: "ul-ciptakarya-ignasius",
+    group: "UNIT_LEADER",
+    name: "Ignasius, S.T.",
+    nip: "197610072007011007",
+    jabatan: "Kepala Bidang Cipta Karya",
+    unit: "CIPTA_KARYA",
+    scope: "UNIT",
+    description: "Cipta Karya",
+  },
+  {
+    id: "ul-tatakota-okta",
+    group: "UNIT_LEADER",
+    name: "Muhammad Okta Fahrizan Noor, S.T.",
+    nip: "198110222010011023",
+    jabatan: "Kepala Bidang Tata Kota",
+    unit: "TATA_KOTA",
+    scope: "UNIT",
+    description: "Tata Kota",
+  },
+  {
+    id: "ul-tataruang-patria",
+    group: "UNIT_LEADER",
+    name: "Patria, S.T., M.S.",
+    nip: "197307202005011007",
+    jabatan: "Kepala Bidang Tata Ruang",
+    unit: "TATA_RUANG",
+    scope: "UNIT",
+    description: "Tata Ruang",
+  },
+  {
+    id: "ul-jasakonstruksi-andriano",
+    group: "UNIT_LEADER",
+    name: "Andriano, S.T.",
+    nip: "197111102006041026",
+    jabatan: "Kepala Bidang Jasa Konstruksi",
+    unit: "JASA_KONSTRUKSI",
+    scope: "UNIT",
+    description: "Jasa Konstruksi",
+  },
+];
+
+const findPimpinanById = (id) => PIMPINAN_ACCESS_ROLES.find((item) => item.id === id) || null;
+
 // ─── UTILS ───────────────────────────────────────────────────────────────────
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -320,6 +459,16 @@ const LAST_MONTH_DISCIPLINE = {
 };
 
 const RANK_MEDALS = ["🥇", "🥈", "🥉"];
+
+const ProfileLines = ({ name, nip, jabatan, nameClassName = "text-white font-semibold text-sm", metaClassName = "text-slate-500 text-xs", containerClassName = "" }) => {
+  return (
+    <div className={`min-w-0 ${containerClassName}`}>
+      <div className={`${nameClassName} break-words`}>{name}</div>
+      {nip ? <div className={`${metaClassName} mt-0.5 break-words`}>NIP: {nip}</div> : null}
+      {jabatan ? <div className={`${metaClassName} mt-0.5 break-words`}>{jabatan}</div> : null}
+    </div>
+  );
+};
 
 // ─── PENGJUAN PERUBAHAN STATUS ────────────────────────────────────────────────
 const PengajuanStatusForm = ({ myStatus }) => {
@@ -697,6 +846,24 @@ const RoleSelector = ({ onSelect }) => {
           ))}
         </div>
 
+        <div className="mt-4 border-t border-slate-800/70 pt-4">
+          <button
+            onClick={() => onSelect("developer")}
+            className="group relative w-full text-left rounded-2xl border border-slate-700/60 bg-gradient-to-br from-slate-900/95 to-slate-800/80 p-4 transition-all duration-200 hover:border-slate-500/70 hover:shadow-lg active:scale-[0.98]"
+          >
+            <div className="flex items-center gap-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-cyan-500/15 text-2xl">🔧</span>
+              <div className="min-w-0">
+                <div className="text-white font-bold text-base">Developer</div>
+                <div className="text-slate-400 text-xs mt-0.5">Teknis internal, demo, recovery, dan audit</div>
+              </div>
+              <svg className="w-5 h-5 text-slate-600 group-hover:text-slate-400 ml-auto transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </button>
+        </div>
+
         <p className="text-center text-slate-700 text-xs mt-8">Prototype v1.0 · Hanya untuk demonstrasi</p>
       </div>
     </div>
@@ -745,10 +912,14 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white text-sm font-bold shrink-0">
                   {p.nama.split(" ").slice(0, 2).map(n => n[0]).join("")}
                 </div>
-                <div className="min-w-0">
-                  <div className="text-white text-sm font-semibold truncate">{p.nama}</div>
-                  <div className="text-slate-500 text-xs truncate">{p.jabatan}</div>
-                </div>
+                <ProfileLines
+                  name={p.nama}
+                  nip={p.nip}
+                  jabatan={p.jabatan}
+                  nameClassName="text-white text-sm font-semibold"
+                  metaClassName="text-slate-500 text-xs"
+                  containerClassName="flex-1"
+                />
                 {selected?.id === p.id && (
                   <svg className="w-5 h-5 text-emerald-400 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -769,9 +940,10 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/30 to-teal-500/30 flex items-center justify-center text-white text-sm font-bold">
                   {selected.nama.split(" ").slice(0, 2).map(n => n[0]).join("")}
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <div className="text-white text-sm font-semibold">{selected.nama}</div>
-                  <div className="text-slate-400 text-xs">{selected.bidang} · {selected.jabatan.split(" ").slice(0, 3).join(" ")}</div>
+                  {selected.nip ? <div className="text-slate-400 text-xs mt-0.5">NIP: {selected.nip}</div> : null}
+                  {selected.jabatan ? <div className="text-slate-400 text-xs mt-0.5">{selected.bidang} · {selected.jabatan}</div> : null}
                 </div>
               </div>
             </Card>
@@ -781,6 +953,142 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
             </button>
           </div>
         )}
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE: PIMPINAN SELECTOR
+// ══════════════════════════════════════════════════════════════════════════════
+const PimpinanSelector = ({ onBack, onSelect }) => {
+  const executive = PIMPINAN_ACCESS_ROLES.filter((item) => item.group === "EXECUTIVE");
+  const unitLeaders = PIMPINAN_ACCESS_ROLES.filter((item) => item.group === "UNIT_LEADER");
+
+  const renderCard = (item) => (
+    <button
+      key={item.id}
+      onClick={() => onSelect(item)}
+      className="group w-full text-left rounded-2xl border border-slate-700/60 bg-slate-900/75 p-4 transition-all duration-200 hover:border-amber-500/40 hover:bg-slate-900 active:scale-[0.98]"
+    >
+      <div className="flex items-start gap-3">
+        <div className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-lg font-black ${
+          item.group === "EXECUTIVE" ? "bg-amber-500/20 text-amber-300" : "bg-blue-500/20 text-blue-300"
+        }`}>
+          {item.group === "EXECUTIVE" ? "E" : "U"}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-3">
+            <ProfileLines
+              name={item.name}
+              nip={item.nip}
+              jabatan={item.jabatan}
+              nameClassName="text-white text-sm font-semibold"
+              metaClassName="text-slate-400 text-[11px]"
+              containerClassName="flex-1"
+            />
+            <svg className="mt-0.5 h-5 w-5 shrink-0 text-slate-600 group-hover:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider ${
+              item.group === "EXECUTIVE" ? "bg-amber-500/15 text-amber-300" : "bg-blue-500/15 text-blue-300"
+            }`}>
+              {item.group}
+            </span>
+            <span className="rounded-full bg-slate-800 px-2.5 py-1 text-[10px] font-bold tracking-wider text-slate-300">
+              {item.scope}
+            </span>
+            <span className="rounded-full bg-slate-800 px-2.5 py-1 text-[10px] font-bold tracking-wider text-slate-300">
+              {getUnitLabel(item.unit)}
+            </span>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#080c14] px-4 py-6">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-64 bg-amber-600/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative z-10 max-w-sm mx-auto">
+        <BackButton onClick={onBack} />
+
+        <div className="mb-5">
+          <h2 className="text-xl font-black text-white">Pilih Role Pimpinan</h2>
+          <p className="mt-1 text-slate-500 text-xs">Executive dan Unit Leader memakai dashboard yang sama, scope datanya yang berbeda.</p>
+        </div>
+
+        <div className="space-y-5">
+          <div>
+            <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-200/70">Executive</div>
+            <div className="space-y-3">
+              {executive.map(renderCard)}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-sky-200/70">Unit Leader</div>
+            <div className="space-y-3">
+              {unitLeaders.map(renderCard)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE: DEVELOPER CONSOLE
+// ══════════════════════════════════════════════════════════════════════════════
+const DeveloperConsole = ({ onBack }) => {
+  const sections = [
+    {
+      title: "View As",
+      items: ["Employee", "Unit Leader", "Executive", "Admin"],
+    },
+    {
+      title: "Simulation",
+      items: ["Attendance Simulation", "Employee Simulation", "QR Simulation"],
+    },
+    {
+      title: "Recovery",
+      items: ["Reset Device", "Reset Session", "Emergency Access"],
+    },
+    {
+      title: "Audit",
+      items: ["Role Inspector", "Scope Inspector", "Data Inspector"],
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#080c14] px-4 py-6">
+      <div className="relative z-10 max-w-sm mx-auto">
+        <BackButton onClick={onBack} />
+        <div className="mb-5">
+          <h2 className="text-xl font-black text-white">Developer Console</h2>
+          <p className="mt-1 text-slate-500 text-xs">Akun teknis internal untuk demo, audit, recovery, dan simulasi.</p>
+        </div>
+
+        <div className="space-y-3">
+          {sections.map((section) => (
+            <Card key={section.title} className="p-4 border-slate-700/60 bg-slate-900/80">
+              <div className="mb-3 text-sm font-bold text-white">{section.title}</div>
+              <div className="grid grid-cols-2 gap-2">
+                {section.items.map((item) => (
+                  <div key={item} className="rounded-xl border border-slate-700/50 bg-slate-800/70 px-3 py-2 text-xs font-semibold text-slate-300">
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -951,8 +1259,13 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
         {/* Header */}
         <div className="mb-6">
           <p className="text-slate-400 text-sm">{getGreeting()},</p>
-          <h1 className="text-2xl font-black text-white leading-tight">{pegawai.nama.split(",")[0]}</h1>
-          <p className="text-slate-500 text-xs mt-0.5 line-clamp-1">{pegawai.jabatan}</p>
+          <ProfileLines
+            name={pegawai.nama}
+            nip={pegawai.nip}
+            jabatan={pegawai.jabatan}
+            nameClassName="text-2xl font-black text-white leading-tight"
+            metaClassName="text-slate-500 text-xs mt-0.5"
+          />
         </div>
 
         {isDitiadakan ? (
@@ -1285,7 +1598,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PIMPINAN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPimpinan = ({ attendance, apelStatus, apelSession, apelReason, apelReasonText, onBack }) => {
+const DashboardPimpinan = ({ attendance, apelStatus, apelSession, apelReason, apelReasonText, selectedPimpinan, onBack }) => {
   const [showAllPerhatian, setShowAllPerhatian] = useState(false);
   const [showAllBidangToday, setShowAllBidangToday] = useState(false);
   const [showAllLastMonth, setShowAllLastMonth] = useState(false);
@@ -1296,6 +1609,15 @@ const DashboardPimpinan = ({ attendance, apelStatus, apelSession, apelReason, ap
 
   // Check if apel is ditiadakan
   const isDitiadakan = isApelDitiadakan(apelStatus);
+  const displayPimpinan = selectedPimpinan || {
+    name: orgData.kepala_dinas.nama,
+    nip: orgData.kepala_dinas.nip,
+    jabatan: orgData.kepala_dinas.jabatan,
+    unit: "PIMPINAN",
+    scope: "ALL",
+    group: "EXECUTIVE",
+    description: "Kepala Dinas",
+  };
 
   // Get reason label for display
   const getReasonDisplay = () => {
@@ -1482,11 +1804,14 @@ const getBidangStats = (bidangNama) => {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-amber-200/80 text-sm font-medium">{getGreeting()},</p>
-              <h1 className="text-xl font-black text-slate-50 leading-tight">{orgData.kepala_dinas.nama}</h1>
-              {orgData.kepala_dinas.nip && (
-                <p className="text-slate-400 text-xs mt-0.5">NIP. {orgData.kepala_dinas.nip}</p>
-              )}
-              <p className="text-slate-400 text-xs mt-0.5">{orgData.kepala_dinas.jabatan} · {orgData.dinas}</p>
+              <ProfileLines
+                name={displayPimpinan.name}
+                nip={displayPimpinan.nip}
+                jabatan={displayPimpinan.jabatan}
+                nameClassName="text-xl font-black text-slate-50 leading-tight"
+                metaClassName="text-slate-400 text-xs mt-0.5"
+              />
+              <p className="text-slate-400 text-xs mt-1">{displayPimpinan.group} · {displayPimpinan.scope === "ALL" ? "Scope ALL" : `Scope ${getUnitLabel(displayPimpinan.unit)}`} · {orgData.dinas}</p>
             </div>
             {/* Date & Time Display */}
             <div className="text-right shrink-0 hidden sm:block">
@@ -1495,10 +1820,10 @@ const getBidangStats = (bidangNama) => {
             </div>
           </div>
           {/* Mobile Date/Time (below title) */}
-          <div className="sm:hidden mt-3 pt-3 border-t border-amber-200/10 flex items-center justify-between">
-            <span className="text-amber-200/80 text-xs">{formatDateIndonesia(currentTime)}</span>
-            <span className="text-white text-sm font-bold font-mono">{formatTimeWIB(currentTime)} <span className="text-amber-200/60 text-xs font-normal">WIB</span></span>
-          </div>
+            <div className="sm:hidden mt-3 pt-3 border-t border-amber-200/10 flex items-center justify-between">
+              <span className="text-amber-200/80 text-xs">{formatDateIndonesia(currentTime)}</span>
+              <span className="text-white text-sm font-bold font-mono">{formatTimeWIB(currentTime)} <span className="text-amber-200/60 text-xs font-normal">WIB</span></span>
+            </div>
         </div>
 
         {/* Banner Apel Ditiadakan */}
@@ -2457,6 +2782,7 @@ export default function App() {
   const [page, setPage] = useState("role");
   const [role, setRole] = useState(null);
   const [activePegawai, setActivePegawai] = useState(null);
+  const [selectedPimpinan, setSelectedPimpinan] = useState(null);
   const [attendance, setAttendance] = useState(buildInitialAttendance);
   const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING); // sebelum/saat/sesudah/ditiadakan
   const [apelReason, setApelReason] = useState(null); // alasan penaltiadakan
@@ -2534,14 +2860,20 @@ export default function App() {
 
   const handleRoleSelect = (r) => {
     setRole(r);
-    if (r === "pimpinan") setPage("pimpinan");
+    if (r === "pimpinan") setPage("pimpinan_select");
     else if (r === "admin") setPage("admin");
+    else if (r === "developer") setPage("developer");
     else setPage("pegawai_login");
   };
 
   const handlePegawaiLogin = (p) => {
     setActivePegawai(p);
     setPage("pegawai_dashboard");
+  };
+
+  const handlePimpinanSelect = (item) => {
+    setSelectedPimpinan(item);
+    setPage("pimpinan_dashboard");
   };
 
   const handleScan = (pegawaiId) => {
@@ -2587,14 +2919,21 @@ export default function App() {
           onBack={() => setPage("pegawai_login")}
         />
       )}
-      {page === "pimpinan" && (
+      {page === "pimpinan_select" && (
+        <PimpinanSelector
+          onBack={() => setPage("role")}
+          onSelect={handlePimpinanSelect}
+        />
+      )}
+      {page === "pimpinan_dashboard" && (
         <DashboardPimpinan
           attendance={attendance}
           apelStatus={apelStatus}
           apelSession={apelSession}
           apelReason={apelReason}
           apelReasonText={apelReasonText}
-          onBack={() => setPage("role")}
+          selectedPimpinan={selectedPimpinan}
+          onBack={() => setPage("pimpinan_select")}
         />
       )}
       {page === "admin" && (
@@ -2611,6 +2950,9 @@ export default function App() {
           onBack={() => setPage("role")}
           onKoreksi={handleKoreksi}
         />
+      )}
+      {page === "developer" && (
+        <DeveloperConsole onBack={() => setPage("role")} />
       )}
     </div>
   );
