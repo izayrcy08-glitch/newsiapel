@@ -1,0 +1,4392 @@
+[
+  {
+    "id": 2,
+    "nama": "H. Rody, ST. MT",
+    "nip": "196710151993031008",
+    "jabatan": "Kadis PUPR",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EXECUTIVE",
+    "password": ""
+  },
+  {
+    "id": 3,
+    "nama": "ALHAMDANI UMAR ST, M.S.",
+    "nip": "198003082005011010",
+    "jabatan": "JF Surveyor Pemetaan Madya",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 4,
+    "nama": "PATRIA S.T., M.S.",
+    "nip": "197307202005011007",
+    "jabatan": "Kepala Bidang Tata Ruang",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 5,
+    "nama": "IGNASIUS S.T",
+    "nip": "197610072007011007",
+    "jabatan": "Kepala Bidang Cipta Karya",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 7,
+    "nama": "MUJIBURRAHMAN S.P",
+    "nip": "197402042007011012",
+    "jabatan": "JFT Teknik Penyehatan Lingkungan",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 8,
+    "nama": "MARIA HELMIDA ST",
+    "nip": "197304092006042015",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 9,
+    "nama": "ERIANTONI IWANATA S HUT",
+    "nip": "198204252006041008",
+    "jabatan": "JFT Penataan Ruang",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 10,
+    "nama": "SEKRENING S.ST",
+    "nip": "197007091994031004",
+    "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 11,
+    "nama": "WARNO SST",
+    "nip": "197411161994031003",
+    "jabatan": "JFT Teknik Pengairan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 12,
+    "nama": "SUTIKNO S.Hut",
+    "nip": "197408071994031005",
+    "jabatan": "JFT Penataan Ruang",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 13,
+    "nama": "FORTIS TAUFIK SELNITI BUDI S.ST",
+    "nip": "197306191994031008",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 14,
+    "nama": "SUBIYANTORO ST.,M.T. /",
+    "nip": "198107312008041002",
+    "jabatan": "Kepala Bidang Sumber Daya Air",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 15,
+    "nama": "SUHERMAN ST",
+    "nip": "197411152008011016",
+    "jabatan": "JFT Teknik Jalan dan Jembatan",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 16,
+    "nama": "ARSETO ADY NUGROHO S.T",
+    "nip": "198112182008041001",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 17,
+    "nama": "RONY SURYADI ST",
+    "nip": "197605122009011003",
+    "jabatan": "JFT Penataan Ruang",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 18,
+    "nama": "ROY LANDI WOPA HOSANG S.T",
+    "nip": "198104032010011013",
+    "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 20,
+    "nama": "MIRA APRIYANTINADA S.T",
+    "nip": "198004272011012008",
+    "jabatan": "Kasubbag Tata Usaha, Data dan Informasi Publik",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 21,
+    "nama": "RAHAYU DWI MUMPUNI S.T",
+    "nip": "198110192011012005",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 22,
+    "nama": "ROBY CHAHYADI ST",
+    "nip": "197911102010011010",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 24,
+    "nama": "ALFIAN NUR A.Md",
+    "nip": "197505171998031005",
+    "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 25,
+    "nama": "FETRIS SUGIAN ST",
+    "nip": "198007192014031001",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 26,
+    "nama": "MUHAMMAD EKSAN S.E",
+    "nip": "197207212007011015",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 27,
+    "nama": "TRI UTAMI HANDAYANI,SE",
+    "nip": "199103212015032003",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 29,
+    "nama": "ASMUNI",
+    "nip": "197208021993031009",
+    "jabatan": "JFT Teknik Penyehatan Lingkungan",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 30,
+    "nama": "IMBAI",
+    "nip": "196909121997031006",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 31,
+    "nama": "ABDUL WILDAN",
+    "nip": "197010201998031003",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 32,
+    "nama": "AGUS PATRIADI S.A.P.",
+    "nip": "197708192006041006",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 34,
+    "nama": "IBNU WARDANI S.E",
+    "nip": "197910092008011022",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 35,
+    "nama": "KUSHARYADI S A.Md",
+    "nip": "198101302011011004",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 36,
+    "nama": "NUR ARIFIN S.E",
+    "nip": "198202082009011004",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 37,
+    "nama": "HADRIANOOR S.T.",
+    "nip": "198001112007011010",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 38,
+    "nama": "JOAN MARTHEN BADJADJI A.Md",
+    "nip": "197703062007011015",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 39,
+    "nama": "ELDIANA HERIYANIE A.Md",
+    "nip": "197511282007012007",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 40,
+    "nama": "PASKADIME TURAY, ST",
+    "nip": "198709242022031000",
+    "jabatan": "JFT Surveyor Pemetaan",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 41,
+    "nama": "FRIEDMAN TARIDA MARPAUNG S.T",
+    "nip": "198809232022031001",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 42,
+    "nama": "FRANSISCO RAMA RIO S.T.",
+    "nip": "199303302022031001",
+    "jabatan": "JFT Penata Ruang",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 43,
+    "nama": "YANESAR HAWILEY S.T.",
+    "nip": "199401222022031002",
+    "jabatan": "JFT Penata Ruang",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 44,
+    "nama": "HENGKI PRADANA S.T",
+    "nip": "199308062022031001",
+    "jabatan": "JFT Pengawas Jalan dan Jembatan",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 45,
+    "nama": "AGIL PAHLEVI ALHAZMI S.T",
+    "nip": "199503132022031002",
+    "jabatan": "JFT Penata Ruang",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 46,
+    "nama": "PERMANA ADI PUTERA S.T.",
+    "nip": "199401202022031001",
+    "jabatan": "JFT Surveyor Pemetaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 47,
+    "nama": "LEDY DAYANA .S. PUTES S.T",
+    "nip": "199607292022032001",
+    "jabatan": "Pengawas Jalan dan Jembatan",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 48,
+    "nama": "YOSUA LAMA LEWA S.T",
+    "nip": "199612142022031001",
+    "jabatan": "JFT 'Pengawas Jalan dan Jembatan",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 49,
+    "nama": "SYAHRYAN DHARMA AJI S.T.",
+    "nip": "199705022022031001",
+    "jabatan": "JFT Surveyor Pemetaan",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 50,
+    "nama": "ANNISA NURUL HIDAYAH S.T.",
+    "nip": "199807162022032001",
+    "jabatan": "JFT Surveyor Pemetaan",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 51,
+    "nama": "OLVA DWI FAUJI HANDAYANI S.P.W.K.",
+    "nip": "199709072022032001",
+    "jabatan": "JFT Penata Ruang",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 52,
+    "nama": "KRISTUANTO NUGROHO SAPUTRO S.P.W.K",
+    "nip": "199211282014031001",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 53,
+    "nama": "EDI ERIANTO",
+    "nip": "198203282008011007",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 54,
+    "nama": "DELTAYANA",
+    "nip": "197110102007012022",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 55,
+    "nama": "RUSLINE",
+    "nip": "197407072007012016",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 56,
+    "nama": "NOVA ARDONO, S.M",
+    "nip": "197311162012121001",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 57,
+    "nama": "CECE SYAPUTRA",
+    "nip": "197710132008011017",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 58,
+    "nama": "LINA RAHMAWATI",
+    "nip": "197708272007012006",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 59,
+    "nama": "YAYAT ULANTARI",
+    "nip": "198010152007012000",
+    "jabatan": "Bendahara Pengeluaran Pembantu",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 60,
+    "nama": "ANTON SUJARWADI",
+    "nip": "197703032007011017",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 61,
+    "nama": "RADEN RORO NIKEN GAYATRI WOELANSARI",
+    "nip": "197311222008012006",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 62,
+    "nama": "MARGIANTO",
+    "nip": "197703232008011016",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 63,
+    "nama": "SUKARIA",
+    "nip": "197810312008011007",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 64,
+    "nama": "OCTANI INDRIAWATI",
+    "nip": "198010012008012018",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 65,
+    "nama": "GEZALI",
+    "nip": "197302042007011015",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 66,
+    "nama": "HENRI LUKAS",
+    "nip": "197101172007011014",
+    "jabatan": "Juru OPHAR",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 67,
+    "nama": "SALIANSYAH",
+    "nip": "197407052007011026",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 68,
+    "nama": "SUPRIADI",
+    "nip": "197404012009011006",
+    "jabatan": "Juru OPHAR",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 69,
+    "nama": "EMMY SUTANTY",
+    "nip": "197905152010012017",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 70,
+    "nama": "ARLINAWATI",
+    "nip": "197807042009012002",
+    "jabatan": "Juru OPHAR",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 71,
+    "nama": "LAMBAK",
+    "nip": "198301302008011012",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 72,
+    "nama": "SAIDI",
+    "nip": "197905132007011007",
+    "jabatan": "Juru Pengairan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 73,
+    "nama": "SENGHO MARGONO",
+    "nip": "197707072012121002",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 74,
+    "nama": "SUGIHERTONO",
+    "nip": "196908142006041009",
+    "jabatan": "Pengamat Pengairan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 75,
+    "nama": "BUDIMAN",
+    "nip": "197506102007011020",
+    "jabatan": "Juru Pengairan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 76,
+    "nama": "ABDUL ROHMAN",
+    "nip": "197903122008011023",
+    "jabatan": "Pengawas Irigasi",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 77,
+    "nama": "SUKARDI",
+    "nip": "198312222012121002",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 78,
+    "nama": "FERDI DWI ARIYANTO",
+    "nip": "200301252025061004",
+    "jabatan": "Operator Pelayanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 79,
+    "nama": "RAHMAN",
+    "nip": "199310092025061001",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 80,
+    "nama": "RISTA TAKZIAH",
+    "nip": "200210032025062006",
+    "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 81,
+    "nama": "YAMES GUANDA",
+    "nip": "200307052025061002",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 82,
+    "nama": "RUDI GUNAWAN",
+    "nip": "199308182025061006",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 83,
+    "nama": "MUHAMMAD RENDRA NATA",
+    "nip": "200107022025061003",
+    "jabatan": "Operator Pelayanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 84,
+    "nama": "AMIRA MAYA HAFIZA",
+    "nip": "200108172025062013",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 85,
+    "nama": "YOGIANOR",
+    "nip": "200004132025061006",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 86,
+    "nama": "AINUL YUDA",
+    "nip": "199907142025061007",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 87,
+    "nama": "MUHAMMAD ARIFIN",
+    "nip": "199101022025061002",
+    "jabatan": "Teknisi Mesin Alat Berat",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 88,
+    "nama": "APRI ANUGRAH WIJAYA",
+    "nip": "199604062025061004",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 89,
+    "nama": "ZAINUDIN",
+    "nip": "199703162025061003",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 90,
+    "nama": "IVANA ANGELITA",
+    "nip": "200207142025062005",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 91,
+    "nama": "CHRISTIN SEPTALITA SILALAHI ,A.md",
+    "nip": "200107182025061005",
+    "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 91,
+    "nama": "MUHAMMAD ALFARIZI PRASETIA",
+    "nip": "200107182025062003",
+    "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 92,
+    "nama": "ADI PRASETYO",
+    "nip": "200005212025061006",
+    "jabatan": "Operator Pelayanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 93,
+    "nama": "AHMAD RAIHAN ZACKY",
+    "nip": "200406212025061002",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 94,
+    "nama": "POPY WANDA APRILIA",
+    "nip": "200604212025062003",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 95,
+    "nama": "YULIANTO",
+    "nip": "199207272025061002",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 96,
+    "nama": "DEFRI JUNIANDA ARIF",
+    "nip": "199306242025061002",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 97,
+    "nama": "HARIYANTO RAHARJO",
+    "nip": "199503082025061007",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 98,
+    "nama": "AKHMAD FADILLAH",
+    "nip": "199611152025061005",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 99,
+    "nama": "SALEHA",
+    "nip": "200504172025062001",
+    "jabatan": "Operator Pelayanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 100,
+    "nama": "INDRIANI",
+    "nip": "200209152025062008",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 101,
+    "nama": "ACHMAD ARIEF SETIAWAN",
+    "nip": "200206112025061004",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 102,
+    "nama": "RAJUL RAJABI",
+    "nip": "200010182025061003",
+    "jabatan": "Operator Pelayanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 103,
+    "nama": "FAHRURRAZI",
+    "nip": "199612012025061006",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 104,
+    "nama": "HARSA PURNAMA",
+    "nip": "199004292025061004",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 105,
+    "nama": "USAMAH",
+    "nip": "199311022025061003",
+    "jabatan": "Operator Pelayanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 106,
+    "nama": "RASYID SHIDDIQ",
+    "nip": "200009232025061008",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 107,
+    "nama": "RISKA AULIA RAHMAN",
+    "nip": "199612242025061009",
+    "jabatan": "Operator Pelayanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 108,
+    "nama": "MITA LESTARI",
+    "nip": "200111282025062012",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 109,
+    "nama": "JULIAN IQBAL NUGRAHA",
+    "nip": "200207232025061005",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 110,
+    "nama": "YOEL PRATAMA",
+    "nip": "200409112025061003",
+    "jabatan": "Operator Pelayanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 111,
+    "nama": "BAGUS JOKO KRISDYANTO",
+    "nip": "199609012025061008",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 112,
+    "nama": "NEFHA KRISTILA",
+    "nip": "200301082025062003",
+    "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 113,
+    "nama": "ARISMA NOVIANA PUTRI",
+    "nip": "199611192025062009",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 114,
+    "nama": "YUSAFAT TRI BERIANTO",
+    "nip": "200110062025061004",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 115,
+    "nama": "MUHAMMAD HAJIANOR SHODIQIN",
+    "nip": "199903222025061007",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 116,
+    "nama": "SA'ADAH",
+    "nip": "200508292025062001",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 117,
+    "nama": "FIRMAN BUDIMULIA",
+    "nip": "200103262025061011",
+    "jabatan": "Petugas Operasi dan Pemeliharaan",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 118,
+    "nama": "DAVID HARNO PRASETYA",
+    "nip": "199502172025061007",
+    "jabatan": "Operator Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 119,
+    "nama": "HERLIZA PUTRI PERDANA, A.Md.T",
+    "nip": "199906062025062020",
+    "jabatan": "Pengelola Layanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 120,
+    "nama": "ANDI SETYAWAN RAMADANI ,A.Md.T",
+    "nip": "200012042025061005",
+    "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 121,
+    "nama": "JOSS SCUD QADHAFIE ,A.Md",
+    "nip": "199102092025061002",
+    "jabatan": "Penata Bangunan Gedung dan Permukiman",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 122,
+    "nama": "NOR KHALISA ,A.Md.T",
+    "nip": "200112022025062007",
+    "jabatan": "Penata Bangunan Gedung dan Permukian",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 123,
+    "nama": "HENI ARTATI BR MUNTE",
+    "nip": "199804092025062011",
+    "jabatan": "PENATA BANGUNAN GEDUNG DAN PERMUKIMAN",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 124,
+    "nama": "ADELIA PEBRIYANTI, A.Md.T",
+    "nip": "200102112025062020",
+    "jabatan": "Pengelola Layanan Operasional",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 125,
+    "nama": "YUSUF ARDYAN SETYA PRADANA, A.Md.T.",
+    "nip": "200108032025061009",
+    "jabatan": "Teknisi Mesin Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 126,
+    "nama": "ETI MUSYAROFAH",
+    "nip": "199610142025062009",
+    "jabatan": "PENATA BANGUNAN GEDUNG DAN PERMUKIMAN",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 127,
+    "nama": "DANIEL KAHARAP TARIP ,A.Md.T.",
+    "nip": "200206122025061005",
+    "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 128,
+    "nama": "ANITA SURYANINGSIH, A.Md.",
+    "nip": "199310192025062006",
+    "jabatan": "Teknisi Mesin Alat Berat",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 129,
+    "nama": "ERWIN AGUNG SANTOSO ,A.Md",
+    "nip": "199007082025061005",
+    "jabatan": "Penata Bangunan Gedung dan Permukiman",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 130,
+    "nama": "BETI MAHARANI ,A.Md.T.",
+    "nip": "200201312025062010",
+    "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 131,
+    "nama": "A. M. NUR ADIB KURNIAWAN RASYID",
+    "nip": "200006232025061011",
+    "jabatan": "Teknisi Mesin Alat Berat",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 132,
+    "nama": "SELVI ARDIANI ,A.Md",
+    "nip": "199506112025062005",
+    "jabatan": "Penata Bangunan Gedung dan Permukian",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 134,
+    "nama": "ADITYA BUANA FIQRI ,S.T",
+    "nip": "200102202025061005",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 135,
+    "nama": "FADHLI",
+    "nip": "200004222025061005",
+    "jabatan": "PENGAWAS JARINGAN UTILITAS",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 136,
+    "nama": "KRISNA CRISTA MAHENDRA ,S.T",
+    "nip": "200007262025061002",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 137,
+    "nama": "GABRIELLA OCTAVIRIA NOORMALIA HETRANI PUTRI ,S.Ars",
+    "nip": "199310052025062006",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 138,
+    "nama": "SAHRUL RAMADANI, S.T.",
+    "nip": "199912172025061005",
+    "jabatan": "Penata Ruang Ahli Pertama",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 140,
+    "nama": "GUSTIAN, S.T.",
+    "nip": "200105262025061004",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 141,
+    "nama": "HARY CHRISTIAN ANUGRAHNU ,S. Ars",
+    "nip": "199611152025061001",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 142,
+    "nama": "CINDERELLA SUZANNA CAROLYNDA",
+    "nip": "200101292025062008",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 143,
+    "nama": "DESI RAHMADANA ,S.T.",
+    "nip": "199912122025062009",
+    "jabatan": "Pranata Kewilayahan",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 144,
+    "nama": "MARIATUL KARIMAH, S.T.",
+    "nip": "200203112025062008",
+    "jabatan": "Penata Ruang Ahli Pertama",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 145,
+    "nama": "ESTER KLAUDIA TAMARA, S.T.",
+    "nip": "200107292025062005",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 146,
+    "nama": "PRA SETIAWAN SILAEN, S.T.",
+    "nip": "199611132025061006",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 147,
+    "nama": "VIDYA RESTU WIJAYA ,S.T.",
+    "nip": "199810062025061006",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 148,
+    "nama": "MUHAMAD RIZKI ,S.T.",
+    "nip": "199905082025061009",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 149,
+    "nama": "JOSUA ORIESTA SALOMO ,S.T.",
+    "nip": "200001242025061012",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 150,
+    "nama": "ZAIN SAPUTRA ,S.T",
+    "nip": "199803032025061007",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 151,
+    "nama": "ADJIE DWI SULISTYONO ,S.Stat",
+    "nip": "200103292025061006",
+    "jabatan": "Pranata Kewilayahan",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 152,
+    "nama": "BENEDICTUS PASCHAL ARYO SETYA ,S.Ars",
+    "nip": "200203292025061003",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 153,
+    "nama": "M. FACHTUR REZA, S.T.",
+    "nip": "199912042025061011",
+    "jabatan": "Penata Ruang Ahli Pertama",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 154,
+    "nama": "ERIANTY NUR APRILIANA ,S.T.",
+    "nip": "199704062025062004",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 155,
+    "nama": "ROBI, S.T.",
+    "nip": "199408142025061008",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 156,
+    "nama": "STEVANY ALIZA KHAIRANI, S.T",
+    "nip": "200004042025062008",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 157,
+    "nama": "NOVRINDO GABRIEL PANARA TARUNG ,S.T",
+    "nip": "200011152025061007",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 158,
+    "nama": "FANDRI, S.T",
+    "nip": "199604152025061006",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 159,
+    "nama": "AGUSTULUSNU ,S.T",
+    "nip": "199508052025061006",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 160,
+    "nama": "DEDE CHRISFANI",
+    "nip": "199812012025061005",
+    "jabatan": "PENGAWAS JARINGAN UTILITAS",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 161,
+    "nama": "AMALIA SETIARINI ,S.Ars",
+    "nip": "200204232025062007",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 162,
+    "nama": "LIUS KAHARAP BION INSO ,S.T.",
+    "nip": "198911242025061001",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 163,
+    "nama": "KARINA PANGAMIANI ,S.T.",
+    "nip": "200306032025062002",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 164,
+    "nama": "HENDI KRISTIAN ,S.Ars",
+    "nip": "199802192025061002",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 165,
+    "nama": "FITRI DEVI, S.T.",
+    "nip": "200012262025062006",
+    "jabatan": "Penata Ruang Ahli Pertama",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 166,
+    "nama": "INTAN ARDILLA ,S.H",
+    "nip": "200201312025062009",
+    "jabatan": "Pranata Kewilayahan",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 167,
+    "nama": "ISNAN NURUL AKBAR ,S.T.",
+    "nip": "199709232025061010",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 168,
+    "nama": "SHAHIFA INDIRA EFFENDI ,S.Kom",
+    "nip": "200201152025062010",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 169,
+    "nama": "MUHAMMAD PUJIADI ANGGARA PRAMANA PUTRA MANDALIKA , S.Ars.",
+    "nip": "200107312025061012",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 170,
+    "nama": "PANJI KUSNENDAR MZ ,S.T.",
+    "nip": "199407192025061006",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 171,
+    "nama": "ANDREAS ADI NUGROHO",
+    "nip": "199710222025061006",
+    "jabatan": "PENGAWAS JARINGAN UTILITAS",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 172,
+    "nama": "USWATUN HASANAH, S.T.",
+    "nip": "200208272025062003",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 173,
+    "nama": "IVAN KLIWON RICARDO ,S.T.",
+    "nip": "200102232025061005",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 174,
+    "nama": "INDAH FAJERI MEUTIA SAPUTRI ,S.T",
+    "nip": "199909222025062016",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 175,
+    "nama": "TUNJUNG DWIJAYANTI, S.Ars.",
+    "nip": "200010032025062006",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 176,
+    "nama": "MUHAMMAD HAFIZHIR RIDHA ,S.T.",
+    "nip": "200010162025061006",
+    "jabatan": "Pengawas Jaringan Utilitas",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 177,
+    "nama": "FAISAL MIFTAHUL HUDA, S.T",
+    "nip": "199508142025061004",
+    "jabatan": "Penata Ruang Ahli Pertama",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 178,
+    "nama": "ETY JULI ANDRIANITA ,S.T",
+    "nip": "199607192025062003",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 179,
+    "nama": "HENDRA NOVIANTARA, S.T.",
+    "nip": "200103212025061004",
+    "jabatan": "Pranata Kewilayahan",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 180,
+    "nama": "DWI LESTARI",
+    "nip": "199706152025062006",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 181,
+    "nama": "FEDRIAN SYAHPUTRA, S.T",
+    "nip": "199404022025061003",
+    "jabatan": "Pranata Kewilayahan",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 182,
+    "nama": "YUZTIRA WANAGITA ,S.Ars",
+    "nip": "199708042025062010",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 183,
+    "nama": "SALSABILA, S.T",
+    "nip": "200105092025062012",
+    "jabatan": "Teknisi Sarana dan Prasarana",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 184,
+    "nama": "NOOR MAULIDA SARI, S.T",
+    "nip": "199806162025062011",
+    "jabatan": "Penata Ruang Ahli Pertama",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 185,
+    "nama": "ANDRIANO ST /",
+    "nip": "197111102006041026",
+    "jabatan": "Kepala Bidang Jasa Konstruksi",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 186,
+    "nama": "MUHAMMAD OKTA FAHRIZAN NOOR, S.T",
+    "nip": "198110222010011023",
+    "jabatan": "Kepala Bidang Tata Kota",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 187,
+    "nama": "DEDI, S.T",
+    "nip": "197407172008011020",
+    "jabatan": "Kepala Bidang Bina Marga",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 189,
+    "nama": "HARTADI S.T.",
+    "nip": "198111042010011018",
+    "jabatan": "Kepala UPT Balai ALKAL",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 190,
+    "nama": "SYAHBUDI NOR, A.Md",
+    "nip": "198506292014031001",
+    "jabatan": "Kasubbag TU UPT Balai ALKAL",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 191,
+    "nama": "MUSLIMAH MURNI, S.T",
+    "nip": "",
+    "jabatan": "Kasubbag Perencanaan dan Keuangan",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "UNIT_LEADER",
+    "password": ""
+  },
+  {
+    "id": 192,
+    "nama": "SLAMET",
+    "nip": "197707012007011021",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 193,
+    "nama": "BON BENDI",
+    "nip": "197908052007011013",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 194,
+    "nama": "ARDIANSYAH GADUK",
+    "nip": "197501012007011071",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 195,
+    "nama": "RUSMINIE",
+    "nip": "197808152009012001",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 196,
+    "nama": "PAULUS FRANSISKO",
+    "nip": "197512012007011011",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 197,
+    "nama": "ANAYATUL MUFARROHAH",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 198,
+    "nama": "M. SYAHRULLAH RIZKI, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 199,
+    "nama": "M. ABDUL AZIZ",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 200,
+    "nama": "ADELIA NOOR RIZKI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 201,
+    "nama": "YOGA ABIFA RAMADHIA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 202,
+    "nama": "DEWI AYU TRYANDHINY",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 203,
+    "nama": "HENGKY PRANATA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 204,
+    "nama": "MUH. TAROM, SE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 205,
+    "nama": "ARIS RINALDI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 206,
+    "nama": "M. FERRY ROMADHONI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 207,
+    "nama": "SUGIO PRANOTO",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 208,
+    "nama": "ARDY WARDANI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 209,
+    "nama": "MUHAMMAD SAFRIANSYAH",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 210,
+    "nama": "RAUDATUL MUHLISA, SE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 211,
+    "nama": "PAHRORAZI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 212,
+    "nama": "KIKI LIAYANI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 213,
+    "nama": "KHAIRUDIN NOR",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 214,
+    "nama": "FAISAL RIZKY DWISYACHPUTRA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "UPT ALKAL",
+    "unit": "ALKAL",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 215,
+    "nama": "GHAZALI AKBAR, A.MD",
+    "nip": "199009072025211009",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 216,
+    "nama": "LISA ANJELINA",
+    "nip": "200005152025211004",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 217,
+    "nama": "HASAN WAHYUDI",
+    "nip": "199211172025211005",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 218,
+    "nama": "MUTIARA PUSPITA",
+    "nip": "199306162025212009",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 219,
+    "nama": "RAFSAN ZIANNOOR, S.KOM",
+    "nip": "199202112025211006",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 220,
+    "nama": "HERI PURWANTO",
+    "nip": "197307302025211002",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 221,
+    "nama": "RINA NORLIYANTY, SE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 222,
+    "nama": "HAMZAH",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 223,
+    "nama": "RIZCA AYU WULANDARI, S.KOM",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 224,
+    "nama": "KHOFIFAH SILVIA K.C, Amd.T",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 225,
+    "nama": "AHMAD AULIA RAHMAN",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 226,
+    "nama": "MICHELIA MAHARANI, S.Ak",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 227,
+    "nama": "KHAIRUNNISA AZZAHRA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 228,
+    "nama": "MULIYADI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 229,
+    "nama": "RITA PATERNUS",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 230,
+    "nama": "SYAFRUDIN",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 231,
+    "nama": "YENI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 232,
+    "nama": "WATINI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 233,
+    "nama": "MUHAMMAD ADNAN KARLI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 234,
+    "nama": "SONA EFENDI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 235,
+    "nama": "LINDA WATI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 236,
+    "nama": "WALIADI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 237,
+    "nama": "ANA MAHRITA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 238,
+    "nama": "EPENDI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sekretariat",
+    "unit": "SEKRETARIAT",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 239,
+    "nama": "M. ZIKRI FANSURI, S.Kom",
+    "nip": "199607202025211003",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 240,
+    "nama": "TRY SUHARTONO, SE",
+    "nip": "198905282025211005",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 241,
+    "nama": "HELIYARIA RARA.S.AG",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 242,
+    "nama": "EKA INDAH FABRIANI,ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 243,
+    "nama": "M. FAJAR RAMADHANI, A.Md",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 244,
+    "nama": "MARIOTO",
+    "nip": "",
+    "jabatan": "Juru D.I. Trahean",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 245,
+    "nama": "HELIANSYAH",
+    "nip": "",
+    "jabatan": "Juru D.I. T. Laung",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 246,
+    "nama": "SUHARDIMANTO",
+    "nip": "",
+    "jabatan": "Juru D.I. Ketapang",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 247,
+    "nama": "BAMBANG MAHYUDI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 248,
+    "nama": "M. ADHITYA TRIWARDANA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 249,
+    "nama": "ILHAM ILAHI",
+    "nip": "",
+    "jabatan": "Juru D.I. Montallat",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 250,
+    "nama": "ABDURRAHMAN",
+    "nip": "",
+    "jabatan": "Juru D.I. Trinsing",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 251,
+    "nama": "VARENSIA AGMEL VANDANA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 252,
+    "nama": "AURORA ANGELINA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 253,
+    "nama": "M. NOOR SYAMSU, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 254,
+    "nama": "AKMALUDDIN YAHYA, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 255,
+    "nama": "DELI MUTIARA, S.IP",
+    "nip": "",
+    "jabatan": "Juru D.I. Malungai",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 256,
+    "nama": "AHMAD NUZULRUL RAHMAN",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 257,
+    "nama": "NELA APRILIA SUSANTI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 258,
+    "nama": "DIAN KARTIKASARI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 259,
+    "nama": "ARI SETIA GUNAWAN",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Sumber Daya Air",
+    "unit": "SDA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 260,
+    "nama": "MERRY NOLISA, A.Md",
+    "nip": "197409232007012007",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 261,
+    "nama": "REZA MUSTAQIM, S.T",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 262,
+    "nama": "MASITAH PADMASARI, ST",
+    "nip": "198203132023212021",
+    "jabatan": "Teknik Jalan dan Jembatan",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 263,
+    "nama": "SILFIA NORAYANTY, ST",
+    "nip": "199210312023212026",
+    "jabatan": "Teknik Jalan dan Jembatan",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 264,
+    "nama": "BOBY FRANSHEN HOSANG, S.T",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 265,
+    "nama": "ARIF ANWARI, S.T",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 266,
+    "nama": "LUTHFI MUNAJAD, S.T",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 267,
+    "nama": "AKHMAD MAULANA RIFANI, S.T",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 268,
+    "nama": "RIFALDI ALFAYAT, S.Ak.",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 269,
+    "nama": "ZANELLA ELSANOVA, SAB",
+    "nip": "199408032025212007",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 270,
+    "nama": "ARIEF PERDANA, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 271,
+    "nama": "SUSANA, S.Pd",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 272,
+    "nama": "LIA FITRIANI, S.HUT",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 273,
+    "nama": "MUNAWAR SYARIF, SE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 274,
+    "nama": "SEDIMOLIANTO, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 275,
+    "nama": "HARY BUDIYATMOKO, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 276,
+    "nama": "WAHYU SARI SUMARLING, S.Pd",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 277,
+    "nama": "ZEN ARIE SETIAWAN, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 278,
+    "nama": "AVRI NOVIAN JARIS,A.,Md",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 279,
+    "nama": "YOGA SAPUTRA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 280,
+    "nama": "SULASTRI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 281,
+    "nama": "NURUL AMELIA, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 282,
+    "nama": "MARIANTO, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 283,
+    "nama": "RAMDHAN FEBRIANSYAH,ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 284,
+    "nama": "AHMAD RIZKY RISANI, SE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 285,
+    "nama": "M. AL HIDAYAT",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Bina Marga",
+    "unit": "BINA_MARGA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 286,
+    "nama": "M. SYAIFUL BASRI, A.MD",
+    "nip": "199203012025211003",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 287,
+    "nama": "FADTUL RAHIM",
+    "nip": "198304082025211024",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 288,
+    "nama": "AZIZAH DWI SUCI, S.T",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 289,
+    "nama": "YODI PRANATA, S.Kom",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 290,
+    "nama": "ANTUNG MISRA, SE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 291,
+    "nama": "ROBBY NADA SANJAYA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 292,
+    "nama": "RACHMAD ANUGRAH, SH",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 293,
+    "nama": "PETRUS PARLINDUNGAN AGNEUS MANIHURUK, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 294,
+    "nama": "ACHMAT IRWANDY, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 295,
+    "nama": "DEVIA CITA RACHMAN,S.Farm",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 296,
+    "nama": "SITI FATIMAH AZZAHRA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 297,
+    "nama": "NURTIKA, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 298,
+    "nama": "PERONIKA, SH",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 299,
+    "nama": "SONY ATHALARIK S.M",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Cipta Karya",
+    "unit": "CIPTA_KARYA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 300,
+    "nama": "RUKMANA, S.Pd",
+    "nip": "199308042025212007",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 301,
+    "nama": "Tunjung Dwijayanti",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 302,
+    "nama": "YUWANIKA, S.Pd",
+    "nip": "",
+    "jabatan": "Staff Pelaksana",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 303,
+    "nama": "EKA YULIANDA, SKM",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 304,
+    "nama": "HESNAPRAHESTIE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 305,
+    "nama": "ELMADINA PUTERI LESTARI, SKM",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 306,
+    "nama": "FITRIYANTI, S.PD",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 307,
+    "nama": "IIN SYARASWATI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 308,
+    "nama": "FATMA AMELIA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 309,
+    "nama": "ARDHI RIYANTO, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 310,
+    "nama": "DADANG HARYONO, SE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 311,
+    "nama": "QAHFI AL AZMI, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 312,
+    "nama": "MUHAMMAD ARFAHRIZAL",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 313,
+    "nama": "BOBY SAPUTRA, SE",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 314,
+    "nama": "AHUR",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 315,
+    "nama": "MUHAMMAD ABDUL QHOIR, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 316,
+    "nama": "MUHAMMAD ALDIANOR",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 317,
+    "nama": "DENI SUPRIANTO",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 318,
+    "nama": "ANUGERAH SAWMIL",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 319,
+    "nama": "RIVALDY RAMADHAN",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 320,
+    "nama": "PEMERLIANSYAH",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 321,
+    "nama": "IBRAHIM CAHAYA SUKMA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 322,
+    "nama": "DANDY SAPUTRA",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 323,
+    "nama": "KARSONO",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 324,
+    "nama": "Muhammad Aditiya Nurrahim",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 325,
+    "nama": "Ahmad Miraji Efendi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 326,
+    "nama": "Beny Malik",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 327,
+    "nama": "Ahmad Rijali Hadi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 328,
+    "nama": "Amrullah Almukminin",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 329,
+    "nama": "Ella",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 330,
+    "nama": "Jumrianto",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 331,
+    "nama": "Suprastyo",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 332,
+    "nama": "Herman Nurgafur",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 333,
+    "nama": "Otma Hidayatullah",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 334,
+    "nama": "Ahmad Safei",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 335,
+    "nama": "Ahmad Untung Suparmanto",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 336,
+    "nama": "M.Zuhri Khanafi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 337,
+    "nama": "M.Raziv",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 338,
+    "nama": "Munawir Ahmad",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 339,
+    "nama": "Heru Gusandi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 340,
+    "nama": "Yahya",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 341,
+    "nama": "Imam Safi'i",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 342,
+    "nama": "Iman",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 343,
+    "nama": "Romansyah Bagan",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 344,
+    "nama": "Galo Sitaboyan",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 345,
+    "nama": "M.Syariffudin Susanto",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 346,
+    "nama": "M. Apriano Adhi Pratama",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 347,
+    "nama": "Delina Puspita",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 348,
+    "nama": "M.Sarkani",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 349,
+    "nama": "Sunarto",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 350,
+    "nama": "Wajir",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 351,
+    "nama": "Gunadi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 352,
+    "nama": "Nurul Qomari",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 353,
+    "nama": "Nyamin",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 354,
+    "nama": "Fatikhul Ikhsan",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 355,
+    "nama": "Sutrisno",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 356,
+    "nama": "Metdri",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 357,
+    "nama": "Sandi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 358,
+    "nama": "M.Mukhlis",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 359,
+    "nama": "Edi Triono",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 360,
+    "nama": "Chandra Lesmana",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 361,
+    "nama": "Ihin",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 362,
+    "nama": "Abdul Rachman",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 363,
+    "nama": "Nda",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 364,
+    "nama": "Rosidi Menton",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 365,
+    "nama": "Amin",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 366,
+    "nama": "Fahrul",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 367,
+    "nama": "Suriani",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 368,
+    "nama": "Welan Cahyadi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 369,
+    "nama": "Nuridan",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 370,
+    "nama": "Mulyono",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 371,
+    "nama": "Hasanul Fitriadi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 372,
+    "nama": "Lamota",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 373,
+    "nama": "Ali Fermadi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 374,
+    "nama": "Ahmad Noorahman",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 375,
+    "nama": "A.Samial Radadi Sidik",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 376,
+    "nama": "Nur Ngabidin",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 377,
+    "nama": "Muhammad Aditya",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 378,
+    "nama": "Ahmad Jordiansyah",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 379,
+    "nama": "Eric Samolla",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 380,
+    "nama": "Yaser Arahman",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 381,
+    "nama": "Wahyu Aji Purnomo",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 382,
+    "nama": "Mi'raj Fadillah",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 383,
+    "nama": "Imam Rujali",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 384,
+    "nama": "Muamar Noor Ragil",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 385,
+    "nama": "Muhammad Rizky",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 386,
+    "nama": "Irna Purwanti",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 387,
+    "nama": "Tukiran",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 388,
+    "nama": "Kholypah Puspita",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 389,
+    "nama": "Isnawati",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 390,
+    "nama": "B. Baith Baydillah BB",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 391,
+    "nama": "Sriyati",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 392,
+    "nama": "Agus Wibowo",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 393,
+    "nama": "Afgan Respati",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 394,
+    "nama": "Lumbertus Beni Murdani",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 395,
+    "nama": "Gusti Fauza",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 396,
+    "nama": "Muhammad Rahmadani",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 397,
+    "nama": "Suratun",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 398,
+    "nama": "Usman Mahyudi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 399,
+    "nama": "Lilis Masula",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 400,
+    "nama": "Muhammad riyadi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 401,
+    "nama": "Sri Kasmiyati",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 402,
+    "nama": "Sarjono",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 403,
+    "nama": "Ari Sumanti",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 404,
+    "nama": "Hefrianto",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 405,
+    "nama": "Ninik",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 406,
+    "nama": "Albanik",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 407,
+    "nama": "Satiyem",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 408,
+    "nama": "Hermony",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 409,
+    "nama": "Rohimah",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 410,
+    "nama": "Sri Sumiati",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 411,
+    "nama": "Sulistriani",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 412,
+    "nama": "Supatmi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 413,
+    "nama": "Muhammad Rizki Purnama",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 414,
+    "nama": "Siti Sholikhati",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 415,
+    "nama": "Supian Nedy",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 416,
+    "nama": "Agi Pangestu",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 417,
+    "nama": "Mistar Mulyono",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 418,
+    "nama": "Mursi",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 419,
+    "nama": "Muhammad Iqbal Saputra",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 420,
+    "nama": "Feri",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 421,
+    "nama": "Taufik Firdaus Nurhidayat",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 422,
+    "nama": "Aura Audya Salsabilla",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 423,
+    "nama": "Robijul Yahdi Saputra, SP.",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 424,
+    "nama": "FAZRY, S. Pd.",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 425,
+    "nama": "SAIDI RIDHO RIZKY",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 426,
+    "nama": "Orang",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 427,
+    "nama": "MUHAMMAD ARFAHRIZAL, S.I.KOM.",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 428,
+    "nama": "IBRAHIM CAHAYA SUKMA, S.AP.",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 429,
+    "nama": "IIN SYARASWATI, SE.",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 430,
+    "nama": "FATMA AMELIA, SKM.",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 431,
+    "nama": "Akhmad Noorahman",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 432,
+    "nama": "MUHAMMAD RIZKY PURNAMA (PETUGAS)",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 433,
+    "nama": "MUHAMMAD SARKANI (PETUGAS)",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 434,
+    "nama": "JESRIKA ZACHAWERUS",
+    "nip": "",
+    "jabatan": "cpns",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 435,
+    "nama": "DENI SUPRIYANTO (PETUGAS)",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 436,
+    "nama": "AHMAD SAMIAL (PETUGAS)",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 437,
+    "nama": "AHMAD JORDIANSYAH (PENGAWAS)",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 438,
+    "nama": "WAHYU AJI PURNOMO (PENGAWAS)",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 439,
+    "nama": "ERIC SAMOLLA (PENGAWAS)",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Kota",
+    "unit": "TATA_KOTA",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 440,
+    "nama": "BENY PRATAMA. S,Sos",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Tata Ruang",
+    "unit": "TATA_RUANG",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 441,
+    "nama": "RAHMA NAULI HUTABARAT",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 442,
+    "nama": "BRAINYMAN, S.Pd.",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 443,
+    "nama": "FAKHRI ABDURRAHMAN A. S.Kom",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 444,
+    "nama": "JEFRI SIANTONI, ST",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 445,
+    "nama": "AULIA RIDHA ANISYAH PUTRI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 446,
+    "nama": "EKO ANIS SETYORINI",
+    "nip": "",
+    "jabatan": "",
+    "bidang": "Jasa Konstruksi",
+    "unit": "JASA_KONSTRUKSI",
+    "role": "EMPLOYEE",
+    "password": ""
+  },
+  {
+    "id": 447,
+    "nama": "",
+    "nip": "",
+    "jabatan": "Sekretaris Dinas",
+    "bidang": "Dinas",
+    "unit": "DINAS",
+    "role": "EXECUTIVE",
+    "password": ""
+  }
+]

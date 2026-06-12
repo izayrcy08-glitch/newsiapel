@@ -1,49 +1,57 @@
 ﻿import { useState, useEffect, useRef, useCallback } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { QRCodeSVG } from "qrcode.react";
+import { useMemo } from "react";
 import { ref, get, onValue, set, update } from "firebase/database";
 import { database } from "./firebase";
-import pegawaiData from "./data/pegawai.json";
+import pegawaiData from "./data/pegawai_master.json";
+import legacyPegawaiData from "./data/pegawai_legacy.json";
 import orgData from "./data/organization.json";
-import attendanceData from "./data/attendance.json";
-import sanctionsData from "./data/sanctions.json";
 
-// ─── DUMMY DATA: PENGJUAN PERUBAHAN STATUS ────────────────────────────────────
-const DUMMY_PENGJUAN = [
-  {
-    id: 1,
-    pegawaiId: 15,
-    nama: "Rasyid",
-    statusLama: "Tanpa Keterangan",
-    statusBaru: "Dinas Luar",
-    dokumen: "surat_tugas.pdf",
-    tanggal: "25 Mei 2026 09:15",
-    statusVerifikasi: "menunggu",
-    analisisAI: null,
-  },
-  {
-    id: 2,
-    pegawaiId: 22,
-    nama: "Ahmad Fauzi",
-    statusLama: "Tanpa Keterangan",
-    statusBaru: "Sakit",
-    dokumen: "surat_dokter.pdf",
-    tanggal: "25 Mei 2026 08:45",
-    statusVerifikasi: "menunggu",
-    analisisAI: null,
-  },
-  {
-    id: 3,
-    pegawaiId: 33,
-    nama: "Siti Rahma",
-    statusLama: "Tanpa Keterangan",
-    statusBaru: "Izin",
-    dokumen: "surat_izin.pdf",
-    tanggal: "25 Mei 2026 07:30",
-    statusVerifikasi: "disetujui",
-    analisisAI: null,
-  },
-];
+const MASTER_PEGAWAI_STORAGE_KEY = "siapel.masterPegawaiData.v1";
+
+const loadMasterPegawaiData = () => {
+  if (typeof window === "undefined") return normalizePegawaiData(pegawaiData);
+
+  try {
+    const stored = window.localStorage.getItem(MASTER_PEGAWAI_STORAGE_KEY);
+    if (!stored) return normalizePegawaiData(pegawaiData);
+
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed) || parsed.length === 0) return normalizePegawaiData(pegawaiData);
+    return normalizePegawaiData(parsed);
+  } catch (error) {
+    console.warn("Failed to load stored master pegawai data:", error);
+    return normalizePegawaiData(pegawaiData);
+  }
+};
+
+const normalizePegawaiRecord = (pegawai, fallbackId) => {
+  const unit = pegawai.unit || pegawai.bidang || "";
+  const bidang = pegawai.bidang || pegawai.unit || "";
+  return {
+    ...pegawai,
+    id: pegawai.id ?? fallbackId,
+    nama: pegawai.nama || "",
+    nip: pegawai.nip || "",
+    jabatan: pegawai.jabatan || "",
+    unit,
+    bidang,
+    role: pegawai.role || "EMPLOYEE",
+    password: pegawai.password || "",
+    isActive: pegawai.isActive !== false,
+  };
+};
+
+const normalizePegawaiData = (people = []) => people.map((pegawai, index) => normalizePegawaiRecord(pegawai, index + 1));
+
+const mergeAttendanceWithPeople = (attendance = {}, people = []) => {
+  const merged = {};
+  for (const person of people) {
+    merged[person.id] = attendance?.[person.id] || { status: null, jamHadir: null };
+  }
+  return merged;
+};
 
 const STATUS_VERIFIKASI_COLORS = {
   menunggu: { bg: "bg-amber-500/20", text: "text-amber-400", icon: "🟡", label: "Menunggu Verifikasi" },
@@ -54,6 +62,7 @@ const STATUS_VERIFIKASI_COLORS = {
 const STATUS_OPTIONS = ["Dinas Dalam", "Dinas Luar", "Izin", "Sakit"];
 
 const UNIT_LABELS = {
+  PIMPINAN: "Pimpinan",
   DINAS: "Dinas",
   SEKRETARIAT: "Sekretariat",
   ALKAL: "UPT ALKAL",
@@ -67,130 +76,80 @@ const UNIT_LABELS = {
 
 const getUnitLabel = (unitCode) => UNIT_LABELS[unitCode] || unitCode || "";
 
-const PIMPINAN_ACCESS_ROLES = [
-  {
-    id: "exec-kadis",
-    group: "EXECUTIVE",
-    name: "H. Rody, S.T., M.I.P.",
-    nip: "196710151993031008",
-    jabatan: "Kadis PUPR",
-    unit: "SEKRETARIAT",
-    scope: "ALL",
-    description: "Kepala Dinas",
-  },
-  {
-    id: "exec-sekdis",
-    group: "EXECUTIVE",
-    name: "Sekretaris Dinas",
-    nip: "",
-    jabatan: "",
-    unit: "DINAS",
-    scope: "ALL",
-    description: "Belum diisi",
-  },
-  {
-    id: "ul-sekretariat-mira",
-    group: "UNIT_LEADER",
-    name: "Mira Apriyantinada, S.T.",
-    nip: "198004272011012008",
-    jabatan: "Kasubbag Tata Usaha, Data dan Informasi Publik",
-    unit: "SEKRETARIAT",
-    scope: "UNIT",
-    description: "Sekretariat",
-  },
-  {
-    id: "ul-sekretariat-muslimah",
-    group: "UNIT_LEADER",
-    name: "Muslimah Murni, S.T.",
-    nip: "",
-    jabatan: "Kasubbag Perencanaan dan Keuangan",
-    unit: "SEKRETARIAT",
-    scope: "UNIT",
-    description: "Sekretariat",
-  },
-  {
-    id: "ul-alkal-hartadi",
-    group: "UNIT_LEADER",
-    name: "Hartadi",
-    nip: "",
-    jabatan: "Kepala UPT Balai ALKAL",
-    unit: "ALKAL",
-    scope: "UNIT",
-    description: "UPT ALKAL",
-  },
-  {
-    id: "ul-alkal-syahbudi",
-    group: "UNIT_LEADER",
-    name: "Syahbudi Nor, A.Md.",
-    nip: "198506292014031001",
-    jabatan: "Kasubbag TU UPT Balai ALKAL",
-    unit: "ALKAL",
-    scope: "UNIT",
-    description: "UPT ALKAL",
-  },
-  {
-    id: "ul-binamarga-dedi",
-    group: "UNIT_LEADER",
-    name: "Dedi, S.T.",
-    nip: "197407172008011020",
-    jabatan: "Kepala Bidang Bina Marga",
-    unit: "BINA_MARGA",
-    scope: "UNIT",
-    description: "Bina Marga",
-  },
-  {
-    id: "ul-sda-subiyantoro",
-    group: "UNIT_LEADER",
-    name: "Subiyantoro, S.T., M.T.",
-    nip: "198107312008041002",
-    jabatan: "Kepala Bidang Sumber Daya Air",
-    unit: "SDA",
-    scope: "UNIT",
-    description: "Sumber Daya Air",
-  },
-  {
-    id: "ul-ciptakarya-ignasius",
-    group: "UNIT_LEADER",
-    name: "Ignasius, S.T.",
-    nip: "197610072007011007",
-    jabatan: "Kepala Bidang Cipta Karya",
-    unit: "CIPTA_KARYA",
-    scope: "UNIT",
-    description: "Cipta Karya",
-  },
-  {
-    id: "ul-tatakota-okta",
-    group: "UNIT_LEADER",
-    name: "Muhammad Okta Fahrizan Noor, S.T.",
-    nip: "198110222010011023",
-    jabatan: "Kepala Bidang Tata Kota",
-    unit: "TATA_KOTA",
-    scope: "UNIT",
-    description: "Tata Kota",
-  },
-  {
-    id: "ul-tataruang-patria",
-    group: "UNIT_LEADER",
-    name: "Patria, S.T., M.S.",
-    nip: "197307202005011007",
-    jabatan: "Kepala Bidang Tata Ruang",
-    unit: "TATA_RUANG",
-    scope: "UNIT",
-    description: "Tata Ruang",
-  },
-  {
-    id: "ul-jasakonstruksi-andriano",
-    group: "UNIT_LEADER",
-    name: "Andriano, S.T.",
-    nip: "197111102006041026",
-    jabatan: "Kepala Bidang Jasa Konstruksi",
-    unit: "JASA_KONSTRUKSI",
-    scope: "UNIT",
-    description: "Jasa Konstruksi",
-  },
+const PEGAWAI_GROUP_ORDER = [
+  "PIMPINAN",
+  "DINAS",
+  "SEKRETARIAT",
+  "ALKAL",
+  "BINA_MARGA",
+  "SDA",
+  "CIPTA_KARYA",
+  "TATA_KOTA",
+  "TATA_RUANG",
+  "JASA_KONSTRUKSI",
 ];
 
-const findPimpinanById = (id) => PIMPINAN_ACCESS_ROLES.find((item) => item.id === id) || null;
+const getPegawaiGroupKey = (pegawai) => pegawai.unit || pegawai.bidang || "LAINNYA";
+
+const getPegawaiGroupLabel = (groupKey) => getUnitLabel(groupKey);
+const getScopedPeople = (people, sourcePerson, scope = "ALL") => {
+  if (scope === "ALL" || !sourcePerson) return people;
+  const scopeKey = getPegawaiGroupKey(sourcePerson);
+  if (!scopeKey) return people;
+  return people.filter((person) => getPegawaiGroupKey(person) === scopeKey);
+};
+const normalizeIdentity = (value) =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+
+const buildPimpinanAccessRoles = (people) => {
+  const seen = new Set();
+  const items = [];
+
+  const rolePriority = { EXECUTIVE: 0, UNIT_LEADER: 1 };
+  const unitPriority = {
+    DINAS: 0,
+    SEKRETARIAT: 1,
+    ALKAL: 2,
+    SDA: 3,
+    BINA_MARGA: 4,
+    CIPTA_KARYA: 5,
+    TATA_KOTA: 6,
+    TATA_RUANG: 7,
+    JASA_KONSTRUKSI: 8,
+  };
+
+  for (const person of people) {
+    if (person.role !== "EXECUTIVE" && person.role !== "UNIT_LEADER") continue;
+
+    const dedupeKey = `${person.role}|${normalizeIdentity(person.nip)}|${normalizeIdentity(person.nama)}|${normalizeIdentity(person.jabatan)}|${person.unit}`;
+    if (seen.has(dedupeKey)) continue;
+    seen.add(dedupeKey);
+
+    items.push({
+      id: `${person.role.toLowerCase()}-${person.nip || normalizeIdentity(person.nama) || normalizeIdentity(person.jabatan) || normalizeIdentity(person.unit)}`,
+      group: person.role,
+      name: person.nama || person.jabatan || "Sekretaris Dinas",
+      nip: person.nip || "",
+      jabatan: person.jabatan || "",
+      unit: person.unit || "",
+      scope: person.role === "EXECUTIVE" ? "ALL" : "UNIT",
+      description: person.role === "EXECUTIVE"
+        ? (person.nama ? "Kepala Dinas" : "Belum diisi")
+        : getUnitLabel(person.unit),
+    });
+  }
+
+  return items.sort((a, b) => {
+    const roleDiff = (rolePriority[a.group] ?? 99) - (rolePriority[b.group] ?? 99);
+    if (roleDiff !== 0) return roleDiff;
+    const unitDiff = (unitPriority[a.unit] ?? 99) - (unitPriority[b.unit] ?? 99);
+    if (unitDiff !== 0) return unitDiff;
+    return a.name.localeCompare(b.name);
+  });
+};
 
 // ─── UTILS ───────────────────────────────────────────────────────────────────
 const getGreeting = () => {
@@ -243,13 +202,10 @@ const SANKSI_COLORS = {
 };
 
 // ─── INITIAL ATTENDANCE STATE ────────────────────────────────────────────────
-const buildInitialAttendance = () => {
+const buildInitialAttendance = (people = pegawaiData) => {
   const map = {};
-  for (const p of pegawaiData) {
+  for (const p of people) {
     map[p.id] = { status: null, jamHadir: null };
-  }
-  for (const r of attendanceData.records) {
-    map[r.pegawaiId] = { status: r.status, jamHadir: r.jamHadir };
   }
   return map;
 };
@@ -290,7 +246,7 @@ const getStatusIcon = (status) => {
 };
 
 // ─── DISCIPLINE STATUS HELPER ────────────────────────────────────────────────
-const tanpaKeteranganBulanIni = 2;
+
 
 const getDisciplineStatus = (count) => {
   if (count === 0) return { icon: "🟢", label: "Sangat Baik" };
@@ -299,48 +255,10 @@ const getDisciplineStatus = (count) => {
   return { icon: "🔴", label: "Tindak Lanjut" };
 };
 
-// ─── DUMMY DATA PENGJUAN STATUS ──────────────────────────────────────────────
-const PENGJUAN_STATUS_DATA = [
-  {
-    id: "1",
-    pegawaiId: "peg-001",
-    nip: "198901010001",
-    nama: "Rasyid",
-    statusLama: "Tanpa Keterangan",
-    statusBaru: "Dinas Luar",
-    dokumen: "surat_tugas.pdf",
-    tanggal: "25 Mei 2026 09:15",
-    waktu: "09:15",
-    statusVerifikasi: "menunggu",
-    analisisAI: null,
-  },
-  {
-    id: "2",
-    pegawaiId: "peg-002",
-    nip: "199205050002",
-    nama: "Ahmad Fauzi",
-    statusLama: "Tanpa Keterangan",
-    statusBaru: "Sakit",
-    dokumen: "surat_dokter.pdf",
-    tanggal: "25 Mei 2026 08:45",
-    waktu: "08:45",
-    statusVerifikasi: "menunggu",
-    analisisAI: null,
-  },
-  {
-    id: "3",
-    pegawaiId: "peg-003",
-    nip: "199508120003",
-    nama: "Siti Rahma",
-    statusLama: "Tanpa Keterangan",
-    statusBaru: "Izin",
-    dokumen: "surat_izin.pdf",
-    tanggal: "25 Mei 2026 07:30",
-    waktu: "07:30",
-    statusVerifikasi: "disetujui",
-    analisisAI: null,
-  },
-];
+// ─── PENGAJUAN STATUS OPERASIONAL ─────────────────────────────────────────────
+// Jalur operasional membaca data nyata. Saat ini sumber pengajuan belum terhubung,
+// sehingga fallback default tetap kosong sampai integrasi backend pengajuan aktif.
+const PENGJUAN_STATUS_DATA = [];
 
 const REASON_OPTIONS = [
   { id: "hujan", label: "Hujan Deras", icon: "🌧️" },
@@ -404,7 +322,7 @@ const ATTENDANCE_STAT_ITEMS = [
   { key: "sakit", status: "Sakit", label: "Sakit", icon: "🤒", color: "text-orange-400" },
 ];
 
-const getAttendanceStatItems = (apelStatus) => {
+const getAttendanceStatItems = (apelStatus, { demoMode = false } = {}) => {
   // Jika ditiadakan, tampilkan pesan khusus
   if (apelStatus === "ditiadakan") {
     return [
@@ -412,33 +330,40 @@ const getAttendanceStatItems = (apelStatus) => {
     ];
   }
   return ATTENDANCE_STAT_ITEMS.map((item, index) => {
-    if (index !== 1 || apelStatus === "ended") return item;
+    if (!demoMode || index !== 1 || apelStatus === "ended") return item;
     return { ...item, status: "Belum Absen", label: "Belum Absen", icon: "⏳", color: "text-slate-400" };
   });
 };
 
 const isApelDitiadakan = (apelStatus) => apelStatus === "ditiadakan";
 
-const calcAttendanceStats = (attendance, apelStatus, people = pegawaiData) => {
-  let hadir = 0, unaccounted = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0;
+const calcAttendanceStats = (attendance, apelStatus, people = pegawaiData, { includeMissingAsUnrecorded = true } = {}) => {
+  let hadir = 0, unaccounted = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0, recorded = 0;
 
   for (const p of people) {
     const status = attendance[p.id]?.status;
+
+    if (!status) {
+      if (includeMissingAsUnrecorded) unaccounted++;
+      continue;
+    }
+
+    recorded++;
 
     if (status === "Hadir") hadir++;
     else if (status === "Dinas Dalam") dinasD++;
     else if (status === "Dinas Luar") dinasL++;
     else if (status === "Izin") izin++;
     else if (status === "Sakit") sakit++;
-    else unaccounted++;
+    else if (status === "Tanpa Keterangan") unaccounted++;
   }
 
-  const total = people.length;
+  const total = includeMissingAsUnrecorded ? people.length : recorded;
   const persen = total > 0 ? Math.round((hadir / total) * 100) : 0;
-  const tanpaKet = apelStatus === "ended" ? unaccounted : 0;
-  const belumAbsen = apelStatus === "ended" ? 0 : unaccounted;
+  const tanpaKet = includeMissingAsUnrecorded ? (apelStatus === "ended" ? unaccounted : 0) : unaccounted;
+  const belumAbsen = includeMissingAsUnrecorded ? (apelStatus === "ended" ? 0 : unaccounted) : 0;
 
-  return { total, hadir, unaccounted, tanpaKet, belumAbsen, dinasD, dinasL, izin, sakit, persen };
+  return { total, recorded, hadir, unaccounted, tanpaKet, belumAbsen, dinasD, dinasL, izin, sakit, persen };
 };
 
 const getBidangPerformanceStatus = (persen) => {
@@ -448,7 +373,7 @@ const getBidangPerformanceStatus = (persen) => {
   return { label: "Perlu Tindak Lanjut", color: "text-red-300", bg: "bg-red-500/15", border: "border-red-500/30" };
 };
 
-const LAST_MONTH_DISCIPLINE = {
+const DEMO_LAST_MONTH_DISCIPLINE = {
   sekretariat: 96,
   tata_kota: 94,
   tata_ruang: 92,
@@ -457,6 +382,7 @@ const LAST_MONTH_DISCIPLINE = {
   sumber_daya_air: 84,
   jasa_konstruksi: 81,
 };
+
 
 const RANK_MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -873,15 +799,31 @@ const RoleSelector = ({ onSelect }) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: PEGAWAI LOGIN
 // ══════════════════════════════════════════════════════════════════════════════
-const PegawaiLogin = ({ onBack, onLogin }) => {
+const PegawaiLogin = ({ people = pegawaiData, onBack, onLogin }) => {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(null);
 
-  const filtered = pegawaiData.filter(p =>
-  p.nama.toLowerCase().startsWith(search.toLowerCase()) ||
-  p.jabatan.toLowerCase().startsWith(search.toLowerCase()) ||
-  p.bidang.toLowerCase().startsWith(search.toLowerCase())
-).slice(0, 20);
+  const normalizedSearch = search.trim().toLowerCase();
+  const filtered = people.filter((p) => {
+    const searchable = `${p.nama} ${p.nip || ""} ${p.jabatan || ""} ${p.bidang || ""} ${p.unit || ""}`.toLowerCase();
+    return !normalizedSearch || searchable.includes(normalizedSearch);
+  });
+
+  const groupedFiltered = filtered.reduce((acc, pegawai) => {
+    const key = getPegawaiGroupKey(pegawai);
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(pegawai);
+    return acc;
+  }, {});
+
+  const groupedEntries = Object.entries(groupedFiltered).sort((a, b) => {
+    const indexA = PEGAWAI_GROUP_ORDER.indexOf(a[0]);
+    const indexB = PEGAWAI_GROUP_ORDER.indexOf(b[0]);
+    if (indexA !== -1 || indexB !== -1) {
+      return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+    }
+    return getPegawaiGroupLabel(a[0]).localeCompare(getPegawaiGroupLabel(b[0]));
+  });
 
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-8">
@@ -902,31 +844,60 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
         </div>
 
         {/* List */}
-        <div className="space-y-2 max-h-[55vh] overflow-y-auto pr-1 scrollbar-thin">
-          {search.trim() !== '' && filtered.map(p => (
-            <button key={p.id} onClick={() => setSelected(p)}
-              className={`w-full text-left p-3.5 rounded-xl border transition-all duration-150 active:scale-[0.98] ${selected?.id === p.id
-                ? "bg-emerald-500/20 border-emerald-500/50"
-                : "bg-slate-900/60 border-slate-700/50 hover:border-slate-600/70 hover:bg-slate-800/60"}`}>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white text-sm font-bold shrink-0">
-                  {p.nama.split(" ").slice(0, 2).map(n => n[0]).join("")}
+        <div className="space-y-4 max-h-[55vh] overflow-y-auto pr-1 scrollbar-thin">
+          {search.trim() !== '' && groupedEntries.map(([groupKey, items]) => (
+            <div key={groupKey} className="space-y-2">
+              <div className="flex items-center gap-3 px-1">
+                <div>
+                  <div className="text-slate-300 text-[11px] font-semibold uppercase tracking-[0.18em]">
+                    {getPegawaiGroupLabel(groupKey)}
+                  </div>
+                  <div className="text-slate-500 text-[10px] mt-0.5">{items.length} pegawai</div>
                 </div>
-                <ProfileLines
-                  name={p.nama}
-                  nip={p.nip}
-                  jabatan={p.jabatan}
-                  nameClassName="text-white text-sm font-semibold"
-                  metaClassName="text-slate-500 text-xs"
-                  containerClassName="flex-1"
-                />
-                {selected?.id === p.id && (
-                  <svg className="w-5 h-5 text-emerald-400 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
+                <div className="h-px flex-1 bg-slate-800/70" />
               </div>
-            </button>
+              <div className="space-y-2">
+                {items.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => setSelected(p)}
+                    className={`w-full text-left p-3.5 rounded-xl border transition-all duration-150 active:scale-[0.98] ${selected?.id === p.id
+                      ? "bg-emerald-500/20 border-emerald-500/50"
+                      : "bg-slate-900/60 border-slate-700/50 hover:border-slate-600/70 hover:bg-slate-800/60"}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                        {p.nama.split(" ").slice(0, 2).map(n => n[0]).join("")}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <ProfileLines
+                          name={p.nama}
+                          nip={p.nip}
+                          jabatan={p.jabatan}
+                          nameClassName="text-white text-sm font-semibold"
+                          metaClassName="text-slate-500 text-xs"
+                        />
+                        <div className="mt-1 flex flex-wrap gap-1.5">
+                          <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                            {getUnitLabel(p.unit) || "Tanpa Unit"}
+                          </span>
+                          {p.bidang && p.bidang !== getUnitLabel(p.unit) ? (
+                            <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                              {p.bidang}
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
+                      {selected?.id === p.id && (
+                        <svg className="w-5 h-5 text-emerald-400 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
           {filtered.length === 0 && (
             <div className="text-center text-slate-600 py-8 text-sm">Pegawai tidak ditemukan</div>
@@ -943,7 +914,11 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
                 <div className="min-w-0 flex-1">
                   <div className="text-white text-sm font-semibold">{selected.nama}</div>
                   {selected.nip ? <div className="text-slate-400 text-xs mt-0.5">NIP: {selected.nip}</div> : null}
-                  {selected.jabatan ? <div className="text-slate-400 text-xs mt-0.5">{selected.bidang} · {selected.jabatan}</div> : null}
+                  <div className="text-slate-400 text-xs mt-0.5">
+                    {getUnitLabel(selected.unit) || selected.bidang || ""}
+                    {selected.bidang && getUnitLabel(selected.unit) && selected.bidang !== getUnitLabel(selected.unit) ? ` · ${selected.bidang}` : ""}
+                  </div>
+                  {selected.jabatan ? <div className="text-slate-400 text-xs mt-0.5">{selected.jabatan}</div> : null}
                 </div>
               </div>
             </Card>
@@ -961,9 +936,9 @@ const PegawaiLogin = ({ onBack, onLogin }) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: PIMPINAN SELECTOR
 // ══════════════════════════════════════════════════════════════════════════════
-const PimpinanSelector = ({ onBack, onSelect }) => {
-  const executive = PIMPINAN_ACCESS_ROLES.filter((item) => item.group === "EXECUTIVE");
-  const unitLeaders = PIMPINAN_ACCESS_ROLES.filter((item) => item.group === "UNIT_LEADER");
+const PimpinanSelector = ({ pimpinanAccessRoles = [], onBack, onSelect }) => {
+  const executive = pimpinanAccessRoles.filter((item) => item.group === "EXECUTIVE");
+  const unitLeaders = pimpinanAccessRoles.filter((item) => item.group === "UNIT_LEADER");
 
   const renderCard = (item) => (
     <button
@@ -1039,19 +1014,38 @@ const PimpinanSelector = ({ onBack, onSelect }) => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
   );
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DEVELOPER CONSOLE
 // ══════════════════════════════════════════════════════════════════════════════
-const DeveloperConsole = ({ onBack }) => {
+const DeveloperConsole = ({
+  onBack,
+  masterPegawaiData,
+  legacyPegawaiData,
+  attendance,
+  apelStatus,
+  apelSession,
+  apelReason,
+  apelReasonText,
+  onScan,
+  onReset,
+  onKoreksi,
+  onApelSessionChange,
+  onApelReasonChange,
+  onScanSimulate,
+  onAddPegawai,
+  onUpdatePegawai,
+  onDeletePegawai,
+}) => {
+  const [dataMode, setDataMode] = useState("master");
+  const [search, setSearch] = useState("");
+  const [viewAsRole, setViewAsRole] = useState(null);
+  const [viewAsPersonId, setViewAsPersonId] = useState("");
+
   const sections = [
-    {
-      title: "View As",
-      items: ["Employee", "Unit Leader", "Executive", "Admin"],
-    },
     {
       title: "Simulation",
       items: ["Attendance Simulation", "Employee Simulation", "QR Simulation"],
@@ -1066,6 +1060,220 @@ const DeveloperConsole = ({ onBack }) => {
     },
   ];
 
+  const activeData = dataMode === "legacy" ? legacyPegawaiData : masterPegawaiData;
+  const normalizedSearch = search.trim().toLowerCase();
+  const filtered = activeData.filter((pegawai) => {
+    const searchable = `${pegawai.nama} ${pegawai.nip || ""} ${pegawai.jabatan || ""} ${pegawai.bidang || ""} ${pegawai.unit || ""} ${pegawai.role || ""}`.toLowerCase();
+    return !normalizedSearch || searchable.includes(normalizedSearch);
+  });
+
+  const groupedFiltered = filtered.reduce((acc, pegawai) => {
+    const key = getPegawaiGroupKey(pegawai);
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(pegawai);
+    return acc;
+  }, {});
+
+  const groupedEntries = Object.entries(groupedFiltered).sort((a, b) => {
+    const indexA = PEGAWAI_GROUP_ORDER.indexOf(a[0]);
+    const indexB = PEGAWAI_GROUP_ORDER.indexOf(b[0]);
+    if (indexA !== -1 || indexB !== -1) {
+      return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+    }
+    return getPegawaiGroupLabel(a[0]).localeCompare(getPegawaiGroupLabel(b[0]));
+  });
+
+  const summaryCards = [
+    { label: "Total Data", value: activeData.length, tone: "text-white" },
+    { label: "Executive", value: activeData.filter((p) => p.role === "EXECUTIVE").length, tone: "text-amber-200" },
+    { label: "Unit Leader", value: activeData.filter((p) => p.role === "UNIT_LEADER").length, tone: "text-sky-200" },
+    { label: "Employee", value: activeData.filter((p) => p.role === "EMPLOYEE").length, tone: "text-emerald-200" },
+  ];
+
+  const sourceMeta = dataMode === "legacy"
+    ? {
+        label: "Legacy Demo",
+        description: "Hanya untuk demo, audit, dan recovery. Tidak dipakai operasional.",
+        badgeClass: "bg-amber-500/15 text-amber-200 border-amber-500/25",
+        panelClass: "border-amber-500/20 bg-amber-500/5",
+      }
+    : {
+        label: "Master Operasional",
+        description: "Sumber data aktif untuk pilot project dan jalur operasional.",
+        badgeClass: "bg-emerald-500/15 text-emerald-200 border-emerald-500/25",
+        panelClass: "border-emerald-500/20 bg-emerald-500/5",
+      };
+
+  const roleOptions = [
+    { id: "employee", label: "Pegawai", desc: "View as employee", icon: "👤" },
+    { id: "unit_leader", label: "Unit Leader", desc: "View as unit/bidang", icon: "⭐" },
+    { id: "executive", label: "Executive", desc: "View as all org", icon: "🏛️" },
+    { id: "admin", label: "Admin", desc: "View as operasional", icon: "🛡️" },
+  ];
+
+  const previewAttendance = dataMode === "legacy"
+    ? Object.fromEntries(activeData.map((p) => [p.id, { status: null, jamHadir: null }]))
+    : attendance;
+
+  const roleCandidates = viewAsRole === "admin"
+    ? []
+    : activeData.filter((p) => {
+        if (viewAsRole === "employee") return p.role === "EMPLOYEE";
+        if (viewAsRole === "unit_leader") return p.role === "UNIT_LEADER";
+        if (viewAsRole === "executive") return p.role === "EXECUTIVE";
+        return false;
+      });
+
+  const selectedViewPerson = roleCandidates.find((p) => String(p.id) === String(viewAsPersonId)) || roleCandidates[0] || null;
+  const selectedPimpinanView = selectedViewPerson
+    ? {
+        name: selectedViewPerson.nama,
+        nip: selectedViewPerson.nip || "",
+        jabatan: selectedViewPerson.jabatan || "",
+        unit: selectedViewPerson.unit || "",
+        scope: selectedViewPerson.role === "EXECUTIVE" ? "ALL" : "UNIT",
+        group: selectedViewPerson.role === "EXECUTIVE" ? "EXECUTIVE" : "UNIT_LEADER",
+        description: selectedViewPerson.role === "EXECUTIVE" ? "Kepala Dinas" : getUnitLabel(selectedViewPerson.unit),
+      }
+    : null;
+
+  const isLegacyView = dataMode === "legacy";
+  const safeOnScan = isLegacyView ? () => {} : onScan;
+  const safeOnReset = isLegacyView ? () => {} : onReset;
+  const safeOnKoreksi = isLegacyView ? () => {} : onKoreksi;
+  const safeOnAppealPhaseChange = isLegacyView ? () => {} : onApelSessionChange;
+  const safeOnApelReasonChange = isLegacyView ? () => {} : onApelReasonChange;
+  const safeOnScanSimulate = isLegacyView ? () => {} : onScanSimulate;
+
+  if (viewAsRole) {
+    return (
+      <div className="min-h-screen bg-[#080c14] px-4 py-6">
+        <div className="relative z-10 max-w-sm mx-auto">
+          <BackButton onClick={() => setViewAsRole(null)} />
+
+          <div className="mb-4">
+            <h2 className="text-xl font-black text-white">View As</h2>
+            <p className="mt-1 text-slate-500 text-xs">
+              {isLegacyView ? "Legacy mode read-only." : "Master mode can use operational callbacks."}
+            </p>
+          </div>
+
+          <Card className={`p-4 mb-3 border ${sourceMeta.panelClass}`}>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-sm font-bold text-white">{roleOptions.find((r) => r.id === viewAsRole)?.label || "Role"}</div>
+                <div className="mt-1 text-xs text-slate-400">{roleOptions.find((r) => r.id === viewAsRole)?.desc}</div>
+              </div>
+              <span className={`shrink-0 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] ${sourceMeta.badgeClass}`}>
+                {sourceMeta.label}
+              </span>
+            </div>
+          </Card>
+
+          {viewAsRole !== "admin" && roleCandidates.length > 1 && (
+            <Card className="p-4 mb-3 border-slate-700/60 bg-slate-900/80">
+              <div className="mb-3 text-sm font-bold text-white">Pilih Akun</div>
+              <div className="max-h-44 space-y-2 overflow-y-auto pr-1 scrollbar-thin">
+                {roleCandidates.map((person) => (
+                  <button
+                    key={person.id}
+                    onClick={() => setViewAsPersonId(String(person.id))}
+                    className={`w-full rounded-xl border px-3 py-3 text-left transition-all duration-150 ${
+                      String(viewAsPersonId) === String(person.id)
+                        ? "border-emerald-500/50 bg-emerald-500/15"
+                        : "border-slate-700/60 bg-slate-800/60 hover:border-slate-600/70 hover:bg-slate-800"
+                    }`}
+                  >
+                    <ProfileLines
+                      name={person.nama}
+                      nip={person.nip}
+                      jabatan={person.jabatan}
+                      nameClassName="text-white text-sm font-semibold"
+                      metaClassName="text-slate-500 text-xs"
+                    />
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                        {getUnitLabel(person.unit) || "Tanpa Unit"}
+                      </span>
+                      <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        {person.role}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {viewAsRole === "employee" && selectedViewPerson && (
+            <DashboardPegawai
+              pegawai={selectedViewPerson}
+              people={activeData}
+              attendance={previewAttendance}
+              apelStatus={apelStatus}
+              apelSession={apelSession}
+              apelReason={apelReason}
+              apelReasonText={apelReasonText}
+              onScan={safeOnScan}
+              onBack={() => setViewAsRole(null)}
+              demoMode={isLegacyView}
+            />
+          )}
+
+          {viewAsRole === "unit_leader" && selectedPimpinanView && (
+            <DashboardPimpinan
+              people={activeData}
+              attendance={previewAttendance}
+              apelStatus={apelStatus}
+              apelSession={apelSession}
+              apelReason={apelReason}
+              apelReasonText={apelReasonText}
+              selectedPimpinan={selectedPimpinanView}
+              onBack={() => setViewAsRole(null)}
+              demoMode={isLegacyView}
+            />
+          )}
+
+          {viewAsRole === "executive" && selectedPimpinanView && (
+            <DashboardPimpinan
+              people={activeData}
+              attendance={previewAttendance}
+              apelStatus={apelStatus}
+              apelSession={apelSession}
+              apelReason={apelReason}
+              apelReasonText={apelReasonText}
+              selectedPimpinan={selectedPimpinanView}
+              onBack={() => setViewAsRole(null)}
+              demoMode={isLegacyView}
+            />
+          )}
+
+          {viewAsRole === "admin" && (
+            <DashboardAdmin
+              people={activeData}
+              attendance={previewAttendance}
+              apelStatus={apelStatus}
+              apelSession={apelSession}
+              apelReason={apelReason}
+              apelReasonText={apelReasonText}
+              onAppealPhaseChange={safeOnAppealPhaseChange}
+              onApelReasonChange={safeOnApelReasonChange}
+              onScanSimulate={safeOnScanSimulate}
+              onReset={safeOnReset}
+              onBack={() => setViewAsRole(null)}
+              onKoreksi={safeOnKoreksi}
+              onAddPegawai={isLegacyView ? undefined : onAddPegawai}
+              onUpdatePegawai={isLegacyView ? undefined : onUpdatePegawai}
+              onDeletePegawai={isLegacyView ? undefined : onDeletePegawai}
+              readOnly={isLegacyView}
+              demoMode={isLegacyView}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-6">
       <div className="relative z-10 max-w-sm mx-auto">
@@ -1075,7 +1283,167 @@ const DeveloperConsole = ({ onBack }) => {
           <p className="mt-1 text-slate-500 text-xs">Akun teknis internal untuk demo, audit, recovery, dan simulasi.</p>
         </div>
 
+        <Card className={`p-4 mb-3 border ${sourceMeta.panelClass}`}>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-bold text-white">Data Source</div>
+              <div className="mt-1 text-xs text-slate-400">Pilih sumber data untuk preview dan demo.</div>
+            </div>
+            <span className={`shrink-0 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] ${sourceMeta.badgeClass}`}>
+              {sourceMeta.label}
+            </span>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setDataMode("master")}
+              className={`rounded-xl border px-3 py-3 text-left transition-all duration-150 ${
+                dataMode === "master"
+                  ? "border-emerald-500/50 bg-emerald-500/15"
+                  : "border-slate-700/60 bg-slate-800/60 hover:border-slate-600/70 hover:bg-slate-800"
+              }`}
+            >
+              <div className="text-xs font-bold text-white">Master Operasional</div>
+              <div className="mt-1 text-[10px] text-slate-400">Aktif untuk pilot</div>
+            </button>
+            <button
+              onClick={() => setDataMode("legacy")}
+              className={`rounded-xl border px-3 py-3 text-left transition-all duration-150 ${
+                dataMode === "legacy"
+                  ? "border-amber-500/50 bg-amber-500/15"
+                  : "border-slate-700/60 bg-slate-800/60 hover:border-slate-600/70 hover:bg-slate-800"
+              }`}
+            >
+              <div className="text-xs font-bold text-white">Legacy Demo</div>
+              <div className="mt-1 text-[10px] text-slate-400">Hanya Developer</div>
+            </button>
+          </div>
+
+          <div className="mt-3 rounded-xl border border-slate-700/50 bg-slate-950/40 px-3 py-2 text-xs text-slate-400">
+            {sourceMeta.description}
+          </div>
+        </Card>
+
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          {summaryCards.map((item) => (
+            <Card key={item.label} className="p-3 text-center border-slate-700/60 bg-slate-900/80">
+              <div className={`text-lg font-black ${item.tone}`}>{item.value}</div>
+              <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="p-4 mb-3 border-slate-700/60 bg-slate-900/80">
+          <div className="mb-3 text-sm font-bold text-white">View As</div>
+          <div className="grid grid-cols-2 gap-2">
+            {roleOptions.map((roleItem) => (
+              <button
+                key={roleItem.id}
+                onClick={() => {
+                  setViewAsRole(roleItem.id);
+                  const defaultPerson = roleItem.id === "admin"
+                    ? null
+                    : activeData.find((p) => {
+                        if (roleItem.id === "employee") return p.role === "EMPLOYEE";
+                        if (roleItem.id === "unit_leader") return p.role === "UNIT_LEADER";
+                        if (roleItem.id === "executive") return p.role === "EXECUTIVE";
+                        return false;
+                      });
+                  setViewAsPersonId(defaultPerson ? String(defaultPerson.id) : "");
+                }}
+                className="rounded-xl border border-slate-700/50 bg-slate-800/70 px-3 py-3 text-left transition-all duration-150 hover:border-slate-600/70 hover:bg-slate-800 active:scale-[0.98]"
+              >
+                <div className="text-lg">{roleItem.icon}</div>
+                <div className="mt-2 text-xs font-bold text-white">{roleItem.label}</div>
+                <div className="mt-1 text-[10px] text-slate-500">{roleItem.desc}</div>
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        <div className="relative mb-3">
+          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Cari nama, unit, jabatan, role..."
+            className="w-full bg-slate-800/80 border border-slate-700/60 rounded-xl pl-10 pr-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:bg-slate-800"
+          />
+        </div>
+
         <div className="space-y-3">
+          <Card className="p-4 border-slate-700/60 bg-slate-900/80">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <div className="text-sm font-bold text-white">Preview Data</div>
+                <div className="mt-1 text-xs text-slate-500">
+                  {filtered.length} hasil dari {activeData.length} data
+                </div>
+              </div>
+              <div className="rounded-full bg-slate-800/80 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">
+                {dataMode === "legacy" ? "Demo Only" : "Operational"}
+              </div>
+            </div>
+
+            {groupedEntries.length > 0 ? (
+              <div className="max-h-[42vh] space-y-4 overflow-y-auto pr-1 scrollbar-thin">
+                {groupedEntries.map(([groupKey, items]) => (
+                  <div key={groupKey} className="space-y-2">
+                    <div className="flex items-center gap-3 px-1">
+                      <div>
+                        <div className="text-slate-300 text-[11px] font-semibold uppercase tracking-[0.18em]">
+                          {getPegawaiGroupLabel(groupKey)}
+                        </div>
+                        <div className="text-slate-500 text-[10px] mt-0.5">{items.length} pegawai</div>
+                      </div>
+                      <div className="h-px flex-1 bg-slate-800/70" />
+                    </div>
+
+                    <div className="space-y-2">
+                      {items.slice(0, 8).map((pegawai) => (
+                        <div key={pegawai.id} className="rounded-xl border border-slate-700/50 bg-slate-950/35 px-3 py-3">
+                          <div className="flex items-start gap-3">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                              {pegawai.nama.split(" ").slice(0, 2).map((n) => n[0]).join("")}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <ProfileLines
+                                name={pegawai.nama}
+                                nip={pegawai.nip}
+                                jabatan={pegawai.jabatan}
+                                nameClassName="text-white text-sm font-semibold"
+                                metaClassName="text-slate-500 text-xs"
+                              />
+                              <div className="mt-2 flex flex-wrap gap-1.5">
+                                <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                                  {getUnitLabel(pegawai.unit) || "Tanpa Unit"}
+                                </span>
+                                <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                  {pegawai.role || "UNKNOWN"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {items.length > 8 ? (
+                        <div className="px-1 text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                          +{items.length - 8} data lain
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-slate-700/60 bg-slate-950/35 px-4 py-6 text-center text-sm text-slate-500">
+                Tidak ada data yang cocok dengan pencarian.
+              </div>
+            )}
+          </Card>
+
           {sections.map((section) => (
             <Card key={section.title} className="p-4 border-slate-700/60 bg-slate-900/80">
               <div className="mb-3 text-sm font-bold text-white">{section.title}</div>
@@ -1090,14 +1458,14 @@ const DeveloperConsole = ({ onBack }) => {
           ))}
         </div>
       </div>
-    </div>
+      </div>
   );
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PEGAWAI
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelReasonText, onScan, onBack }) => {
+const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatus, apelReason, apelReasonText, onScan, onBack, demoMode = false }) => {
   const [now, setNow] = useState(new Date());
   const [showScanner, setShowScanner] = useState(false);
   const [showManualCode, setShowManualCode] = useState(false);
@@ -1107,7 +1475,8 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
   const [showAturanModal, setShowAturanModal] = useState(false);
   const isValidatingScan = useRef(false);
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
-  const stats = calcAttendanceStats(attendance, apelStatus);
+  const scopePeople = getScopedPeople(people, pegawai, "UNIT");
+  const stats = calcAttendanceStats(attendance, apelStatus, scopePeople, { includeMissingAsUnrecorded: true });
   const sudahAbsen = myAttendance.status === "Hadir";
   const canSubmitAttendance = apelStatus === "ongoing";
   const isDitiadakan = isApelDitiadakan(apelStatus);
@@ -1121,6 +1490,14 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
     ? (apelStatus === "ended" ? "Tanpa Keterangan" : "Belum Melakukan Absensi")
     : myAttendance.status;
   const showAttendanceTime = !isUnrecordedStatus && myAttendance.jamHadir;
+  const showOperationalStats = true;
+  const monthlyDisciplineCount = demoMode ? 2 : null;
+  const monthlyDisciplineStatus = monthlyDisciplineCount !== null ? getDisciplineStatus(monthlyDisciplineCount) : null;
+  const statItems = getAttendanceStatItems(apelStatus, { demoMode }).map(item => ({
+    ...item,
+    value: stats[item.key],
+  }));
+  const statusLabel = displayStatus === "Hadir" ? "Hadir" : displayStatus;
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
@@ -1246,8 +1623,6 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
     }
   };
 
-  const statItems = getAttendanceStatItems(apelStatus).map(item => ({ ...item, value: stats[item.key] }));
-
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-6">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -1297,41 +1672,43 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
               {/* Icon + Status */}
               <div className="flex flex-col items-center mb-2">
                 <span className="text-lg mb-1">🟢</span>
-                <span className="text-emerald-400 text-xs font-semibold">
-                  {displayStatus === "Hadir" ? "Hadir" : displayStatus}
+                <span className={`text-xs font-semibold ${showOperationalStats ? "text-emerald-400" : "text-slate-400"}`}>
+                  {statusLabel}
                 </span>
               </div>
 
               {/* Tanggal */}
-              <div className="text-white text-sm font-bold mb-2">
-                {now.toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short" })}
+              <div className={`text-sm font-bold mb-2 ${showOperationalStats ? "text-white" : "text-slate-500"}`}>
+                {showOperationalStats ? now.toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short" }) : "—"}
               </div>
 
               {/* Jam Hadir / Belum Absen */}
-              {showAttendanceTime ? (
+              {showOperationalStats && showAttendanceTime ? (
                 <div>
                   <div className="text-slate-500 text-xs">Jam Hadir</div>
                   <div className="text-white text-xl font-black">{myAttendance.jamHadir} WIB</div>
                 </div>
               ) : (
-                <div className="text-slate-500 text-xs">Belum Absen</div>
+                <div className="text-slate-500 text-xs">
+                  {showOperationalStats ? "Belum Absen" : "Menunggu data pilot"}
+                </div>
               )}
             </div>
 
             {/* Right Column: Tanpa Keterangan Bulan Ini */}
             {(() => {
-              const discipline = getDisciplineStatus(tanpaKeteranganBulanIni);
+              const discipline = monthlyDisciplineStatus;
               return (
                 <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 flex flex-col items-center text-center">
                   {/* Icon + Bulan Ini */}
                   <div className="flex flex-col items-center mb-2">
-                    <span className="text-lg mb-1">{discipline.icon}</span>
-                    <span className="text-amber-400 text-xs font-semibold">Bulan Ini</span>
+                    <span className={`text-lg mb-1 ${showOperationalStats ? "" : "opacity-70"}`}>{discipline ? discipline.icon : "⏳"}</span>
+                    <span className={`text-xs font-semibold ${showOperationalStats ? "text-amber-400" : "text-slate-400"}`}>Bulan Ini</span>
                   </div>
 
                   {/* Jumlah - Fokus Utama */}
-                  <div className="text-white text-xl font-black leading-tight">
-                    {tanpaKeteranganBulanIni} Kali
+                  <div className={`text-xl font-black leading-tight ${showOperationalStats ? "text-white" : "text-slate-500"}`}>
+                    {monthlyDisciplineCount !== null ? `${monthlyDisciplineCount} Kali` : "—"}
                   </div>
 
                   {/* Subtitle */}
@@ -1341,12 +1718,13 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
 
                   {/* Label Status */}
                   <div className={`text-xs font-semibold mt-2 ${
-                    tanpaKeteranganBulanIni === 0 ? "text-emerald-400" :
-                    tanpaKeteranganBulanIni <= 2 ? "text-amber-400" :
-                    tanpaKeteranganBulanIni <= 4 ? "text-orange-400" :
+                    monthlyDisciplineCount === null ? "text-slate-500" :
+                    monthlyDisciplineCount === 0 ? "text-emerald-400" :
+                    monthlyDisciplineCount <= 2 ? "text-amber-400" :
+                    monthlyDisciplineCount <= 4 ? "text-orange-400" :
                     "text-red-400"
                   }`}>
-                    {discipline.label}
+                    {discipline ? discipline.label : "Menunggu data pilot"}
                   </div>
 
                   {/* Tombol */}
@@ -1471,18 +1849,26 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
           </div>
           <Card className="p-4">
             <div className="flex items-center gap-4 mb-4">
-              <ProgressRing pct={stats.persen} size={80} stroke={7} label="Kehadiran" />
+              {showOperationalStats ? (
+                <ProgressRing pct={stats.persen} size={80} stroke={7} label="Kehadiran" />
+              ) : (
+                <div className="relative flex h-[80px] w-[80px] items-center justify-center rounded-full border border-dashed border-slate-700/60 text-xl font-black text-slate-500">
+                  —
+                </div>
+              )}
               <div>
-                <div className="text-white text-xl font-black">{stats.persen}%</div>
+                <div className="text-white text-xl font-black">{showOperationalStats ? `${stats.persen}%` : "—"}</div>
                 <div className="text-slate-400 text-xs">Tingkat Kehadiran</div>
-                <div className="text-slate-500 text-xs mt-1">{stats.hadir} dari {stats.total} pegawai</div>
+                <div className="text-slate-500 text-xs mt-1">
+                  {showOperationalStats ? `${stats.hadir} dari ${stats.total} pegawai` : "Menunggu data pilot"}
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {statItems.map(s => (
                 <div key={s.label} className="bg-slate-800/60 rounded-xl p-2.5 text-center">
                   <div className="text-base mb-0.5">{s.icon}</div>
-                  <div className={`text-base font-bold ${s.color}`}>{s.value}</div>
+                  <div className={`text-base font-bold ${s.color}`}>{s.value ?? "—"}</div>
                   <div className="text-slate-400 text-xs leading-tight">{s.label}</div>
                 </div>
               ))}
@@ -1491,7 +1877,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
         </div>
 
         {/* ─── PENGAJUAN PERUBAHAN STATUS ─── */}
-        <PengajuanStatusForm myStatus={displayStatus} />
+        <PengajuanStatusForm myStatus={showOperationalStats ? displayStatus : "Menunggu data pilot"} />
 
         {/* ATURAN MODAL */}
         {showAturanModal && (
@@ -1510,7 +1896,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
               <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-4 text-center">
                 <div className="text-slate-400 text-xs mb-1">Posisi Anda Saat Ini</div>
                 <div className="text-2xl font-black text-amber-400">
-                  {tanpaKeteranganBulanIni} Kali
+                  {monthlyDisciplineCount !== null ? `${monthlyDisciplineCount} Kali` : "Menunggu data pilot"}
                 </div>
               </div>
 
@@ -1598,7 +1984,7 @@ const DashboardPegawai = ({ pegawai, attendance, apelStatus, apelReason, apelRea
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PIMPINAN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPimpinan = ({ attendance, apelStatus, apelSession, apelReason, apelReasonText, selectedPimpinan, onBack }) => {
+const DashboardPimpinan = ({ people = pegawaiData, attendance, apelStatus, apelSession, apelReason, apelReasonText, selectedPimpinan, onBack, demoMode = false }) => {
   const [showAllPerhatian, setShowAllPerhatian] = useState(false);
   const [showAllBidangToday, setShowAllBidangToday] = useState(false);
   const [showAllLastMonth, setShowAllLastMonth] = useState(false);
@@ -1650,76 +2036,18 @@ const DashboardPimpinan = ({ attendance, apelStatus, apelSession, apelReason, ap
     return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   };
 
-  const stats = calcAttendanceStats(attendance, apelStatus);
-  const unaccountedItem = getAttendanceStatItems(apelStatus)[1];
+  const scopePeople = getScopedPeople(people, displayPimpinan, displayPimpinan.scope);
+  const stats = calcAttendanceStats(attendance, apelStatus, scopePeople, { includeMissingAsUnrecorded: true });
+  const unaccountedItem = getAttendanceStatItems(apelStatus, { demoMode })[1];
+  const showOperationalStats = true;
+
 
 const getBidangStats = (bidangNama) => {
-    const members = pegawaiData.filter(p => p.bidang === bidangNama);
-    return calcAttendanceStats(attendance, apelStatus, members);
+    const members = people.filter(p => p.bidang === bidangNama);
+    return calcAttendanceStats(attendance, apelStatus, members, { includeMissingAsUnrecorded: true });
   };
 
-  const perhatianList = [
-    {
-      pegawaiId: "demo-1",
-      totalTanpaKeterangan: 5,
-      pegawai: { nama: "Bon Bendi", nip: "197903122008011001", bidang: "Sekretariat" },
-    },
-    {
-      pegawaiId: "demo-2",
-      totalTanpaKeterangan: 4,
-      pegawai: { nama: "Abdul Rohman", nip: "197903122008011002", bidang: "Sumber Daya Air" },
-    },
-    {
-      pegawaiId: "demo-3",
-      totalTanpaKeterangan: 3,
-      pegawai: { nama: "Roby Cahyadi, S.T.", nip: "197903122008011003", bidang: "Bina Marga" },
-    },
-    {
-      pegawaiId: "demo-4",
-      totalTanpaKeterangan: 2,
-      pegawai: { nama: "Ahmad Fauzi", nip: "197903122008011004", bidang: "Bidang Umum" },
-    },
-    {
-      pegawaiId: "demo-5",
-      totalTanpaKeterangan: 1,
-      pegawai: { nama: "Eko Prasetyo", nip: "197903122008011005", bidang: "UPT Pelayanan A" },
-    },
-    {
-      pegawaiId: "demo-6",
-      totalTanpaKeterangan: 1,
-      pegawai: { nama: "Siti Nurhayati", nip: "197903122008011006", bidang: "Sekretariat" },
-    },
-    {
-      pegawaiId: "demo-7",
-      totalTanpaKeterangan: 1,
-      pegawai: { nama: "Dedi Kurniawan", nip: "197903122008011007", bidang: "Sumber Daya Air" },
-    },
-    {
-      pegawaiId: "demo-8",
-      totalTanpaKeterangan: 1,
-      pegawai: { nama: "Maya Lestari", nip: "197903122008011008", bidang: "Bina Marga" },
-    },
-    {
-      pegawaiId: "demo-9",
-      totalTanpaKeterangan: 1,
-      pegawai: { nama: "Rizal Maulana", nip: "197903122008011009", bidang: "Cipta Karya" },
-    },
-    {
-      pegawaiId: "demo-10",
-      totalTanpaKeterangan: 1,
-      pegawai: { nama: "Dian Puspita", nip: "197903122008011010", bidang: "UPT Pelayanan B" },
-    },
-    {
-      pegawaiId: "demo-11",
-      totalTanpaKeterangan: 1,
-      pegawai: { nama: "Fajar Nugroho", nip: "197903122008011011", bidang: "Tata Ruang" },
-    },
-    {
-      pegawaiId: "demo-12",
-      totalTanpaKeterangan: 1,
-      pegawai: { nama: "Rina Marlina", nip: "197903122008011012", bidang: "UPT Pelayanan A" },
-    },
-  ];
+  const perhatianList = [];
   const visiblePerhatianList = showAllPerhatian ? perhatianList : perhatianList.slice(0, 3);
 
   const bidangList = orgData.bidang.filter(b => b.id !== "pimpinan");
@@ -1728,9 +2056,11 @@ const getBidangStats = (bidangNama) => {
     .filter(b => b.stats.total > 0);
   const todayRanking = [...bidangAnalytics].sort((a, b) => b.stats.persen - a.stats.persen || b.stats.hadir - a.stats.hadir || a.nama.localeCompare(b.nama));
   const visibleTodayRanking = showAllBidangToday ? todayRanking : todayRanking.slice(0, 3);
-  const lastMonthRanking = bidangList
-    .map(b => ({ ...b, persen: LAST_MONTH_DISCIPLINE[b.id] ?? 80 }))
-    .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
+  const lastMonthRanking = demoMode
+    ? bidangList
+        .map(b => ({ ...b, persen: DEMO_LAST_MONTH_DISCIPLINE[b.id] ?? 80 }))
+        .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama))
+    : [];
   const visibleLastMonthRanking = showAllLastMonth ? lastMonthRanking : lastMonthRanking.slice(0, 3);
 
   if (selectedBidang) {
@@ -1844,36 +2174,41 @@ const getBidangStats = (bidangNama) => {
 
         {/* Main Stats + Ring - Jika ditiadakan, sembunyikan */}
         {!isDitiadakan && (
-        <Card className="p-5 mb-4 border-amber-200/15 bg-slate-950/70 shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
-          <div className="flex items-center gap-5">
-            <ProgressRing pct={stats.persen} size={100} stroke={9} color="#f59e0b" label="Kehadiran" />
-            <div className="flex-1 space-y-2">
-              {[
-  { label: "Total Pegawai", val: stats.total, color: "text-white" },
-  { label: "Hadir", val: stats.hadir, color: "text-emerald-400" },
-  { label: unaccountedItem.label, val: stats[unaccountedItem.key], color: unaccountedItem.color },
-].map(s => (
-                <div key={s.label} className="flex items-center justify-between">
-                  <span className="text-slate-400 text-xs">{s.label}</span>
-                  <span className={`font-bold text-sm ${s.color}`}>{s.val}</span>
+          <>
+            <Card className="p-5 mb-4 border-amber-200/15 bg-slate-950/70 shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
+              <div className="flex items-center gap-5">
+                {showOperationalStats ? (
+                  <ProgressRing pct={stats.persen} size={100} stroke={9} color="#f59e0b" label="Kehadiran" />
+                ) : (
+                  <div className="relative flex h-[100px] w-[100px] items-center justify-center rounded-full border border-dashed border-slate-700/60 text-2xl font-black text-slate-500">
+                    —
+                  </div>
+                )}
+                <div className="flex-1 space-y-2">
+                  {[
+                    { label: "Total Pegawai", val: stats.total, color: "text-white" },
+                    { label: "Hadir", val: stats.hadir, color: "text-emerald-400" },
+                    { label: unaccountedItem.label, val: stats[unaccountedItem.key], color: unaccountedItem.color },
+                  ].map(s => (
+                    <div key={s.label} className="flex items-center justify-between">
+                      <span className="text-slate-400 text-xs">{s.label}</span>
+                      <span className={`font-bold text-sm ${s.color}`}>{showOperationalStats ? s.val : "—"}</span>
+                    </div>
+                  ))}
                 </div>
+              </div>
+            </Card>
+
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {getAttendanceStatItems(apelStatus, { demoMode }).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
+                <Card key={s.label} className="p-3 text-center border-slate-600/35 bg-slate-950/55 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+                  <div className="text-xl mb-1">{s.icon}</div>
+                  <div className={`text-lg font-black ${s.color}`}>{showOperationalStats ? s.val : "—"}</div>
+                  <div className="text-slate-400 text-xs leading-tight">{s.label}</div>
+                </Card>
               ))}
             </div>
-          </div>
-        </Card>
-        )}
-
-        {/* Status breakdown - Jika ditiadakan, sembunyikan */}
-        {!isDitiadakan && (
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {getAttendanceStatItems(apelStatus).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
-            <Card key={s.label} className="p-3 text-center border-slate-600/35 bg-slate-950/55 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
-              <div className="text-xl mb-1">{s.icon}</div>
-              <div className={`text-lg font-black ${s.color}`}>{s.val}</div>
-              <div className="text-slate-400 text-xs leading-tight">{s.label}</div>
-            </Card>
-          ))}
-        </div>
+          </>
         )}
 
         {/* Perlu Perhatian */}
@@ -1882,46 +2217,55 @@ const getBidangStats = (bidangNama) => {
             <div className="text-slate-50 font-bold text-sm">Pegawai Perlu Perhatian</div>
             <div className="text-slate-500 text-xs mt-0.5">Top 3 berdasarkan sanksi bulan ini</div>
           </div>
-          <div className="space-y-2">
-            {visiblePerhatianList.map(r => {
-              const tanpaKeterangan = r.totalTanpaKeterangan;
-              const sanctionText =
-                tanpaKeterangan >= 5 ? "Pemotongan TPP 10%" :
-                  tanpaKeterangan === 4 ? "SP2" :
-                    tanpaKeterangan === 3 ? "SP1" :
-                      "Belum Ada Sanksi";
-              const indicatorClass =
-                tanpaKeterangan >= 5 ? "bg-red-500" :
-                  tanpaKeterangan === 4 ? "bg-orange-500" :
-                    tanpaKeterangan >= 2 ? "bg-yellow-400" :
-                      "bg-slate-200";
-              return (
-                <div key={r.pegawaiId} className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
-                  <div className="flex items-start gap-3">
-                    <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full ${indicatorClass}`} />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-white text-sm font-semibold truncate">{r.pegawai.nama}</div>
-                      <div className="text-slate-500 text-[11px] mt-0.5 truncate">NIP {r.pegawai.nip}</div>
-                      <div className="text-slate-400 text-xs mt-1 truncate">Bidang/UPT: {r.pegawai.bidang}</div>
+          {visiblePerhatianList.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-700/60 bg-slate-900/35 px-4 py-5 text-center">
+              <div className="text-slate-300 text-sm font-semibold">Belum ada data operasional</div>
+              <div className="text-slate-500 text-xs mt-1">Daftar ini akan terisi setelah data sanksi nyata tersedia.</div>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-2">
+                {visiblePerhatianList.map(r => {
+                  const tanpaKeterangan = r.totalTanpaKeterangan;
+                  const sanctionText =
+                    tanpaKeterangan >= 5 ? "Pemotongan TPP 10%" :
+                      tanpaKeterangan === 4 ? "SP2" :
+                        tanpaKeterangan === 3 ? "SP1" :
+                          "Belum Ada Sanksi";
+                  const indicatorClass =
+                    tanpaKeterangan >= 5 ? "bg-red-500" :
+                      tanpaKeterangan === 4 ? "bg-orange-500" :
+                        tanpaKeterangan >= 2 ? "bg-yellow-400" :
+                          "bg-slate-200";
+                  return (
+                    <div key={r.pegawaiId} className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                      <div className="flex items-start gap-3">
+                        <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full ${indicatorClass}`} />
+                        <div className="min-w-0 flex-1">
+                          <div className="text-white text-sm font-semibold truncate">{r.pegawai.nama}</div>
+                          <div className="text-slate-500 text-[11px] mt-0.5 truncate">NIP {r.pegawai.nip}</div>
+                          <div className="text-slate-400 text-xs mt-1 truncate">Bidang/UPT: {r.pegawai.bidang}</div>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-amber-200/10">
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-500 text-xs">Tanpa Keterangan</span>
+                          <span className="text-red-400 text-sm font-black">{tanpaKeterangan}x</span>
+                        </div>
+                        <div className="mt-1 text-sm font-black text-white">{sanctionText}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-3 pt-3 border-t border-amber-200/10">
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-500 text-xs">Tanpa Keterangan</span>
-                      <span className="text-red-400 text-sm font-black">{tanpaKeterangan}x</span>
-                    </div>
-                    <div className="mt-1 text-sm font-black text-white">{sanctionText}</div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <button
-            onClick={() => setShowAllPerhatian(prev => !prev)}
-            className="mt-3 w-full py-2.5 rounded-xl bg-slate-900/80 text-slate-300 text-xs font-bold border border-slate-700/70 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
-          >
-            {showAllPerhatian ? "Tutup Detail" : "Lihat Semua"}
-          </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => setShowAllPerhatian(prev => !prev)}
+                className="mt-3 w-full py-2.5 rounded-xl bg-slate-900/80 text-slate-300 text-xs font-bold border border-slate-700/70 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
+              >
+                {showAllPerhatian ? "Tutup Detail" : "Lihat Semua"}
+              </button>
+            </>
+          )}
         </Card>
 
         {/* Kehadiran per Bidang */}
@@ -1932,107 +2276,154 @@ const getBidangStats = (bidangNama) => {
               <div className="text-slate-600 text-[11px] mt-0.5">Analitik performa bidang hari ini dan bulan lalu</div>
             </div>
 
-            {!isDitiadakan && (
             <div className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3.5 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <div className="text-slate-50 text-sm font-black">🏆 Peringkat Hari Ini</div>
-                  <div className="text-slate-500 text-[11px]">Berdasarkan data absensi realtime</div>
+                  <div className="text-slate-500 text-[11px]">
+                    {showOperationalStats && !isDitiadakan ? "Berdasarkan data absensi realtime" : "Menunggu data pilot"}
+                  </div>
                 </div>
                 <button
-                  onClick={() => setShowAllBidangToday(prev => !prev)}
-                  className="text-xs text-slate-300 font-bold rounded-lg bg-slate-950/80 border border-slate-700/70 px-2.5 py-1.5 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
+                  onClick={() => showOperationalStats && setShowAllBidangToday(prev => !prev)}
+                  disabled={!showOperationalStats || isDitiadakan}
+                  className="text-xs font-bold rounded-lg px-2.5 py-1.5 transition-all active:scale-[0.98] border border-slate-700/70 bg-slate-950/80 text-slate-300 disabled:cursor-not-allowed disabled:opacity-60 hover:border-amber-200/25 hover:text-amber-100"
                 >
-                  {showAllBidangToday ? "Tutup" : "Lihat Semua"}
+                  {showOperationalStats ? (showAllBidangToday ? "Tutup" : "Lihat Semua") : "—"}
                 </button>
               </div>
 
-              <div className="space-y-2">
-                {visibleTodayRanking.map((b, index) => {
-                  const status = getBidangPerformanceStatus(b.stats.persen);
-                  return (
-                    <button
-                      key={b.id}
-                      onClick={() => setSelectedBidang(b)}
-                      className="w-full rounded-xl border border-slate-700/55 bg-slate-950/55 p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-slate-900/70"
-                    >
+              {showOperationalStats && !isDitiadakan ? (
+                <div className="space-y-2">
+                  {visibleTodayRanking.map((b, index) => {
+                    const status = getBidangPerformanceStatus(b.stats.persen);
+                    return (
+                      <button
+                        key={b.id}
+                        onClick={() => setSelectedBidang(b)}
+                        className="w-full rounded-xl border border-slate-700/55 bg-slate-950/55 p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-slate-900/70"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-white text-sm font-bold truncate">{b.nama}</div>
+                            <div className={`text-[11px] font-semibold ${status.color}`}>{status.label}</div>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <div className={`text-lg font-black ${b.stats.persen >= 80 ? "text-emerald-400" : b.stats.persen >= 60 ? "text-amber-400" : "text-red-400"}`}>{b.stats.persen}%</div>
+                            <div className="text-slate-600 text-[10px]">{b.stats.hadir}/{b.stats.total}</div>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {[1, 2, 3].map((index) => (
+                    <div key={index} className="w-full rounded-xl border border-dashed border-slate-700/60 bg-slate-950/40 p-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
+                        <div className="w-8 text-xl text-center text-slate-500">—</div>
                         <div className="min-w-0 flex-1">
-                          <div className="text-white text-sm font-bold truncate">{b.nama}</div>
-                          <div className={`text-[11px] font-semibold ${status.color}`}>{status.label}</div>
+                          <div className="text-slate-300 text-sm font-bold truncate">Menunggu data pilot</div>
+                          <div className="text-slate-500 text-[11px]">Peringkat hari ini belum tersedia</div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div className={`text-lg font-black ${b.stats.persen >= 80 ? "text-emerald-400" : b.stats.persen >= 60 ? "text-amber-400" : "text-red-400"}`}>{b.stats.persen}%</div>
-                          <div className="text-slate-600 text-[10px]">{b.stats.hadir}/{b.stats.total}</div>
+                          <div className="text-lg font-black text-slate-500">—</div>
+                          <div className="text-slate-600 text-[10px]">—/—</div>
                         </div>
                       </div>
-                    </button>
-                  );
-                })}
-              </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            )}
 
             <div className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <div className="text-slate-50 text-sm font-black">🏅 Disiplin Bulan Lalu</div>
-                  <div className="text-slate-500 text-[11px]">Data dummy untuk tahap prototipe</div>
+                  <div className="text-slate-500 text-[11px]">
+                    {showOperationalStats ? "Data demo untuk preview Developer" : "Menunggu data pilot"}
+                  </div>
                 </div>
                 <button
-                  onClick={() => setShowAllLastMonth(prev => !prev)}
-                  className="text-xs text-slate-300 font-bold rounded-lg bg-slate-950/80 border border-slate-700/70 px-2.5 py-1.5 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
+                  onClick={() => showOperationalStats && setShowAllLastMonth(prev => !prev)}
+                  disabled={!showOperationalStats}
+                  className="text-xs font-bold rounded-lg px-2.5 py-1.5 transition-all active:scale-[0.98] border border-slate-700/70 bg-slate-950/80 text-slate-300 disabled:cursor-not-allowed disabled:opacity-60 hover:border-amber-200/25 hover:text-amber-100"
                 >
-                  {showAllLastMonth ? "Tutup" : "Lihat Semua"}
+                  {showOperationalStats ? (showAllLastMonth ? "Tutup" : "Lihat Semua") : "—"}
                 </button>
               </div>
 
-              <div className="space-y-2">
-                {visibleLastMonthRanking.map((b, index) => {
-                  const status = getBidangPerformanceStatus(b.persen);
-                  return (
-                    <button
-                      key={b.id}
-                      onClick={() => setSelectedBidang(b)}
-                      className="w-full rounded-xl border border-slate-700/55 bg-slate-950/55 p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-slate-900/70"
-                    >
+              {showOperationalStats ? (
+                demoMode ? (
+                  <div className="space-y-2">
+                    {visibleLastMonthRanking.map((b, index) => {
+                      const status = getBidangPerformanceStatus(b.persen);
+                      return (
+                        <button
+                          key={b.id}
+                          onClick={() => setSelectedBidang(b)}
+                          className="w-full rounded-xl border border-slate-700/55 bg-slate-950/55 p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-slate-900/70"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-white text-sm font-bold truncate">{b.nama}</div>
+                              <div className={`text-[11px] font-semibold ${status.color}`}>{status.label}</div>
+                            </div>
+                            <div className="text-lg font-black text-blue-300 shrink-0">{b.persen}%</div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-dashed border-slate-700/60 bg-slate-950/35 px-4 py-5 text-center">
+                    <div className="text-slate-300 text-sm font-semibold">Belum ada data disiplin bulan lalu</div>
+                    <div className="text-slate-500 text-xs mt-1">Panel ini hanya akan aktif jika data operasional benar-benar tersedia.</div>
+                  </div>
+                )
+              ) : (
+                <div className="space-y-2">
+                  {[1, 2, 3].map((index) => (
+                    <div key={index} className="w-full rounded-xl border border-dashed border-slate-700/60 bg-slate-950/40 p-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
+                        <div className="w-8 text-xl text-center text-slate-500">—</div>
                         <div className="min-w-0 flex-1">
-                          <div className="text-white text-sm font-bold truncate">{b.nama}</div>
-                          <div className={`text-[11px] font-semibold ${status.color}`}>{status.label}</div>
+                          <div className="text-slate-300 text-sm font-bold truncate">Menunggu data pilot</div>
+                          <div className="text-slate-500 text-[11px]">Disiplin bulan lalu belum tersedia</div>
                         </div>
-                        <div className="text-lg font-black text-blue-300 shrink-0">{b.persen}%</div>
+                        <div className="text-lg font-black text-slate-500 shrink-0">—%</div>
                       </div>
-                    </button>
-                  );
-                })}
-              </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </Card>
+        </div>
 
-          {/* ─── PERUBAHAN STATUS HARI INI - PIMPINAN (RINGKASAN) ─── */}
-          {!isDitiadakan && (
-          <Card className="p-4 mb-4 border-slate-600/40 bg-slate-950/65">
-            <div className="mb-3 border-b border-slate-700/50 pb-3">
-              <div className="text-slate-50 font-bold text-sm">📋 Perubahan Status Hari Ini</div>
-              <div className="text-slate-500 text-xs mt-0.5">Monitoring perubahan absensi pegawai</div>
-            </div>
+        {/* ─── PERUBAHAN STATUS HARI INI - PIMPINAN (RINGKASAN) ─── */}
+        <Card className="p-4 mb-4 border-slate-600/40 bg-slate-950/65">
+          <div className="mb-3 border-b border-slate-700/50 pb-3">
+            <div className="text-slate-50 font-bold text-sm">📋 Perubahan Status Hari Ini</div>
+            <div className="text-slate-500 text-xs mt-0.5">Monitoring perubahan absensi pegawai</div>
+          </div>
 
-            {PENGJUAN_STATUS_DATA.length === 0 ? (
+          {showOperationalStats && !isDitiadakan ? (
+            PENGJUAN_STATUS_DATA.length === 0 ? (
               <div className="text-slate-500 text-xs text-center py-4">
                 Belum ada perubahan status hari ini
               </div>
             ) : (
               <>
-                {/* Summary */}
                 <div className="text-center mb-4">
                   <div className="text-2xl font-black text-white mb-1">{PENGJUAN_STATUS_DATA.length}</div>
                   <div className="text-slate-500 text-xs">Perubahan Status</div>
                 </div>
 
-                {/* Status Breakdown */}
                 <div className="flex justify-center gap-6 mb-4">
                   {[
                     { status: "Dinas Luar", icon: "🚗" },
@@ -2051,7 +2442,6 @@ const getBidangStats = (bidangNama) => {
                   })}
                 </div>
 
-                {/* Button */}
                 <button
                   onClick={() => setShowDetailPengajuan(true)}
                   className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors border border-slate-700/50"
@@ -2059,9 +2449,25 @@ const getBidangStats = (bidangNama) => {
                   Lihat Detail
                 </button>
               </>
-            )}
-          </Card>
+            )
+          ) : (
+            <div className="space-y-3">
+              <div className="rounded-xl border border-dashed border-slate-700/60 bg-slate-950/40 p-4 text-center">
+                <div className="text-slate-300 text-sm font-semibold">Menunggu data pilot</div>
+                <div className="text-slate-500 text-xs mt-1">Panel perubahan status akan terisi saat pilot project berjalan.</div>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {["Dinas Luar", "Izin", "Sakit"].map((label) => (
+                  <div key={label} className="rounded-xl border border-dashed border-slate-700/60 bg-slate-950/40 p-3 text-center">
+                    <div className="text-lg mb-1">—</div>
+                    <div className="text-slate-400 text-xs font-semibold">{label}</div>
+                    <div className="text-slate-500 text-sm font-black mt-1">—</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
+        </Card>
 
           {/* DETAIL PENGJUAN MODAL - PIMPINAN */}
           {showDetailPengajuan && (
@@ -2128,17 +2534,29 @@ const getBidangStats = (bidangNama) => {
           )}
         </div>
       </div>
-    </div>
   );
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD ADMIN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardAdmin = ({ attendance, apelStatus, apelSession, apelReason, apelReasonText, onAppealPhaseChange, onApelReasonChange, onScanSimulate, onReset, onBack, onKoreksi }) => {
+const DashboardAdmin = ({ people = pegawaiData, attendance, apelStatus, apelSession, apelReason, apelReasonText, onAppealPhaseChange, onApelReasonChange, onScanSimulate, onReset, onBack, onKoreksi, onAddPegawai, onUpdatePegawai, onDeletePegawai, readOnly = false, demoMode = false }) => {
   const [now, setNow] = useState(new Date());
   const [currentQr, setCurrentQr] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [kelolaTab, setKelolaTab] = useState("pegawai");
+  const [kelolaSearch, setKelolaSearch] = useState("");
+  const [selectedPegawaiId, setSelectedPegawaiId] = useState(null);
+  const [pegawaiDraft, setPegawaiDraft] = useState({
+    nama: "",
+    nip: "",
+    jabatan: "",
+    unit: "",
+    bidang: "",
+    role: "EMPLOYEE",
+    password: "",
+    isActive: true,
+  });
   const [showFullscreenQr, setShowFullscreenQr] = useState(false);
   const [attendanceSearch, setAttendanceSearch] = useState("");
   const [showReasonModal, setShowReasonModal] = useState(false);
@@ -2150,11 +2568,129 @@ const DashboardAdmin = ({ attendance, apelStatus, apelSession, apelReason, apelR
     return () => clearInterval(t);
   }, []);
 
-  const stats = calcAttendanceStats(attendance, apelStatus);
+  const stats = calcAttendanceStats(attendance, apelStatus, people, { includeMissingAsUnrecorded: true });
+  const showOperationalStats = true;
 
-const DEV_MODE = true;
 
-const qrActive = apelStatus === "ongoing";
+const qrActive = !readOnly && apelStatus === "ongoing";
+
+  const selectedPegawai = selectedPegawaiId
+    ? people.find((item) => String(item.id) === String(selectedPegawaiId)) || null
+    : null;
+
+  useEffect(() => {
+    if (!selectedPegawai) {
+      if (selectedPegawaiId === "new") return;
+      return;
+    }
+
+    setPegawaiDraft({
+      nama: selectedPegawai.nama || "",
+      nip: selectedPegawai.nip || "",
+      jabatan: selectedPegawai.jabatan || "",
+      unit: selectedPegawai.unit || "",
+      bidang: selectedPegawai.bidang || "",
+      role: selectedPegawai.role || "EMPLOYEE",
+      password: "",
+      isActive: selectedPegawai.isActive !== false,
+    });
+  }, [selectedPegawai, selectedPegawaiId]);
+
+  useEffect(() => {
+    if (selectedPegawaiId !== "new") return;
+    setPegawaiDraft({
+      nama: "",
+      nip: "",
+      jabatan: "",
+      unit: "",
+      bidang: "",
+      role: "EMPLOYEE",
+      password: "",
+      isActive: true,
+    });
+  }, [selectedPegawaiId]);
+
+  useEffect(() => {
+    if (selectedPegawaiId !== null) return;
+    setPegawaiDraft({
+      nama: "",
+      nip: "",
+      jabatan: "",
+      unit: "",
+      bidang: "",
+      role: "EMPLOYEE",
+      password: "",
+      isActive: true,
+    });
+  }, [selectedPegawaiId]);
+
+  const openNewPegawai = () => {
+    setSelectedPegawaiId("new");
+    setKelolaTab("pegawai");
+    setPegawaiDraft({
+      nama: "",
+      nip: "",
+      jabatan: "",
+      unit: "",
+      bidang: "",
+      role: "EMPLOYEE",
+      password: "",
+      isActive: true,
+    });
+  };
+
+  const savePegawaiDraft = () => {
+    const payload = {
+      ...pegawaiDraft,
+      nama: pegawaiDraft.nama.trim(),
+      nip: pegawaiDraft.nip.trim(),
+      jabatan: pegawaiDraft.jabatan.trim(),
+      unit: pegawaiDraft.unit.trim(),
+      bidang: pegawaiDraft.bidang.trim() || pegawaiDraft.unit.trim(),
+      role: pegawaiDraft.role,
+      password: selectedPegawaiId === "new"
+        ? pegawaiDraft.password
+        : (pegawaiDraft.password || selectedPegawai?.password || ""),
+      isActive: pegawaiDraft.isActive !== false,
+    };
+
+    if (!payload.nama) return;
+
+    if (selectedPegawaiId === "new") {
+      onAddPegawai?.(payload);
+    } else if (selectedPegawaiId) {
+      onUpdatePegawai?.(selectedPegawaiId, payload);
+    }
+    setSelectedPegawaiId(null);
+    setPegawaiDraft({
+      nama: "",
+      nip: "",
+      jabatan: "",
+      unit: "",
+      bidang: "",
+      role: "EMPLOYEE",
+      password: "",
+      isActive: true,
+    });
+  };
+
+  const deleteSelectedPegawai = () => {
+    if (!selectedPegawai) return;
+    const confirmed = window.confirm(`Hapus ${selectedPegawai.nama} dari master aktif?`);
+    if (!confirmed) return;
+    onDeletePegawai?.(selectedPegawai.id);
+    setSelectedPegawaiId(null);
+    setPegawaiDraft({
+      nama: "",
+      nip: "",
+      jabatan: "",
+      unit: "",
+      bidang: "",
+      role: "EMPLOYEE",
+      password: "",
+      isActive: true,
+    });
+  };
 
   const exitFullscreenQr = useCallback(() => {
     setShowFullscreenQr(false);
@@ -2225,7 +2761,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
 
   if (activeMenu === "absensi") {
     const q = attendanceSearch.trim().toLowerCase();
-    const filteredPegawai = pegawaiData.filter(p => {
+    const filteredPegawai = people.filter(p => {
       const searchable = `${p.nama} ${p.nip} ${p.bidang} ${p.jabatan}`.toLowerCase();
       return !q || searchable.includes(q);
     });
@@ -2280,7 +2816,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
   if (activeMenu === "koreksi") {
     const tks = Object.entries(attendance)
       .filter(([, v]) => v.status === "Tanpa Keterangan")
-      .map(([id]) => pegawaiData.find(p => p.id === parseInt(id)))
+      .map(([id]) => people.find(p => p.id === parseInt(id)))
       .filter(Boolean);
     return (
       <div className="min-h-screen bg-[#080c14] px-4 py-6">
@@ -2323,7 +2859,7 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
 
   if (activeMenu === "laporan") {
     const bidangStats = orgData.bidang.filter(b => b.id !== "pimpinan").map(b => {
-      const members = pegawaiData.filter(p => p.bidang === b.nama);
+      const members = people.filter(p => p.bidang === b.nama);
       let hadir = 0, tanpaKet = 0, izin = 0, sakit = 0, dinasD = 0, dinasL = 0;
       for (const p of members) {
         const att = attendance[p.id];
@@ -2347,29 +2883,48 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
 
           <Card className="p-4 mb-4">
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div><div className="text-2xl font-black text-white">{stats.total}</div><div className="text-slate-500 text-xs">Total</div></div>
-              <div><div className="text-2xl font-black text-emerald-400">{stats.hadir}</div><div className="text-slate-500 text-xs">Hadir</div></div>
-              <div><div className="text-2xl font-black text-amber-400">{stats.persen}%</div><div className="text-slate-500 text-xs">Persentase</div></div>
+              <div><div className="text-2xl font-black text-white">{showOperationalStats ? stats.total : "—"}</div><div className="text-slate-500 text-xs">Total</div></div>
+              <div><div className="text-2xl font-black text-emerald-400">{showOperationalStats ? stats.hadir : "—"}</div><div className="text-slate-500 text-xs">Hadir</div></div>
+              <div><div className="text-2xl font-black text-amber-400">{showOperationalStats ? `${stats.persen}%` : "—"}</div><div className="text-slate-500 text-xs">Persentase</div></div>
             </div>
           </Card>
 
           <div className="space-y-2">
-            {bidangStats.map(b => (
-              <Card key={b.id} className="p-3.5">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-white text-sm font-semibold">{b.nama}</div>
-                  <div className="text-emerald-400 font-bold text-sm">{b.total > 0 ? Math.round((b.hadir / b.total) * 100) : 0}%</div>
-                </div>
-                <div className="flex gap-3 text-xs text-slate-400 flex-wrap gap-y-1">
-                  <span>✅ {b.hadir}</span>
-                  <span>🚫 {b.tanpaKet}</span>
-                  <span>🏢 {b.dinasD}</span>
-                  <span>🚗 {b.dinasL}</span>
-                  <span>📄 {b.izin}</span>
-                  <span>🤒 {b.sakit}</span>
-                </div>
-              </Card>
-            ))}
+            {showOperationalStats ? (
+              bidangStats.map(b => (
+                <Card key={b.id} className="p-3.5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-white text-sm font-semibold">{b.nama}</div>
+                    <div className="text-emerald-400 font-bold text-sm">{b.total > 0 ? Math.round((b.hadir / b.total) * 100) : 0}%</div>
+                  </div>
+                  <div className="flex gap-3 text-xs text-slate-400 flex-wrap gap-y-1">
+                    <span>✅ {b.hadir}</span>
+                    <span>🚫 {b.tanpaKet}</span>
+                    <span>🏢 {b.dinasD}</span>
+                    <span>🚗 {b.dinasL}</span>
+                    <span>📄 {b.izin}</span>
+                    <span>🤒 {b.sakit}</span>
+                  </div>
+                </Card>
+              ))
+            ) : (
+              orgData.bidang.filter(b => b.id !== "pimpinan").map((b) => (
+                <Card key={b.id} className="p-3.5 border-dashed border-slate-700/60 bg-slate-950/40">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-white text-sm font-semibold">{b.nama}</div>
+                    <div className="text-slate-500 font-bold text-sm">—</div>
+                  </div>
+                  <div className="flex gap-3 text-xs text-slate-400 flex-wrap gap-y-1">
+                    <span>✅ —</span>
+                    <span>🚫 —</span>
+                    <span>🏢 —</span>
+                    <span>🚗 —</span>
+                    <span>📄 —</span>
+                    <span>🤒 —</span>
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -2377,28 +2932,190 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
   }
 
   if (activeMenu === "kelola") {
+    const isPimpinanTab = kelolaTab === "pimpinan";
+    const visiblePeople = people
+      .filter((person) => (isPimpinanTab ? person.role !== "EMPLOYEE" : true))
+      .filter((person) => {
+        const q = kelolaSearch.trim().toLowerCase();
+        if (!q) return true;
+        const searchable = `${person.nama} ${person.nip || ""} ${person.jabatan || ""} ${person.unit || ""} ${person.bidang || ""} ${person.role || ""}`.toLowerCase();
+        return searchable.includes(q);
+      });
+    const unitOptions = [
+      { id: "PIMPINAN", nama: "Pimpinan" },
+      ...orgData.bidang.filter((b) => b.id !== "pimpinan"),
+    ];
+    const selectedTitle = selectedPegawaiId === "new"
+      ? "Tambah Pegawai Baru"
+      : selectedPegawai
+        ? `Edit ${selectedPegawai.nama || "Pegawai"}`
+        : "Pilih pegawai untuk diedit";
+
     return (
       <div className="min-h-screen bg-[#080c14] px-4 py-6">
         <div className="relative z-10 max-w-sm mx-auto">
           <BackButton onClick={() => setActiveMenu(null)} />
           <h2 className="text-xl font-black text-white mb-1">Kelola Pegawai</h2>
-          <p className="text-slate-500 text-xs mb-5">{pegawaiData.length} pegawai terdaftar</p>
+          <p className="text-slate-500 text-xs mb-4">{people.length} pegawai aktif terdaftar</p>
+
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <button
+              onClick={() => setKelolaTab("pegawai")}
+              className={`rounded-xl border px-3 py-2 text-sm font-semibold transition-all ${kelolaTab === "pegawai" ? "border-blue-500/50 bg-blue-500/15 text-white" : "border-slate-700/60 bg-slate-900/60 text-slate-400"}`}
+            >
+              Data Pegawai
+            </button>
+            <button
+              onClick={() => setKelolaTab("pimpinan")}
+              className={`rounded-xl border px-3 py-2 text-sm font-semibold transition-all ${kelolaTab === "pimpinan" ? "border-amber-500/50 bg-amber-500/15 text-white" : "border-slate-700/60 bg-slate-900/60 text-slate-400"}`}
+            >
+              Pimpinan
+            </button>
+          </div>
+
+          <div className="relative mb-3">
+            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              value={kelolaSearch}
+              onChange={(e) => setKelolaSearch(e.target.value)}
+              placeholder="Cari nama, NIP, unit, jabatan..."
+              className="w-full bg-slate-800/80 border border-slate-700/60 rounded-xl pl-10 pr-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/50 focus:bg-slate-800"
+            />
+          </div>
+
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={openNewPegawai}
+              disabled={readOnly}
+              className="flex-1 rounded-xl bg-blue-500/20 border border-blue-500/30 py-3 text-sm font-semibold text-blue-200 hover:bg-blue-500/30 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              + Tambah Pegawai
+            </button>
+            <button
+              onClick={() => setSelectedPegawaiId(null)}
+              className="rounded-xl bg-slate-800 border border-slate-700/60 py-3 px-4 text-sm font-semibold text-slate-300 hover:bg-slate-700 transition-colors"
+            >
+              Bersihkan
+            </button>
+          </div>
+
+          <Card className="p-4 mb-4">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <div className="text-white text-sm font-bold">{selectedTitle}</div>
+                <div className="text-slate-500 text-xs mt-0.5">Nama wajib diisi. Field lain boleh kosong sesuai data asli.</div>
+              </div>
+              <span className="rounded-full border border-slate-700/60 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                {selectedPegawaiId === "new" ? "NEW" : selectedPegawai ? "EDIT" : "VIEW"}
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Nama</label>
+                <input value={pegawaiDraft.nama} disabled={readOnly} onChange={(e) => setPegawaiDraft((prev) => ({ ...prev, nama: e.target.value }))}
+                  className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60" placeholder="Nama pegawai" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">NIP</label>
+                  <input value={pegawaiDraft.nip} disabled={readOnly} onChange={(e) => setPegawaiDraft((prev) => ({ ...prev, nip: e.target.value }))}
+                    className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60" placeholder="Kosong jika belum ada" />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Role</label>
+                  <select value={pegawaiDraft.role} disabled={readOnly} onChange={(e) => setPegawaiDraft((prev) => ({ ...prev, role: e.target.value }))}
+                    className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 text-sm text-white focus:border-blue-500/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60">
+                    <option value="EMPLOYEE">EMPLOYEE</option>
+                    <option value="UNIT_LEADER">UNIT_LEADER</option>
+                    <option value="EXECUTIVE">EXECUTIVE</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Jabatan</label>
+                <input value={pegawaiDraft.jabatan} disabled={readOnly} onChange={(e) => setPegawaiDraft((prev) => ({ ...prev, jabatan: e.target.value }))}
+                  className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60" placeholder="Kosong jika belum ada" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Unit / Bidang</label>
+                  <select value={pegawaiDraft.unit} disabled={readOnly} onChange={(e) => {
+                    const unit = e.target.value;
+                    const bid = unitOptions.find((item) => item.id === unit)?.nama || unit;
+                    setPegawaiDraft((prev) => ({ ...prev, unit, bidang: bid }));
+                  }}
+                    className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 text-sm text-white focus:border-blue-500/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60">
+                    <option value="">Pilih unit</option>
+                    {unitOptions.map((unit) => (
+                      <option key={unit.id} value={unit.id}>{unit.nama}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Password</label>
+                  <input value={pegawaiDraft.password} disabled={readOnly} onChange={(e) => setPegawaiDraft((prev) => ({ ...prev, password: e.target.value }))}
+                    className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60" placeholder="Kosong jika tidak diubah" />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={savePegawaiDraft}
+                disabled={readOnly || !pegawaiDraft.nama.trim()}
+                className="flex-1 rounded-xl bg-emerald-500/20 border border-emerald-500/30 py-3 text-sm font-semibold text-emerald-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-emerald-500/30 transition-colors"
+              >
+                Simpan
+              </button>
+              <button
+                onClick={deleteSelectedPegawai}
+                disabled={readOnly || !selectedPegawai || selectedPegawaiId === "new"}
+                className="rounded-xl bg-red-500/20 border border-red-500/30 py-3 px-4 text-sm font-semibold text-red-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-red-500/30 transition-colors"
+              >
+                Hapus
+              </button>
+            </div>
+          </Card>
+
           <div className="space-y-2">
-            {orgData.bidang.filter(b => b.id !== "pimpinan").map(b => {
-              const count = pegawaiData.filter(p => p.bidang === b.nama).length;
-              if (!count) return null;
-              return (
-                <Card key={b.id} className="p-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-white text-sm font-semibold">{b.nama}</div>
-                      <div className="text-slate-500 text-xs">{b.kepala}</div>
+            {visiblePeople.map((person) => (
+              <Card
+                key={person.id}
+                className={`p-3.5 transition-all duration-150 ${String(selectedPegawaiId) === String(person.id) ? "border-blue-500/50 bg-blue-500/10" : "bg-slate-950/40"}`}
+                onClick={() => setSelectedPegawaiId(person.id)}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <ProfileLines
+                      name={person.nama || "Nama belum diisi"}
+                      nip={person.nip}
+                      jabatan={person.jabatan}
+                      nameClassName="text-white text-sm font-semibold"
+                      metaClassName="text-slate-500 text-xs"
+                    />
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                        {getUnitLabel(person.unit) || "Tanpa Unit"}
+                      </span>
+                      <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        {person.role}
+                      </span>
                     </div>
-                    <span className="text-slate-400 text-sm font-bold">{count}</span>
                   </div>
-                </Card>
-              );
-            })}
+                  <svg className="w-5 h-5 text-slate-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </Card>
+            ))}
+            {visiblePeople.length === 0 && (
+              <Card className="p-6 text-center border-dashed border-slate-700/60 bg-slate-950/40">
+                <div className="text-slate-400 text-sm">Pegawai tidak ditemukan</div>
+              </Card>
+            )}
           </div>
         </div>
       </div>
@@ -2412,57 +3129,6 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
         <BackButton onClick={onBack} />
-        {DEV_MODE && (
-  <div className="flex gap-2 mb-4">
-    <button
-      onClick={() => onAppealPhaseChange(APEL_SESSIONS.BEFORE)}
-      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-        apelStatus === "before"
-          ? "bg-slate-600 text-white"
-          : "bg-slate-800 text-slate-400"
-      }`}
-    >
-      Sebelum
-    </button>
-
-    <button
-      onClick={() => onAppealPhaseChange(APEL_SESSIONS.ONGOING)}
-      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-        apelStatus === "ongoing"
-          ? "bg-emerald-600 text-white"
-          : "bg-slate-800 text-slate-400"
-      }`}
-    >
-      Saat Apel
-    </button>
-
-    <button
-      onClick={() => onAppealPhaseChange(APEL_SESSIONS.ENDED)}
-      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-        apelStatus === "ended"
-          ? "bg-red-600 text-white"
-          : "bg-slate-800 text-slate-400"
-      }`}
-    >
-      Setelah
-    </button>
-
-    <button
-      onClick={() => {
-        onAppealPhaseChange(APEL_SESSIONS.DITIADAKAN);
-        setShowReasonModal(true);
-      }}
-      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-        apelStatus === "ditiadakan"
-          ? "bg-amber-600 text-white"
-          : "bg-slate-800 text-slate-400"
-      }`}
-    >
-      Ditiadakan
-    </button>
-  </div>
-)}
-
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl font-black text-white">Admin Panel</h1>
@@ -2502,10 +3168,10 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
           </Card>
         ) : (
           <div className="grid grid-cols-3 gap-2 mb-5">
-            {getAttendanceStatItems(apelStatus).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
+            {getAttendanceStatItems(apelStatus, { demoMode }).map(item => ({ label: item.label, val: stats[item.key], icon: item.icon, color: item.color })).map(s => (
               <Card key={s.label} className="p-3 text-center">
                 <div className="text-lg mb-0.5">{s.icon}</div>
-                <div className={`text-xl font-black ${s.color}`}>{s.val}</div>
+                <div className={`text-xl font-black ${showOperationalStats ? s.color : "text-slate-400"}`}>{showOperationalStats ? s.val : "—"}</div>
                 <div className="text-slate-400 text-xs">{s.label}</div>
               </Card>
             ))}
@@ -2563,12 +3229,10 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
         {/* Menu Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           {[
-            { id: "absensi", label: "Absensi Hari Ini", icon: "📋", color: "from-cyan-500/20 to-sky-500/10", border: "hover:border-cyan-500/50" },
             { id: "kelola", label: "Kelola Pegawai", icon: "👥", color: "from-blue-500/20 to-indigo-500/10", border: "hover:border-blue-500/50" },
             { id: "koreksi", label: "Koreksi Absensi", icon: "✏️", color: "from-amber-500/20 to-yellow-500/10", border: "hover:border-amber-500/50" },
-            { id: "laporan", label: "Laporan Harian", icon: "📊", color: "from-emerald-500/20 to-teal-500/10", border: "hover:border-emerald-500/50" },
             { id: "pengajuan", label: "Pengajuan Status", icon: "📥", color: "from-orange-500/20 to-red-500/10", border: "hover:border-orange-500/50" },
-            { id: "demo", label: "Demo Tools", icon: "🧪", color: "from-violet-500/20 to-purple-500/10", border: "hover:border-violet-500/50" },
+            { id: "apel", label: "Pengaturan Apel", icon: "⏱️", color: "from-violet-500/20 to-purple-500/10", border: "hover:border-violet-500/50" },
           ].map(m => (
             <button key={m.id} onClick={() => setActiveMenu(m.id)}
               className={`text-left p-4 rounded-xl bg-gradient-to-br ${m.color} border border-slate-700/60 ${m.border} transition-all duration-150 active:scale-[0.97]`}>
@@ -2677,97 +3341,130 @@ const secsLeft = qrActive && currentQr ? Math.max(0, Math.ceil((currentQr.expire
             </div>
             <p className="text-slate-500 text-xs mb-4">Verifikasi pengajuan perubahan status pegawai</p>
 
-            {/* List pengajuan using dummy data */}
-            {PENGJUAN_STATUS_DATA.map((p, i) => (
-              <div key={p.id}>
-                {i > 0 && <div className="border-t border-slate-800 my-4" />}
-                {/* Pegawai Info */}
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-slate-400">👤</span>
-                  <span className="text-white text-sm font-semibold">{p.nama}</span>
-                </div>
-                <div className="text-slate-600 text-[10px] mb-3 ml-6">NIP: {p.nip}</div>
-
-                {/* Status Saat Ini */}
-                <div className="text-slate-500 text-[10px] mb-1 ml-6">Status Saat Ini:</div>
-                <div className="bg-slate-800/60 rounded-xl p-2 mb-2 ml-6">
-                  <span className="text-slate-400 text-xs">{p.statusLama}</span>
-                </div>
-
-                {/* Pengajuan */}
-                <div className="text-slate-500 text-[10px] mb-1 ml-6">Pengajuan:</div>
-                <div className="bg-slate-800/60 rounded-xl p-2 mb-2 ml-6">
-                  <span className="text-sm">{getStatusIcon(p.statusBaru).icon}</span>
-                  <span className="text-blue-300 text-xs ml-1">{getStatusIcon(p.statusBaru).label}</span>
-                </div>
-
-                {/* Dokumen */}
-                <div className="flex items-center gap-2 text-slate-500 text-xs mb-2 ml-6">
-                  <span>📄</span>
-                  <span>{p.dokumen}</span>
-                </div>
-
-                {/* Waktu & Status */}
-                <div className="flex items-center gap-3 text-slate-500 text-xs mb-3 ml-6">
-                  <span>🕘 {p.waktu} WIB</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    p.statusVerifikasi === "disetujui"
-                      ? "bg-emerald-500/20 text-emerald-400"
-                      : "bg-amber-500/20 text-amber-400"
-                  }`}>
-                    {p.statusVerifikasi === "disetujui" ? "🟢 Disetujui" : "🟡 Menunggu"}
-                  </span>
-                </div>
-
-                {/* Action Buttons */}
-                {p.statusVerifikasi === "menunggu" && (
-                  <div className="flex gap-2 ml-6">
-                    <button className="flex-1 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium hover:bg-slate-700 transition-colors">
-                      Lihat
-                    </button>
-                    <button className="flex-1 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/30 transition-colors border border-emerald-500/30">
-                      Setujui
-                    </button>
-                    <button className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-colors border border-red-500/30">
-                      Tolak
-                    </button>
-                  </div>
-                )}
+            {PENGJUAN_STATUS_DATA.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-slate-700/60 bg-slate-950/40 px-4 py-5 text-center">
+                <div className="text-slate-300 text-sm font-semibold">Belum ada pengajuan status</div>
+                <div className="text-slate-500 text-xs mt-1">Jalur operasional akan menampilkan data nyata ketika pengajuan masuk.</div>
               </div>
-            ))}
+            ) : (
+              PENGJUAN_STATUS_DATA.map((p, i) => (
+                <div key={p.id}>
+                  {i > 0 && <div className="border-t border-slate-800 my-4" />}
+                  {/* Pegawai Info */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-slate-400">👤</span>
+                    <span className="text-white text-sm font-semibold">{p.nama}</span>
+                  </div>
+                  <div className="text-slate-600 text-[10px] mb-3 ml-6">NIP: {p.nip}</div>
+
+                  {/* Status Saat Ini */}
+                  <div className="text-slate-500 text-[10px] mb-1 ml-6">Status Saat Ini:</div>
+                  <div className="bg-slate-800/60 rounded-xl p-2 mb-2 ml-6">
+                    <span className="text-slate-400 text-xs">{p.statusLama}</span>
+                  </div>
+
+                  {/* Pengajuan */}
+                  <div className="text-slate-500 text-[10px] mb-1 ml-6">Pengajuan:</div>
+                  <div className="bg-slate-800/60 rounded-xl p-2 mb-2 ml-6">
+                    <span className="text-sm">{getStatusIcon(p.statusBaru).icon}</span>
+                    <span className="text-blue-300 text-xs ml-1">{getStatusIcon(p.statusBaru).label}</span>
+                  </div>
+
+                  {/* Dokumen */}
+                  <div className="flex items-center gap-2 text-slate-500 text-xs mb-2 ml-6">
+                    <span>📄</span>
+                    <span>{p.dokumen}</span>
+                  </div>
+
+                  {/* Waktu & Status */}
+                  <div className="flex items-center gap-3 text-slate-500 text-xs mb-3 ml-6">
+                    <span>🕘 {p.waktu} WIB</span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      p.statusVerifikasi === "disetujui"
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : "bg-amber-500/20 text-amber-400"
+                    }`}>
+                      {p.statusVerifikasi === "disetujui" ? "🟢 Disetujui" : "🟡 Menunggu"}
+                    </span>
+                  </div>
+
+                  {/* Action Buttons */}
+                  {p.statusVerifikasi === "menunggu" && (
+                    <div className="flex gap-2 ml-6">
+                      <button className="flex-1 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium hover:bg-slate-700 transition-colors">
+                        Lihat
+                      </button>
+                      <button className="flex-1 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/30 transition-colors border border-emerald-500/30">
+                        Setujui
+                      </button>
+                      <button className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-colors border border-red-500/30">
+                        Tolak
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}
 
-      {/* DEMO TOOLS MODAL */}
-      {activeMenu === "demo" && (
+      {activeMenu === "apel" && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 w-full max-w-sm">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 w-full max-w-sm max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-bold">🧪 Demo Tools</h3>
+              <h3 className="text-white font-bold">⏱️ Pengaturan Apel</h3>
               <button onClick={() => setActiveMenu(null)} className="text-slate-400 hover:text-white">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
-            <p className="text-slate-500 text-xs mb-4">Simulasi massal untuk demonstrasi</p>
-            <div className="space-y-2">
+            <p className="text-slate-500 text-xs mb-4">Atur fase apel dan alasan jika ditiadakan. Perubahan ini dipakai semua dashboard.</p>
+            <div className="grid grid-cols-2 gap-2 mb-4">
               {[
-                { label: "Tambah 1 Hadir", count: 1, color: "bg-slate-800 hover:bg-slate-700 text-slate-300" },
-                { label: "Tambah 5 Hadir", count: 5, color: "bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/30" },
-                { label: "Tambah 10 Hadir", count: 10, color: "bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30" },
-              ].map(item => (
-                <button key={item.count} onClick={() => { onScanSimulate(item.count); }}
-                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] ${item.color}`}>
+                { label: "Sebelum", value: APEL_SESSIONS.BEFORE, tone: "bg-slate-800 text-slate-300 border-slate-700/60" },
+                { label: "Saat Apel", value: APEL_SESSIONS.ONGOING, tone: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" },
+                { label: "Setelah", value: APEL_SESSIONS.ENDED, tone: "bg-blue-500/20 text-blue-300 border-blue-500/30" },
+                { label: "Ditiadakan", value: APEL_SESSIONS.DITIADAKAN, tone: "bg-amber-500/20 text-amber-300 border-amber-500/30" },
+              ].map((item) => (
+                <button
+                  key={item.value}
+                  onClick={() => {
+                    onAppealPhaseChange(item.value);
+                    if (item.value !== APEL_SESSIONS.DITIADAKAN) setActiveMenu(null);
+                  }}
+                  className={`rounded-xl border px-3 py-3 text-sm font-semibold transition-all active:scale-[0.98] ${item.tone}`}
+                >
                   {item.label}
                 </button>
               ))}
-              <div className="border-t border-slate-700/50 pt-2 mt-2">
-                <button onClick={() => { onReset(); setActiveMenu(null); }}
-                  className="w-full py-3 rounded-xl font-semibold text-sm bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 transition-all active:scale-[0.98]">
-                  🔄 Reset Simulasi
-                </button>
-              </div>
             </div>
+            {apelStatus === "ditiadakan" && (
+              <div className="space-y-2">
+                <div className="text-slate-400 text-xs font-semibold uppercase tracking-[0.18em]">Alasan</div>
+                {REASON_OPTIONS.map((reason) => (
+                  <button
+                    key={reason.id}
+                    onClick={() => {
+                      if (reason.id === "lainnya") {
+                        const customText = window.prompt("Tulis alasan ditiadakan", apelReasonText || "");
+                        if (customText !== null) onApelReasonChange("lainnya", customText);
+                      } else {
+                        onApelReasonChange(reason.id);
+                      }
+                      setActiveMenu(null);
+                    }}
+                    className={`w-full rounded-xl border px-3 py-3 text-left text-sm transition-all active:scale-[0.98] ${
+                      apelReason === reason.id
+                        ? "border-amber-500/40 bg-amber-500/15 text-amber-200"
+                        : "border-slate-700/60 bg-slate-800/70 text-slate-300 hover:bg-slate-700"
+                    }`}
+                  >
+                    <span className="mr-2">{reason.icon}</span>
+                    {reason.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -2783,29 +3480,55 @@ export default function App() {
   const [role, setRole] = useState(null);
   const [activePegawai, setActivePegawai] = useState(null);
   const [selectedPimpinan, setSelectedPimpinan] = useState(null);
-  const [attendance, setAttendance] = useState(buildInitialAttendance);
+  const [masterPegawaiData, setMasterPegawaiData] = useState(loadMasterPegawaiData);
+  const [attendance, setAttendance] = useState(() => buildInitialAttendance(loadMasterPegawaiData()));
   const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING); // sebelum/saat/sesudah/ditiadakan
   const [apelReason, setApelReason] = useState(null); // alasan penaltiadakan
   const [apelReasonText, setApelReasonText] = useState(""); // teks alasan custom (jika lainnya)
 
   // Calculate apelStatus based on session and time
   const apelStatus = getApelStatus(new Date(), apelSession);
+  const pimpinanAccessRoles = useMemo(() => buildPimpinanAccessRoles(masterPegawaiData), [masterPegawaiData]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(MASTER_PEGAWAI_STORAGE_KEY, JSON.stringify(masterPegawaiData));
+    } catch (error) {
+      console.error("Failed to persist master pegawai data:", error);
+    }
+  }, [masterPegawaiData]);
+
+  useEffect(() => {
+    if (activePegawai && !masterPegawaiData.some((person) => String(person.id) === String(activePegawai.id))) {
+      setActivePegawai(null);
+      setPage("pegawai_login");
+    }
+  }, [activePegawai, masterPegawaiData]);
+
+  useEffect(() => {
+    if (selectedPimpinan && !pimpinanAccessRoles.some((person) => String(person.id) === String(selectedPimpinan.id))) {
+      setSelectedPimpinan(null);
+      setPage("pimpinan_select");
+    }
+  }, [pimpinanAccessRoles, selectedPimpinan]);
 
   useEffect(() => {
     const attendanceRef = ref(database, ATTENDANCE_PATH);
     return onValue(attendanceRef, (snapshot) => {
-      if (snapshot.val() === null) {
-        const initialAttendance = buildInitialAttendance();
+      const snapshotAttendance = snapshot.val();
+      if (snapshotAttendance === null) {
+        const initialAttendance = buildInitialAttendance(masterPegawaiData);
         setAttendance(initialAttendance);
         set(attendanceRef, initialAttendance);
         return;
       }
 
-      setAttendance(snapshot.val());
+      setAttendance(mergeAttendanceWithPeople(snapshotAttendance, masterPegawaiData));
     }, (error) => {
       console.error("Failed to load realtime attendance:", error);
     });
-  }, []);
+  }, [masterPegawaiData]);
 
   // Firebase subscription untuk session dan alasan apel
   useEffect(() => {
@@ -2885,7 +3608,7 @@ export default function App() {
 
   const handleScanSimulate = (count) => {
     const finalStatuses = new Set(["Hadir", "Dinas Dalam", "Dinas Luar", "Izin", "Sakit"]);
-    const belum = pegawaiData
+    const belum = masterPegawaiData
       .filter(p => !finalStatuses.has(attendance[p.id]?.status))
       .map(p => p.id);
     const toScan = belum.slice(0, count);
@@ -2896,20 +3619,48 @@ export default function App() {
     update(ref(database, ATTENDANCE_PATH), updates);
   };
 
-  const handleReset = () => set(ref(database, ATTENDANCE_PATH), buildInitialAttendance());
+  const handleReset = () => set(ref(database, ATTENDANCE_PATH), buildInitialAttendance(masterPegawaiData));
 
   const handleKoreksi = (pegawaiId, newStatus) => {
     const currentAttendance = attendance[pegawaiId] || { status: null, jamHadir: null };
     set(ref(database, `${ATTENDANCE_PATH}/${pegawaiId}`), { ...currentAttendance, status: newStatus });
   };
 
+  const handleAddPegawai = (pegawaiDraft) => {
+    setMasterPegawaiData((current) => {
+      const nextId = current.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1;
+      return normalizePegawaiData([
+        ...current,
+        normalizePegawaiRecord({ ...pegawaiDraft, id: nextId }, nextId),
+      ]);
+    });
+  };
+
+  const handleUpdatePegawai = (pegawaiId, updates) => {
+    setMasterPegawaiData((current) =>
+      normalizePegawaiData(
+        current.map((item) => {
+          if (String(item.id) !== String(pegawaiId)) return item;
+          return normalizePegawaiRecord({ ...item, ...updates, id: item.id }, item.id);
+        })
+      )
+    );
+  };
+
+  const handleDeletePegawai = (pegawaiId) => {
+    setMasterPegawaiData((current) =>
+      normalizePegawaiData(current.filter((item) => String(item.id) !== String(pegawaiId)))
+    );
+  };
+
   return (
-    <div style={{ fontFamily: "'DM Sans', 'Inter', system-ui, sans-serif" }}>
+      <div style={{ fontFamily: "'DM Sans', 'Inter', system-ui, sans-serif" }}>
       {page === "role" && <RoleSelector onSelect={handleRoleSelect} />}
-      {page === "pegawai_login" && <PegawaiLogin onBack={() => setPage("role")} onLogin={handlePegawaiLogin} />}
+      {page === "pegawai_login" && <PegawaiLogin people={masterPegawaiData} onBack={() => setPage("role")} onLogin={handlePegawaiLogin} />}
       {page === "pegawai_dashboard" && activePegawai && (
         <DashboardPegawai
           pegawai={activePegawai}
+          people={masterPegawaiData}
           attendance={attendance}
           apelStatus={apelStatus}
           apelSession={apelSession}
@@ -2917,16 +3668,19 @@ export default function App() {
           apelReasonText={apelReasonText}
           onScan={handleScan}
           onBack={() => setPage("pegawai_login")}
+          demoMode={false}
         />
       )}
       {page === "pimpinan_select" && (
         <PimpinanSelector
+          pimpinanAccessRoles={pimpinanAccessRoles}
           onBack={() => setPage("role")}
           onSelect={handlePimpinanSelect}
         />
       )}
       {page === "pimpinan_dashboard" && (
         <DashboardPimpinan
+          people={masterPegawaiData}
           attendance={attendance}
           apelStatus={apelStatus}
           apelSession={apelSession}
@@ -2934,10 +3688,12 @@ export default function App() {
           apelReasonText={apelReasonText}
           selectedPimpinan={selectedPimpinan}
           onBack={() => setPage("pimpinan_select")}
+          demoMode={false}
         />
       )}
       {page === "admin" && (
         <DashboardAdmin
+          people={masterPegawaiData}
           attendance={attendance}
           apelStatus={apelStatus}
           apelSession={apelSession}
@@ -2949,10 +3705,32 @@ export default function App() {
           onReset={handleReset}
           onBack={() => setPage("role")}
           onKoreksi={handleKoreksi}
+          onAddPegawai={handleAddPegawai}
+          onUpdatePegawai={handleUpdatePegawai}
+          onDeletePegawai={handleDeletePegawai}
+          demoMode={false}
         />
       )}
       {page === "developer" && (
-        <DeveloperConsole onBack={() => setPage("role")} />
+        <DeveloperConsole
+          masterPegawaiData={masterPegawaiData}
+          legacyPegawaiData={legacyPegawaiData}
+          attendance={attendance}
+          apelStatus={apelStatus}
+          apelSession={apelSession}
+          apelReason={apelReason}
+          apelReasonText={apelReasonText}
+          onScan={handleScan}
+          onReset={handleReset}
+          onKoreksi={handleKoreksi}
+          onApelSessionChange={handleApelSessionChange}
+          onApelReasonChange={handleApelReasonChange}
+          onScanSimulate={handleScanSimulate}
+          onAddPegawai={handleAddPegawai}
+          onUpdatePegawai={handleUpdatePegawai}
+          onDeletePegawai={handleDeletePegawai}
+          onBack={() => setPage("role")}
+        />
       )}
     </div>
   );

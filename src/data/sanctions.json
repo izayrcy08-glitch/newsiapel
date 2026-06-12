@@ -1,16 +1,6 @@
 {
-  "periode": "Mei 2026",
-  "records": [
-    { "pegawaiId": 9, "kategori": "Merah", "totalTanpaKeterangan": 8, "totalTerlambat": 3, "keterangan": "Sering tidak hadir tanpa keterangan" },
-    { "pegawaiId": 22, "kategori": "Oranye", "totalTanpaKeterangan": 5, "totalTerlambat": 2, "keterangan": "Absensi tidak konsisten" },
-    { "pegawaiId": 33, "kategori": "Oranye", "totalTanpaKeterangan": 4, "totalTerlambat": 5, "keterangan": "Sering terlambat" },
-    { "pegawaiId": 45, "kategori": "Kuning", "totalTanpaKeterangan": 3, "totalTerlambat": 1, "keterangan": "Perlu pemantauan" },
-    { "pegawaiId": 57, "kategori": "Kuning", "totalTanpaKeterangan": 2, "totalTerlambat": 4, "keterangan": "Terlambat berulang" },
-    { "pegawaiId": 68, "kategori": "Oranye", "totalTanpaKeterangan": 5, "totalTerlambat": 0, "keterangan": "Tidak hadir 5x bulan ini" },
-    { "pegawaiId": 76, "kategori": "Merah", "totalTanpaKeterangan": 9, "totalTerlambat": 2, "keterangan": "Kritis - perlu tindakan" },
-    { "pegawaiId": 89, "kategori": "Kuning", "totalTanpaKeterangan": 3, "totalTerlambat": 2, "keterangan": "Perlu perhatian" },
-    { "pegawaiId": 99, "kategori": "Kuning", "totalTanpaKeterangan": 2, "totalTerlambat": 3, "keterangan": "Terlambat berulang" }
-  ],
+  "periode": "",
+  "records": [],
   "keterangan_kategori": {
     "Hijau": "0-1 pelanggaran",
     "Kuning": "2-3 pelanggaran",
