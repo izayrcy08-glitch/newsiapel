@@ -6,7 +6,7 @@ Status proyek terkini. Update tiap selesai sesi.
 
 ## Status Terkini
 - **Branch:** `refactor-phase-1`
-- **Sesi terakhir:** 2026-06-15 — Login semua role: Admin (username/password), Developer (username/password), Pimpinan (pilih nama + password 6 digit)
+- **Sesi terakhir:** 2026-06-15 — Hapus PanelPengajuan.jsx (dead code) — semua fungsi sudah migrasi ke PanelKoreksi
 - **Firebase:** Live — Realtime Database + Storage lazy load
 - **Build:** `npm run build` ✅
 - **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
@@ -27,21 +27,28 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `refactor-phase-1` | **Paket 1 Production Readiness:** generate password 6 digit angka utk 302 pegawai, tambah field `nik` + `phoneFingerprint` di JSON & normalize, storage key v1→v3, validasi integritas field localStorage, password tampil di form edit kelola pegawai |
 | 2026-06-15 | `refactor-phase-1` | **Paket 2: Login Baru** — ganti search-by-name jadi multi-step login: NIP (prioritas) → NIK → Nama → password 6 digit. Device fingerprint otomatis tersimpan saat login sukses (Firebase + localStorage). File baru: `device-fingerprint.js`. 5 file berubah, build ✅ |
 | 2026-06-15 | `refactor-phase-1` | **Login semua role** — AdminLogin (admin/355454), DeveloperLogin (developer/723254), PimpinanSelector + password step (pilih nama → password 6 digit). File baru: AdminLogin.jsx, DeveloperLogin.jsx, CREDENTIALS.md. 5 file berubah, build ✅ |
+| 2026-06-15 | `refactor-phase-1` | **Unified Login Page** — 1 form username+password untuk semua role (auto-detect admin/developer/pegawai/pimpinan). Hapus RoleSelector, PegawaiLogin, AdminLogin, DeveloperLogin, PimpinanSelector — ganti LoginPage.jsx. Desain clean professional, logo besar sebagai pusat visual. Info kontak admin di bawah form. Bundle ~443 kB. Build ✅ |
+| 2026-06-15 | `refactor-phase-1` | **LoginPage cinematic dari 21st.dev** — rewrite total pake Framer Motion (partikel, 3D tilt, light beams, glassmorphism, AnimatePresence). Tema emerald → biru tua. Logo full lingkaran (`w-full h-full object-cover rounded-full`). Dependensi baru: framer-motion, lucide-react, clsx, tailwind-merge. File baru: src/lib/utils.js (cn utility). Build ✅ |
+| 2026-06-15 | `refactor-phase-1` | **Ganti Password DeveloperConsole** — 1 kolom simpel: tampilkan password saat ini + eye toggle show/hide (lucide-react) + tombol simpan langsung ubah localStorage. Fix: React key={tab} biar Admin/Developer tab tidak share state, fix input editable (hapus .slice(0, 6), tambah onFocus select-all). Integrasi login diverifikasi — siapel.adminPassword / siapel.developerPassword konsisten antara DeveloperConsole ↔ LoginPage. Build ✅ |
+| 2026-06-15 | `refactor-phase-1` | **Unified PanelKoreksi** — gabung Koreksi Manual (filter TK) + Pengajuan dalam 1 panel 2 tab, search + filter bidang, badge count pengajuan pending. Hapus PanelPengajuan dari DashboardAdmin, menu Pengajuan tergabung ke Koreksi Absensi. Build ✅ |
+| 2026-06-15 | `refactor-phase-1` | **DeveloperConsole → PanelKoreksi** — ganti PanelPengajuan modal dengan PanelKoreksi full-page (sama dengan Admin). Menu 'Pengajuan Status' → 'Koreksi Absensi'. Konsisten antara Admin & DeveloperConsole. Build ✅ |
+| 2026-06-15 | `refactor-phase-1` | **Dead code cleanup** — hapus PanelPengajuan.jsx (97 baris, 0 imports), update SIAPEL_README.md. Semua fungsi pengajuan sudah di PanelKoreksi. Build ✅ |
 
 ## Prioritas
 
-1. 🔴 **Paket 3 — Ubah Password (Dashboard Pegawai)** — form ganti password 6 digit di dashboard pegawai, sync ke localStorage + Firebase
-2. 🔴 **Paket 4 — Reset Device Binding & Password (Admin/DeveloperConsole)** — tombol reset device fingerprint + reset password di PanelKelolaPegawai dan DeveloperConsole
+1. 🔴 **Dashboard Pegawai — Ganti Password** — form ganti password 6 digit di dashboard pegawai, sync ke Firebase Realtime Database (bukan cuma localStorage)
+2. 🔴 **Reset Device Binding (DeveloperConsole)** — tombol reset device fingerprint pegawai di panel/developer
 3. 🔴 **DashboardAdmin panel lazy loading** — PanelAbsensi dkk masih eager-loaded
 4. 🟡 **Paket 5 — Device Binding** — Firebase `/config/deviceBindingEnabled` toggle, kode siap tapi OFF sampai produksi masal
 5. 🟡 **Autentikasi Firebase** — Firebase Auth + role-based access (setelah login pilot stabil)
-6. 🟢 **Semua role sudah punya login** ✅ — Admin, Developer, Pimpinan, Pegawai — masing-masing dengan verifikasi
-7. 🟢 **ErrorBoundary integrasi penuh** — Sudah dibuat, perlu integrasi di App.jsx lebih dalam
+6. 🟢 **DeveloperConsole fitur** ✅ — Menu Kelola Pegawai, Koreksi Absensi, Ganti Password admin/dev
+7. 🟢 **Ganti Password admin/dev (DeveloperConsole)** ✅ — 1 kolom + eye toggle, langsung ubah localStorage, integrasi login verified
+8. 🟢 **Unified Login Page** ✅ — 1 form untuk semua role, auto-detect, info kontak admin di bawah form
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx
 - **Hooks:** useClock, usePegawaiSearch, useShowMore, useAttendanceStats, useQrGenerator, useQrScanner
-- **Panels:** PanelAbsensi, PanelKoreksi, PanelLaporan, PanelKelolaPegawai, PanelPengajuan, PanelApel, PanelQR
+- **Panels:** PanelAbsensi, PanelKoreksi, PanelLaporan, PanelKelolaPegawai, PanelApel, PanelQR
 - **ErrorBoundary:** Ada di App.jsx
 
 ## Source of Truth
