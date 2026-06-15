@@ -6,7 +6,7 @@ Status proyek terkini. Update tiap selesai sesi.
 
 ## Status Terkini
 - **Branch:** `refactor-phase-1`
-- **Sesi terakhir:** 2026-06-15 — Feature audit: hapus 9 placeholder + legacy JSON, implementasi Firebase Storage upload, dead code cleanup
+- **Sesi terakhir:** 2026-06-15 — Fix akar masalah data placeholder: hapus mergeAttendanceWithPeople, stat 0 saat data kosong, tombol Reset Attendance di DeveloperConsole, hapus state_absensi.js (dead code)
 - **Firebase:** Live — Realtime Database + Storage (upload file pengajuan)
 - **Build:** `npm run build` ✅
 - **Developer Console:** View As (4 role) + Summary Cards + Preview Data — tanpa placeholder/dead items
@@ -20,6 +20,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `refactor-phase-1` | Arsitektur baru: 6 custom hooks, SessionContext + FirebaseDataContext, App.jsx 438→120 baris, DashboardAdmin 961→130 baris (7 panel), ErrorBoundary, usePegawaiSearch di semua page |
 | 2026-06-15 | `refactor-phase-1` | Final: CONTEXT.md sebagai status dinamis, CLAUDE.md fokus aturan, settings.json auto-baca CONTEXT tiap sesi |
 | 2026-06-15 | `refactor-phase-1` | Feature audit: hapus 9 placeholder DeveloperConsole + Data Source Toggle + legacy JSON, implementasi Firebase Storage upload file, hapus DEMO_LAST_MONTH_DISCIPLINE |
+| 2026-06-15 | `refactor-phase-1` | **Fix akar data placeholder:** hapus mergeAttendanceWithPeople (biarkan Firebase mentah), cabang data kosong di calcAttendanceStats return 0, guard PerhatianList, tombol Reset Attendance di DeveloperConsole, hapus state_absensi.js |
 
 ## Prioritas
 
@@ -36,7 +37,7 @@ Status proyek terkini. Update tiap selesai sesi.
 
 ## Source of Truth
 - **Data pegawai:** `src/data/pegawai_master.json` (302 org) — jangan pakai dummy
-- **Firebase:** attendance, apel session, apel reason, pengajuan — realtime via FirebaseDataContext
+- **Firebase:** attendance, apel session, apel reason, pengajuan — realtime via FirebaseDataContext, data mentah (tanpa merge)
 - **localStorage:** admin edits saja — initial load selalu dari JSON
 - **sessionStorage:** sesi user (role, halaman, pegawai terpilih)
 
@@ -59,7 +60,7 @@ QR /qr/current            → useQrGenerator (Admin) → Pegawai scan (TTL 10 de
 | ended | "Tanpa Keterangan" 🚫 | "Tanpa Keterangan" |
 | ditiadakan | Stat tidak tampil | Banner info |
 
-Aturan: `set(null)` untuk reset, jangan tulis 302 record. QR TTL 10 detik. Admin atur manual via panel "Pengaturan Apel". Default jam: before < 07:00, ongoing 07:00–08:00, ended > 08:00.
+Aturan: `set(null)` untuk reset. QR TTL 10 detik. Admin atur manual via panel "Pengaturan Apel". Default jam: before < 07:00, ongoing 07:00–08:00, ended > 08:00. Data Firebase mentah (tanpa mergeAttendanceWithPeople) — stat 0 saat kosong.
 
 ## Catatan
 - Hard refresh jika angka pegawai masih 439 (localStorage cache lama)
