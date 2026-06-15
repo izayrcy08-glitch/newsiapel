@@ -1,23 +1,18 @@
 import { lazy, Suspense } from "react";
 import { SessionProvider, useSession } from "./contexts/SessionContext";
 import { FirebaseDataProvider, useFirebaseData } from "./contexts/FirebaseDataContext";
-import { RoleSelector } from "./pages/RoleSelector";
-import { PegawaiLogin } from "./pages/PegawaiLogin";
-import { PimpinanSelector } from "./pages/PimpinanSelector";
+import { LoginPage } from "./pages/LoginPage";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 
 const DashboardPegawai = lazy(() => import("./pages/DashboardPegawai"));
 const DashboardPimpinan = lazy(() => import("./pages/DashboardPimpinan"));
 const DashboardAdmin = lazy(() => import("./pages/DashboardAdmin"));
 const DeveloperConsole = lazy(() => import("./pages/DeveloperConsole"));
-const AdminLogin = lazy(() => import("./pages/AdminLogin"));
-const DeveloperLogin = lazy(() => import("./pages/DeveloperLogin"));
 
 function AppRouter() {
   const {
-    page, setPage, activePegawai, selectedPimpinan,
-    handleRoleSelect, handlePimpinanSelect,
-    masterPegawaiData, pimpinanAccessRoles,
+    page, activePegawai, selectedPimpinan,
+    masterPegawaiData, handleRoleSelect,
     handleAddPegawai, handleUpdatePegawai, handleDeletePegawai,
   } = useSession();
 
@@ -36,11 +31,8 @@ function AppRouter() {
   );
 
   switch (page) {
-    case "role":
-      return <RoleSelector onSelect={handleRoleSelect} />;
-
-    case "pegawai_login":
-      return <PegawaiLogin />;
+    case "login":
+      return <LoginPage />;
 
     case "pegawai_dashboard":
       return activePegawai
@@ -55,20 +47,10 @@ function AppRouter() {
               apelReasonText={apelReasonText}
               onScan={handleScan}
               onPengajuanSubmit={handlePengajuanSubmit}
-              onBack={() => setPage("pegawai_login")}
+              onBack={() => handleRoleSelect()}
             />
           )
         : null;
-
-    case "pimpinan_select":
-      return (
-        <PimpinanSelector
-          pimpinanAccessRoles={pimpinanAccessRoles}
-          masterPegawaiData={masterPegawaiData}
-          onBack={() => setPage("role")}
-          onSelect={handlePimpinanSelect}
-        />
-      );
 
     case "pimpinan_dashboard":
       return wrap(
@@ -81,12 +63,9 @@ function AppRouter() {
           apelReason={apelReason}
           apelReasonText={apelReasonText}
           selectedPimpinan={selectedPimpinan}
-          onBack={() => setPage("pimpinan_select")}
+          onBack={() => handleRoleSelect()}
         />
       );
-
-    case "admin_login":
-      return wrap(<AdminLogin />);
 
     case "admin":
       return wrap(
@@ -102,7 +81,7 @@ function AppRouter() {
           onApelReasonChange={handleApelReasonChange}
           onScanSimulate={handleScanSimulate}
           onReset={handleReset}
-          onBack={() => setPage("role")}
+          onBack={() => handleRoleSelect()}
           onKoreksi={handleKoreksi}
           onPengajuanVerifikasi={handlePengajuanVerifikasi}
           onAddPegawai={handleAddPegawai}
@@ -110,9 +89,6 @@ function AppRouter() {
           onDeletePegawai={handleDeletePegawai}
         />
       );
-
-    case "developer_login":
-      return wrap(<DeveloperLogin />);
 
     case "developer":
       return wrap(
@@ -135,17 +111,16 @@ function AppRouter() {
           onAddPegawai={handleAddPegawai}
           onUpdatePegawai={handleUpdatePegawai}
           onDeletePegawai={handleDeletePegawai}
-          onBack={() => setPage("role")}
+          onBack={() => handleRoleSelect()}
         />
       );
 
     default:
-      return <RoleSelector onSelect={handleRoleSelect} />;
+      return <LoginPage />;
   }
 }
 
 export default function App() {
-  // Hapus localStorage legacy — cukup sekali
   try {
     window.localStorage.removeItem("siapel.masterPegawaiData.v1.version");
   } catch (_) {}

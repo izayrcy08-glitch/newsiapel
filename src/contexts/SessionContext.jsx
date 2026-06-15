@@ -63,7 +63,7 @@ const restoreSession = (masterData) => {
       ? masterData.find((item) => String(item.id) === String(saved.selectedPimpinanId))
       : null;
     return {
-      page: saved.page || "role",
+      page: saved.page || "login",
       activePegawai: p || null,
       selectedPimpinan: sp || null,
     };
@@ -85,7 +85,7 @@ export function SessionProvider({ children }) {
     } catch (_) {}
   }, []);
 
-  const [page, setPage] = useState(initialSession.page || "role");
+  const [page, setPage] = useState(initialSession.page || "login");
   const [role, setRole] = useState(null);
   const [activePegawai, setActivePegawai] = useState(initialSession.activePegawai || null);
   const [selectedPimpinan, setSelectedPimpinan] = useState(initialSession.selectedPimpinan || null);
@@ -128,7 +128,7 @@ export function SessionProvider({ children }) {
       !masterPegawaiData.some((person) => String(person.id) === String(activePegawai.id))
     ) {
       setActivePegawai(null);
-      setPage("pegawai_login");
+      setPage("login");
     }
   }, [activePegawai, masterPegawaiData]);
 
@@ -139,18 +139,14 @@ export function SessionProvider({ children }) {
       !pimpinanAccessRoles.some((person) => String(person.id) === String(selectedPimpinan.id))
     ) {
       setSelectedPimpinan(null);
-      setPage("pimpinan_select");
+      setPage("login");
     }
   }, [pimpinanAccessRoles, selectedPimpinan]);
 
   // ── Navigation handlers ──
 
-  const handleRoleSelect = useCallback((r) => {
-    setRole(r);
-    if (r === "pimpinan") setPage("pimpinan_select");
-    else if (r === "admin") setPage("admin_login");
-    else if (r === "developer") setPage("developer_login");
-    else setPage("pegawai_login");
+  const handleRoleSelect = useCallback(() => {
+    setPage("login");
   }, []);
 
   const handlePegawaiLogin = useCallback((p) => {
@@ -164,7 +160,7 @@ export function SessionProvider({ children }) {
   }, []);
 
   const goBack = useCallback(() => {
-    setPage("role");
+    setPage("login");
     setRole(null);
     setActivePegawai(null);
     setSelectedPimpinan(null);
