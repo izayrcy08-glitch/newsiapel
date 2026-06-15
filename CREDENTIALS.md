@@ -18,6 +18,25 @@
 | Username | `developer` |
 | Password | `723254` |
 
+## ⭐ Pimpinan (12 orang)
+
+Pilih nama dari daftar, lalu masukkan password 6 digit.
+
+| No | Role | Nama | Username | Password |
+|---|---|---|---|---|
+| 1 | EXECUTIVE | H. Rody, ST. MT | `196710151993031008` | `811800` |
+| 2 | UNIT_LEADER | PATRIA S.T., M.S. | `197307202005011007` | `540565` |
+| 3 | UNIT_LEADER | IGNASIUS S.T | `197610072007011007` | `943021` |
+| 4 | UNIT_LEADER | SUBIYANTORO ST.,M.T. / | `198107312008041002` | `931275` |
+| 5 | UNIT_LEADER | MIRA APRIYANTINADA S.T | `198004272011012008` | `150714` |
+| 6 | UNIT_LEADER | ANDRIANO ST / | `197111102006041026` | `830987` |
+| 7 | UNIT_LEADER | MUHAMMAD OKTA FAHRIZAN NOOR, S.T | `198110222010011023` | `374444` |
+| 8 | UNIT_LEADER | DEDI, S.T | `197407172008011020` | `853651` |
+| 9 | UNIT_LEADER | HARTADI S.T. | `198111042010011018` | `835824` |
+| 10 | UNIT_LEADER | SYAHBUDI NOR, A.Md | `198506292014031001` | `835824` |
+| 11 | UNIT_LEADER | MUSLIMAH MURNI, S.T | `MUSLIMAH MURNI, S.T` | `728370` |
+| 12 | EXECUTIVE | Sekretaris Dinas | `Sekretaris Dinas` | `335114` |
+
 ## 👤 Pegawai (290 orang)
 
 1 input username (NIP prioritas → NIK → Nama) + Password 6 digit.
@@ -315,22 +334,10 @@
 | 289 | AULIA RIDHA ANISYAH PUTRI | `AULIA RIDHA ANISYAH PUTRI` | `120815` |
 | 290 | EKO ANIS SETYORINI | `EKO ANIS SETYORINI` | `834896` |
 
-## ⭐ Pimpinan (12 orang)
+---
 
-Pilih nama dari daftar, lalu masukkan password 6 digit.
-
-| No | Role | Nama | Username | Password |
-|---|---|---|---|---|
-| 1 | EXECUTIVE | H. Rody, ST. MT | `196710151993031008` | `811800` |
-| 2 | UNIT_LEADER | PATRIA S.T., M.S. | `197307202005011007` | `540565` |
-| 3 | UNIT_LEADER | IGNASIUS S.T | `197610072007011007` | `943021` |
-| 4 | UNIT_LEADER | SUBIYANTORO ST.,M.T. / | `198107312008041002` | `931275` |
-| 5 | UNIT_LEADER | MIRA APRIYANTINADA S.T | `198004272011012008` | `150714` |
-| 6 | UNIT_LEADER | ANDRIANO ST / | `197111102006041026` | `830987` |
-| 7 | UNIT_LEADER | MUHAMMAD OKTA FAHRIZAN NOOR, S.T | `198110222010011023` | `374444` |
-| 8 | UNIT_LEADER | DEDI, S.T | `197407172008011020` | `853651` |
-| 9 | UNIT_LEADER | HARTADI S.T. | `198111042010011018` | `835824` |
-| 10 | UNIT_LEADER | SYAHBUDI NOR, A.Md | `198506292014031001` | `835824` |
-| 11 | UNIT_LEADER | MUSLIMAH MURNI, S.T | `MUSLIMAH MURNI, S.T` | `728370` |
-| 12 | EXECUTIVE | - | `` | `335114` |
-
+### Catatan
+- **Pegawai tanpa NIP/NIK** (98 orang): Username = Nama lengkap (case-insensitive)
+- **Pimpinan tanpa NIP** (1 orang — Sekretaris Dinas): Username = Nama lengkap
+- **Device fingerprint** tersimpan otomatis saat login pertama
+- Semua password 6 digit angka, dapat diubah dari dashboard masing-masing
