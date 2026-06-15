@@ -32,10 +32,7 @@ siapel/
 │   │   └── useQrScanner.js             # Html5Qrcode lifecycle (Pegawai)
 │   ├── panels/                         # 🔥 BARU — Sub-panel DashboardAdmin
 │   │   ├── PanelAbsensi.jsx            # Daftar absensi + search
-│   │   ├── PanelKoreksi.jsx            # Koreksi status
-│   │   ├── PanelLaporan.jsx            # Laporan harian per bidang
-│   │   ├── PanelKelolaPegawai.jsx      # CRUD pegawai + pimpinan
-│   │   ├── PanelPengajuan.jsx          # Verifikasi pengajuan (modal)
+│   │   ├── PanelKoreksi.jsx            # Koreksi absensi + verifikasi pengajuan
 │   │   ├── PanelApel.jsx               # Kontrol sesi apel (modal)
 │   │   └── PanelQR.jsx                 # QR display card
 │   ├── pages/                          # 7 halaman — 1 file per fitur
