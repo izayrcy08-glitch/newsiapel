@@ -10,17 +10,17 @@ import { getDeviceFingerprint } from "../utils/device-fingerprint";
 // CREDENTIAL HELPERS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const getAdminCred = () => {
+const getAdminCred = (overrides = {}) => {
   try {
     const stored = window.localStorage.getItem("siapel.adminPassword");
-    return { username: "admin", password: stored || "355454" };
-  } catch { return { username: "admin", password: "355454" }; }
+    return { username: "admin", password: overrides.admin || stored || "123456" };
+  } catch { return { username: "admin", password: overrides.admin || "123456" }; }
 };
-const getDeveloperCred = () => {
+const getDeveloperCred = (overrides = {}) => {
   try {
     const stored = window.localStorage.getItem("siapel.developerPassword");
-    return { username: "developer", password: stored || "723254" };
-  } catch { return { username: "developer", password: "723254" }; }
+    return { username: "developer", password: overrides.developer || stored || "723254" };
+  } catch { return { username: "developer", password: overrides.developer || "723254" }; }
 };
 
 const resolvePegawai = (masterData, username) => {
@@ -147,7 +147,7 @@ const LoginPage = () => {
     handleUpdatePegawai,
     handlePimpinanSelect,
   } = useSession();
-  const { handleSaveFingerprint } = useFirebaseData();
+  const { handleSaveFingerprint, passwordOverrides } = useFirebaseData();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -181,7 +181,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const adminCred = getAdminCred();
+      const adminCred = getAdminCred(passwordOverrides);
       if (username.trim().toLowerCase() === adminCred.username) {
         if (password !== adminCred.password) {
           setError("Password salah");
@@ -193,7 +193,7 @@ const LoginPage = () => {
         return;
       }
 
-      const developerCred = getDeveloperCred();
+      const developerCred = getDeveloperCred(passwordOverrides);
       if (username.trim().toLowerCase() === developerCred.username) {
         if (password !== developerCred.password) {
           setError("Password salah");
@@ -211,12 +211,14 @@ const LoginPage = () => {
         setLoading(false);
         return;
       }
-      if (!pegawai.password) {
+      const fbPw = passwordOverrides?.[`pegawai_${pegawai.id}`];
+      const validPassword = fbPw || pegawai.password;
+      if (!validPassword) {
         setError("Password belum di-set. Hubungi admin.");
         setLoading(false);
         return;
       }
-      if (password !== pegawai.password) {
+      if (password !== validPassword) {
         setError("Password salah");
         setPassword("");
         setLoading(false);

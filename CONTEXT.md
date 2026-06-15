@@ -5,9 +5,11 @@ Status proyek terkini. Update tiap selesai sesi.
 ---
 
 ## Status Terkini
-- **Branch:** `refactor-phase-1`
-- **Sesi terakhir:** 2026-06-15 — Hapus PanelPengajuan.jsx (dead code) — semua fungsi sudah migrasi ke PanelKoreksi
-- **Firebase:** Live — Realtime Database + Storage lazy load
+- **Branch:** `main` (production) | `refactor-phase-1` (dev)
+- **Deploy:** https://siapel.vercel.app ✅
+- **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
+- **Sesi terakhir:** 2026-06-15 — Deploy ke Vercel + merge refactor-phase-1 → main
+- **Firebase:** Live — Realtime Database + Storage lazy load + Rules terpasang
 - **Build:** `npm run build` ✅
 - **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
 - **Catatan:** Data masih di localStorage tiap browser — belum sync ke Firebase Realtime Database
@@ -33,6 +35,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `refactor-phase-1` | **Unified PanelKoreksi** — gabung Koreksi Manual (filter TK) + Pengajuan dalam 1 panel 2 tab, search + filter bidang, badge count pengajuan pending. Hapus PanelPengajuan dari DashboardAdmin, menu Pengajuan tergabung ke Koreksi Absensi. Build ✅ |
 | 2026-06-15 | `refactor-phase-1` | **DeveloperConsole → PanelKoreksi** — ganti PanelPengajuan modal dengan PanelKoreksi full-page (sama dengan Admin). Menu 'Pengajuan Status' → 'Koreksi Absensi'. Konsisten antara Admin & DeveloperConsole. Build ✅ |
 | 2026-06-15 | `refactor-phase-1` | **Dead code cleanup** — hapus PanelPengajuan.jsx (97 baris, 0 imports), update SIAPEL_README.md. Semua fungsi pengajuan sudah di PanelKoreksi. Build ✅ |
+| 2026-06-15 | `main` | **Deploy Production** — merge refactor-phase-1 → main (--no-ff), push GitHub, deploy Vercel (https://siapel.vercel.app), Firebase Rules terpasang, siap pilot |
 
 ## Prioritas
 

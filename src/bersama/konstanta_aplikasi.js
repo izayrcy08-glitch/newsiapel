@@ -8,6 +8,7 @@ export const QR_TOKEN_TTL_MS = 10000;
 
 export const PENGAJUAN_PATH = "pengajuan";
 export const FINGERPRINT_PATH = "fingerprints";
+export const PEGAWAI_PASSWORDS_PATH = "pegawai_passwords";
 
 export const APEL_SESSIONS = {
   BEFORE: "before",

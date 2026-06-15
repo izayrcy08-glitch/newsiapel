@@ -22,7 +22,16 @@ function AppRouter() {
     handleScan, handleScanSimulate, handleReset, handleKoreksi,
     handleApelSessionChange, handleApelReasonChange,
     handlePengajuanSubmit, handlePengajuanVerifikasi,
+    handleSavePasswordOverride,
   } = useFirebaseData();
+
+  // Bridge: saat password pegawai diubah, simpan juga ke Firebase
+  const handleUpdatePegawaiWithFirebase = (pegawaiId, updates) => {
+    handleUpdatePegawai(pegawaiId, updates);
+    if (updates.password) {
+      handleSavePasswordOverride(`pegawai_${pegawaiId}`, updates.password);
+    }
+  };
 
   const wrap = (children) => (
     <Suspense fallback={<LoadingSpinner message="Memuat halaman..." />}>
@@ -85,7 +94,7 @@ function AppRouter() {
           onKoreksi={handleKoreksi}
           onPengajuanVerifikasi={handlePengajuanVerifikasi}
           onAddPegawai={handleAddPegawai}
-          onUpdatePegawai={handleUpdatePegawai}
+          onUpdatePegawai={handleUpdatePegawaiWithFirebase}
           onDeletePegawai={handleDeletePegawai}
         />
       );
@@ -109,8 +118,9 @@ function AppRouter() {
           onPengajuanSubmit={handlePengajuanSubmit}
           onPengajuanVerifikasi={handlePengajuanVerifikasi}
           onAddPegawai={handleAddPegawai}
-          onUpdatePegawai={handleUpdatePegawai}
+          onUpdatePegawai={handleUpdatePegawaiWithFirebase}
           onDeletePegawai={handleDeletePegawai}
+          onSavePasswordOverride={handleSavePasswordOverride}
           onBack={() => handleRoleSelect()}
         />
       );

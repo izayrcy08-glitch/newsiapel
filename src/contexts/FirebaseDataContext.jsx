@@ -10,6 +10,7 @@ import {
   APEL_SESSIONS,
   PENGAJUAN_PATH,
   FINGERPRINT_PATH,
+  PEGAWAI_PASSWORDS_PATH,
 } from "../bersama/konstanta_aplikasi";
 import { getApelStatus } from "../bersama/util_waktu_dan_apel";
 
@@ -23,6 +24,7 @@ export function FirebaseDataProvider({ children }) {
   const [apelReason, setApelReason] = useState(null);
   const [apelReasonText, setApelReasonText] = useState("");
   const [pengajuan, setPengajuan] = useState([]);
+  const [passwordOverrides, setPasswordOverrides] = useState({});
   const [firebaseReady, setFirebaseReady] = useState(false);
   const [firebaseError, setFirebaseError] = useState(null);
 
@@ -98,6 +100,22 @@ export function FirebaseDataProvider({ children }) {
       },
       (error) => {
         console.error("Gagal memuat data pengajuan:", error);
+      }
+    );
+    return () => unsub();
+  }, []);
+
+  // ── Subscription: Password overrides ──
+  useEffect(() => {
+    const pwRef = ref(database, PEGAWAI_PASSWORDS_PATH);
+    const unsub = onValue(
+      pwRef,
+      (snapshot) => {
+        const val = snapshot.val();
+        setPasswordOverrides(val || {});
+      },
+      (error) => {
+        console.error("Gagal memuat password overrides:", error);
       }
     );
     return () => unsub();
@@ -269,6 +287,10 @@ export function FirebaseDataProvider({ children }) {
     });
   }, []);
 
+  const handleSavePasswordOverride = useCallback((key, password) => {
+    set(ref(database, `${PEGAWAI_PASSWORDS_PATH}/${key}`), password);
+  }, []);
+
   const value = useMemo(
     () => ({
       attendance,
@@ -277,6 +299,7 @@ export function FirebaseDataProvider({ children }) {
       apelReasonText,
       apelStatus,
       pengajuan,
+      passwordOverrides,
       firebaseReady,
       firebaseError,
       handleScan,
@@ -288,14 +311,15 @@ export function FirebaseDataProvider({ children }) {
       handlePengajuanSubmit,
       handlePengajuanVerifikasi,
       handleSaveFingerprint,
+      handleSavePasswordOverride,
     }),
     [
-      attendance, apelSession, apelReason, apelReasonText, apelStatus, pengajuan,
+      attendance, apelSession, apelReason, apelReasonText, apelStatus, pengajuan, passwordOverrides,
       firebaseReady, firebaseError,
       handleScan, handleScanSimulate, handleReset, handleKoreksi,
       handleApelSessionChange, handleApelReasonChange,
       handlePengajuanSubmit, handlePengajuanVerifikasi,
-      handleSaveFingerprint,
+      handleSaveFingerprint, handleSavePasswordOverride,
     ]
   );
 

@@ -82,7 +82,7 @@ function searchPegawai(people, query) {
 }
 
 // ── Inner password form — 1 field: tampilkan password saat ini, ubah langsung ──
-const PasswordForm = ({ type }) => {
+const PasswordForm = ({ type, onSavePasswordOverride }) => {
   const [password, setPassword] = useState(getStoredPassword(type));
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
@@ -107,6 +107,9 @@ const PasswordForm = ({ type }) => {
       setIsError(true);
       return;
     }
+
+    // Simpan juga ke Firebase agar berlaku di semua domain
+    onSavePasswordOverride?.(type, password);
 
     setMessage("✓ Password berhasil diubah");
     setIsError(false);
@@ -175,7 +178,7 @@ const PasswordForm = ({ type }) => {
 };
 
 // ── Ganti Password Page (with Admin / Developer tabs) ──
-const PasswordChangeForm = ({ onBack }) => {
+const PasswordChangeForm = ({ onBack, onSavePasswordOverride }) => {
   const [tab, setTab] = useState("admin");
 
   return (
@@ -203,7 +206,7 @@ const PasswordChangeForm = ({ onBack }) => {
           </button>
         </div>
 
-        <PasswordForm key={tab} type={tab} />
+        <PasswordForm key={tab} type={tab} onSavePasswordOverride={onSavePasswordOverride} />
       </div>
     </div>
   );
@@ -232,6 +235,7 @@ const DeveloperConsole = ({
   onAddPegawai,
   onUpdatePegawai,
   onDeletePegawai,
+  onSavePasswordOverride,
 }) => {
   const [search, setSearch] = useState("");
   const [viewAsRole, setViewAsRole] = useState(null);
@@ -315,6 +319,7 @@ const DeveloperConsole = ({
     return (
       <PasswordChangeForm
         onBack={() => setActiveMenu(null)}
+        onSavePasswordOverride={onSavePasswordOverride}
       />
     );
   }
