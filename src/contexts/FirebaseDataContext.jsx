@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
-import { ref, onValue, set, update, push, get } from "firebase/database";
+import { ref, onValue, set, update, push } from "firebase/database";
 import { database } from "../firebase";
 import { deleteStorageFile } from "../utils/storage-helper";
 import { useSession } from "./SessionContext";
@@ -310,7 +310,7 @@ export function FirebaseDataProvider({ children }) {
   }, []);
 
   const handleSaveActiveSession = useCallback((userId) => {
-    set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), {
+    return set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), {
       sessionId,
       loginAt: Date.now(),
     });
@@ -318,17 +318,9 @@ export function FirebaseDataProvider({ children }) {
 
   const handleClearActiveSession = useCallback((userId) => {
     if (!userId) return;
-    // Compare-and-delete: hanya hapus jika sessionId masih milik kita
-    const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${userId}`);
-    get(sessionRef).then((snapshot) => {
-      const val = snapshot.val();
-      if (val && val.sessionId === sessionId) {
-        set(sessionRef, null);
-      }
-    }).catch(() => {
-      // Abaikan error — user sudah logout
-    });
-  }, [sessionId]);
+    // Clear unconditional — user sengaja logout, hapus session dari Firebase
+    set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), null);
+  }, []);
 
   const value = useMemo(
     () => ({

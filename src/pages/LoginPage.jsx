@@ -191,7 +191,7 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
-        handleSaveActiveSession("admin");
+        await handleSaveActiveSession("admin");
         setRole("admin");
         setPage("admin");
         return;
@@ -204,7 +204,7 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
-        handleSaveActiveSession("developer");
+        await handleSaveActiveSession("developer");
         setRole("developer");
         setPage("developer");
         return;
@@ -231,7 +231,7 @@ const LoginPage = () => {
       }
 
       const userId = `pegawai_${pegawai.id}`;
-      handleSaveActiveSession(userId);
+      await handleSaveActiveSession(userId);
 
       const fp = getDeviceFingerprint();
       handleSaveFingerprint(pegawai.id, fp);
