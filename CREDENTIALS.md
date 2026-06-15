@@ -4,6 +4,10 @@
 
 ---
 
+**Login:** 1 input username + password 6 digit. Auto-detect role.
+
+---
+
 ## 🛡️ Admin
 
 | Field | Value |
@@ -20,7 +24,7 @@
 
 ## ⭐ Pimpinan (12 orang)
 
-Pilih nama dari daftar, lalu masukkan password 6 digit.
+Username: NIP (prioritas) → NIK → Nama. Password 6 digit.
 
 | No | Role | Nama | Username | Password |
 |---|---|---|---|---|
