@@ -4,7 +4,7 @@ import { buildPimpinanAccessRoles } from "../bersama/util_unit_dan_scope";
 
 const SessionContext = createContext(null);
 
-const MASTER_PEGAWAI_STORAGE_KEY = "siapel.masterPegawaiData.v1";
+const MASTER_PEGAWAI_STORAGE_KEY = "siapel.masterPegawaiData.v3";
 const SESSION_KEY = "siapel.session.v1";
 
 const normalizePegawaiRecord = (pegawai, fallbackId) => {
@@ -15,11 +15,13 @@ const normalizePegawaiRecord = (pegawai, fallbackId) => {
     id: pegawai.id ?? fallbackId,
     nama: pegawai.nama || "",
     nip: pegawai.nip || "",
+    nik: pegawai.nik || "",
     jabatan: pegawai.jabatan || "",
     unit,
     bidang,
     role: pegawai.role || "EMPLOYEE",
     password: pegawai.password || "",
+    phoneFingerprint: pegawai.phoneFingerprint || "",
     isActive: pegawai.isActive !== false,
   };
 };
@@ -34,7 +36,12 @@ const loadMasterPegawaiData = () => {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return normalizePegawaiData(parsed);
+        // Validasi integritas: pastikan record pertama punya field penting
+        // (password, nik, phoneFingerprint). Jika tidak ada, anggap basi.
+        const first = parsed[0];
+        if (first && "password" in first && "nik" in first && "phoneFingerprint" in first) {
+          return normalizePegawaiData(parsed);
+        }
       }
     }
   } catch (_) {
@@ -69,10 +76,12 @@ export function SessionProvider({ children }) {
   const initialMaster = useMemo(() => loadMasterPegawaiData(), []);
   const initialSession = useMemo(() => restoreSession(initialMaster), []);
 
-  // Bersihkan localStorage basi dari versi lama
+  // Bersihkan localStorage basi dari versi sebelumnya (v1, v2 → v3)
   useEffect(() => {
     try {
+      window.localStorage.removeItem("siapel.masterPegawaiData.v1");
       window.localStorage.removeItem("siapel.masterPegawaiData.v1.version");
+      window.localStorage.removeItem("siapel.masterPegawaiData.v2");
     } catch (_) {}
   }, []);
 
@@ -139,8 +148,8 @@ export function SessionProvider({ children }) {
   const handleRoleSelect = useCallback((r) => {
     setRole(r);
     if (r === "pimpinan") setPage("pimpinan_select");
-    else if (r === "admin") setPage("admin");
-    else if (r === "developer") setPage("developer");
+    else if (r === "admin") setPage("admin_login");
+    else if (r === "developer") setPage("developer_login");
     else setPage("pegawai_login");
   }, []);
 

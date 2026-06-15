@@ -7,6 +7,7 @@ export const QR_PATH = "qr/current";
 export const QR_TOKEN_TTL_MS = 10000;
 
 export const PENGAJUAN_PATH = "pengajuan";
+export const FINGERPRINT_PATH = "fingerprints";
 
 export const APEL_SESSIONS = {
   BEFORE: "before",

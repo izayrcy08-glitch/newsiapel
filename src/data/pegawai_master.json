@@ -3,3020 +3,3624 @@
     "id": 1,
     "nama": "H. Rody, ST. MT",
     "nip": "196710151993031008",
+    "nik": "",
     "jabatan": "Kadis PUPR",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EXECUTIVE",
-    "password": ""
+    "password": "811800",
+    "phoneFingerprint": ""
   },
   {
     "id": 2,
     "nama": "ALHAMDANI UMAR ST, M.S.",
     "nip": "198003082005011010",
+    "nik": "",
     "jabatan": "JF Surveyor Pemetaan Madya",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "639181",
+    "phoneFingerprint": ""
   },
   {
     "id": 3,
     "nama": "PATRIA S.T., M.S.",
     "nip": "197307202005011007",
+    "nik": "",
     "jabatan": "Kepala Bidang Tata Ruang",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "540565",
+    "phoneFingerprint": ""
   },
   {
     "id": 4,
     "nama": "IGNASIUS S.T",
     "nip": "197610072007011007",
+    "nik": "",
     "jabatan": "Kepala Bidang Cipta Karya",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "943021",
+    "phoneFingerprint": ""
   },
   {
     "id": 5,
     "nama": "MUJIBURRAHMAN S.P",
     "nip": "197402042007011012",
+    "nik": "",
     "jabatan": "JFT Teknik Penyehatan Lingkungan",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "216828",
+    "phoneFingerprint": ""
   },
   {
     "id": 6,
     "nama": "MARIA HELMIDA ST",
     "nip": "197304092006042015",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "588712",
+    "phoneFingerprint": ""
   },
   {
     "id": 7,
     "nama": "ERIANTONI IWANATA S HUT",
     "nip": "198204252006041008",
+    "nik": "",
     "jabatan": "JFT Penataan Ruang",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "965470",
+    "phoneFingerprint": ""
   },
   {
     "id": 8,
     "nama": "SEKRENING S.ST",
     "nip": "197007091994031004",
+    "nik": "",
     "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "509808",
+    "phoneFingerprint": ""
   },
   {
     "id": 9,
     "nama": "WARNO SST",
     "nip": "197411161994031003",
+    "nik": "",
     "jabatan": "JFT Teknik Pengairan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "557197",
+    "phoneFingerprint": ""
   },
   {
     "id": 10,
     "nama": "SUTIKNO S.Hut",
     "nip": "197408071994031005",
+    "nik": "",
     "jabatan": "JFT Penataan Ruang",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "418939",
+    "phoneFingerprint": ""
   },
   {
     "id": 11,
     "nama": "FORTIS TAUFIK SELNITI BUDI S.ST",
     "nip": "197306191994031008",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "502008",
+    "phoneFingerprint": ""
   },
   {
     "id": 12,
     "nama": "SUBIYANTORO ST.,M.T. /",
     "nip": "198107312008041002",
+    "nik": "",
     "jabatan": "Kepala Bidang Sumber Daya Air",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "931275",
+    "phoneFingerprint": ""
   },
   {
     "id": 13,
     "nama": "SUHERMAN ST",
     "nip": "197411152008011016",
+    "nik": "",
     "jabatan": "JFT Teknik Jalan dan Jembatan",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "209084",
+    "phoneFingerprint": ""
   },
   {
     "id": 14,
     "nama": "ARSETO ADY NUGROHO S.T",
     "nip": "198112182008041001",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "472057",
+    "phoneFingerprint": ""
   },
   {
     "id": 15,
     "nama": "RONY SURYADI ST",
     "nip": "197605122009011003",
+    "nik": "",
     "jabatan": "JFT Penataan Ruang",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "784369",
+    "phoneFingerprint": ""
   },
   {
     "id": 16,
     "nama": "ROY LANDI WOPA HOSANG S.T",
     "nip": "198104032010011013",
+    "nik": "",
     "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "687412",
+    "phoneFingerprint": ""
   },
   {
     "id": 17,
     "nama": "MIRA APRIYANTINADA S.T",
     "nip": "198004272011012008",
+    "nik": "",
     "jabatan": "Kasubbag Tata Usaha, Data dan Informasi Publik",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "150714",
+    "phoneFingerprint": ""
   },
   {
     "id": 18,
     "nama": "RAHAYU DWI MUMPUNI S.T",
     "nip": "198110192011012005",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "912652",
+    "phoneFingerprint": ""
   },
   {
     "id": 19,
     "nama": "ROBY CHAHYADI ST",
     "nip": "197911102010011010",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "999322",
+    "phoneFingerprint": ""
   },
   {
     "id": 20,
     "nama": "ALFIAN NUR A.Md",
     "nip": "197505171998031005",
+    "nik": "",
     "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "967996",
+    "phoneFingerprint": ""
   },
   {
     "id": 21,
     "nama": "FETRIS SUGIAN ST",
     "nip": "198007192014031001",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "944715",
+    "phoneFingerprint": ""
   },
   {
     "id": 22,
     "nama": "MUHAMMAD EKSAN S.E",
     "nip": "197207212007011015",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "413612",
+    "phoneFingerprint": ""
   },
   {
     "id": 23,
     "nama": "TRI UTAMI HANDAYANI,SE",
     "nip": "199103212015032003",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "349019",
+    "phoneFingerprint": ""
   },
   {
     "id": 24,
     "nama": "ASMUNI",
     "nip": "197208021993031009",
+    "nik": "",
     "jabatan": "JFT Teknik Penyehatan Lingkungan",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "669435",
+    "phoneFingerprint": ""
   },
   {
     "id": 25,
     "nama": "IMBAI",
     "nip": "196909121997031006",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "975003",
+    "phoneFingerprint": ""
   },
   {
     "id": 26,
     "nama": "ABDUL WILDAN",
     "nip": "197010201998031003",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "381687",
+    "phoneFingerprint": ""
   },
   {
     "id": 27,
     "nama": "AGUS PATRIADI S.A.P.",
     "nip": "197708192006041006",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "430409",
+    "phoneFingerprint": ""
   },
   {
     "id": 28,
     "nama": "IBNU WARDANI S.E",
     "nip": "197910092008011022",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "728264",
+    "phoneFingerprint": ""
   },
   {
     "id": 29,
     "nama": "KUSHARYADI S A.Md",
     "nip": "198101302011011004",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "214886",
+    "phoneFingerprint": ""
   },
   {
     "id": 30,
     "nama": "NUR ARIFIN S.E",
     "nip": "198202082009011004",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "171393",
+    "phoneFingerprint": ""
   },
   {
     "id": 31,
     "nama": "HADRIANOOR S.T.",
     "nip": "198001112007011010",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "194858",
+    "phoneFingerprint": ""
   },
   {
     "id": 32,
     "nama": "JOAN MARTHEN BADJADJI A.Md",
     "nip": "197703062007011015",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "202513",
+    "phoneFingerprint": ""
   },
   {
     "id": 33,
     "nama": "ELDIANA HERIYANIE A.Md",
     "nip": "197511282007012007",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "397375",
+    "phoneFingerprint": ""
   },
   {
     "id": 34,
     "nama": "PASKADIME TURAY, ST",
     "nip": "198709242022031000",
+    "nik": "",
     "jabatan": "JFT Surveyor Pemetaan",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "620035",
+    "phoneFingerprint": ""
   },
   {
     "id": 35,
     "nama": "FRIEDMAN TARIDA MARPAUNG S.T",
     "nip": "198809232022031001",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "754111",
+    "phoneFingerprint": ""
   },
   {
     "id": 36,
     "nama": "FRANSISCO RAMA RIO S.T.",
     "nip": "199303302022031001",
+    "nik": "",
     "jabatan": "JFT Penata Ruang",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "111081",
+    "phoneFingerprint": ""
   },
   {
     "id": 37,
     "nama": "YANESAR HAWILEY S.T.",
     "nip": "199401222022031002",
+    "nik": "",
     "jabatan": "JFT Penata Ruang",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "698498",
+    "phoneFingerprint": ""
   },
   {
     "id": 38,
     "nama": "HENGKI PRADANA S.T",
     "nip": "199308062022031001",
+    "nik": "",
     "jabatan": "JFT Pengawas Jalan dan Jembatan",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "407610",
+    "phoneFingerprint": ""
   },
   {
     "id": 39,
     "nama": "AGIL PAHLEVI ALHAZMI S.T",
     "nip": "199503132022031002",
+    "nik": "",
     "jabatan": "JFT Penata Ruang",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "930442",
+    "phoneFingerprint": ""
   },
   {
     "id": 40,
     "nama": "PERMANA ADI PUTERA S.T.",
     "nip": "199401202022031001",
+    "nik": "",
     "jabatan": "JFT Surveyor Pemetaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "282073",
+    "phoneFingerprint": ""
   },
   {
     "id": 41,
     "nama": "LEDY DAYANA .S. PUTES S.T",
     "nip": "199607292022032001",
+    "nik": "",
     "jabatan": "Pengawas Jalan dan Jembatan",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "354382",
+    "phoneFingerprint": ""
   },
   {
     "id": 42,
     "nama": "YOSUA LAMA LEWA S.T",
     "nip": "199612142022031001",
+    "nik": "",
     "jabatan": "JFT 'Pengawas Jalan dan Jembatan",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "629040",
+    "phoneFingerprint": ""
   },
   {
     "id": 43,
     "nama": "SYAHRYAN DHARMA AJI S.T.",
     "nip": "199705022022031001",
+    "nik": "",
     "jabatan": "JFT Surveyor Pemetaan",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "705683",
+    "phoneFingerprint": ""
   },
   {
     "id": 44,
     "nama": "ANNISA NURUL HIDAYAH S.T.",
     "nip": "199807162022032001",
+    "nik": "",
     "jabatan": "JFT Surveyor Pemetaan",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "596048",
+    "phoneFingerprint": ""
   },
   {
     "id": 45,
     "nama": "OLVA DWI FAUJI HANDAYANI S.P.W.K.",
     "nip": "199709072022032001",
+    "nik": "",
     "jabatan": "JFT Penata Ruang",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "970162",
+    "phoneFingerprint": ""
   },
   {
     "id": 46,
     "nama": "KRISTUANTO NUGROHO SAPUTRO S.P.W.K",
     "nip": "199211282014031001",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "191241",
+    "phoneFingerprint": ""
   },
   {
     "id": 47,
     "nama": "EDI ERIANTO",
     "nip": "198203282008011007",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "741457",
+    "phoneFingerprint": ""
   },
   {
     "id": 48,
     "nama": "DELTAYANA",
     "nip": "197110102007012022",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "623909",
+    "phoneFingerprint": ""
   },
   {
     "id": 49,
     "nama": "RUSLINE",
     "nip": "197407072007012016",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "671270",
+    "phoneFingerprint": ""
   },
   {
     "id": 50,
     "nama": "NOVA ARDONO, S.M",
     "nip": "197311162012121001",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "141048",
+    "phoneFingerprint": ""
   },
   {
     "id": 51,
     "nama": "CECE SYAPUTRA",
     "nip": "197710132008011017",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "608821",
+    "phoneFingerprint": ""
   },
   {
     "id": 52,
     "nama": "LINA RAHMAWATI",
     "nip": "197708272007012006",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "528349",
+    "phoneFingerprint": ""
   },
   {
     "id": 53,
     "nama": "YAYAT ULANTARI",
     "nip": "198010152007012000",
+    "nik": "",
     "jabatan": "Bendahara Pengeluaran Pembantu",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "423401",
+    "phoneFingerprint": ""
   },
   {
     "id": 54,
     "nama": "ANTON SUJARWADI",
     "nip": "197703032007011017",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "101009",
+    "phoneFingerprint": ""
   },
   {
     "id": 55,
     "nama": "RADEN RORO NIKEN GAYATRI WOELANSARI",
     "nip": "197311222008012006",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "765848",
+    "phoneFingerprint": ""
   },
   {
     "id": 56,
     "nama": "MARGIANTO",
     "nip": "197703232008011016",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "727634",
+    "phoneFingerprint": ""
   },
   {
     "id": 57,
     "nama": "SUKARIA",
     "nip": "197810312008011007",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "187745",
+    "phoneFingerprint": ""
   },
   {
     "id": 58,
     "nama": "OCTANI INDRIAWATI",
     "nip": "198010012008012018",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "766046",
+    "phoneFingerprint": ""
   },
   {
     "id": 59,
     "nama": "GEZALI",
     "nip": "197302042007011015",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "370652",
+    "phoneFingerprint": ""
   },
   {
     "id": 60,
     "nama": "HENRI LUKAS",
     "nip": "197101172007011014",
+    "nik": "",
     "jabatan": "Juru OPHAR",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "596302",
+    "phoneFingerprint": ""
   },
   {
     "id": 61,
     "nama": "SALIANSYAH",
     "nip": "197407052007011026",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "935484",
+    "phoneFingerprint": ""
   },
   {
     "id": 62,
     "nama": "SUPRIADI",
     "nip": "197404012009011006",
+    "nik": "",
     "jabatan": "Juru OPHAR",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "995070",
+    "phoneFingerprint": ""
   },
   {
     "id": 63,
     "nama": "EMMY SUTANTY",
     "nip": "197905152010012017",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "383744",
+    "phoneFingerprint": ""
   },
   {
     "id": 64,
     "nama": "ARLINAWATI",
     "nip": "197807042009012002",
+    "nik": "",
     "jabatan": "Juru OPHAR",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "347970",
+    "phoneFingerprint": ""
   },
   {
     "id": 65,
     "nama": "LAMBAK",
     "nip": "198301302008011012",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "503090",
+    "phoneFingerprint": ""
   },
   {
     "id": 66,
     "nama": "SAIDI",
     "nip": "197905132007011007",
+    "nik": "",
     "jabatan": "Juru Pengairan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "432246",
+    "phoneFingerprint": ""
   },
   {
     "id": 67,
     "nama": "SENGHO MARGONO",
     "nip": "197707072012121002",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "607726",
+    "phoneFingerprint": ""
   },
   {
     "id": 68,
     "nama": "SUGIHERTONO",
     "nip": "196908142006041009",
+    "nik": "",
     "jabatan": "Pengamat Pengairan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "388390",
+    "phoneFingerprint": ""
   },
   {
     "id": 69,
     "nama": "BUDIMAN",
     "nip": "197506102007011020",
+    "nik": "",
     "jabatan": "Juru Pengairan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "400413",
+    "phoneFingerprint": ""
   },
   {
     "id": 70,
     "nama": "ABDUL ROHMAN",
     "nip": "197903122008011023",
+    "nik": "",
     "jabatan": "Pengawas Irigasi",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "977505",
+    "phoneFingerprint": ""
   },
   {
     "id": 71,
     "nama": "SUKARDI",
     "nip": "198312222012121002",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "861469",
+    "phoneFingerprint": ""
   },
   {
     "id": 72,
     "nama": "FERDI DWI ARIYANTO",
     "nip": "200301252025061004",
+    "nik": "",
     "jabatan": "Operator Pelayanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "714733",
+    "phoneFingerprint": ""
   },
   {
     "id": 73,
     "nama": "RAHMAN",
     "nip": "199310092025061001",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "158232",
+    "phoneFingerprint": ""
   },
   {
     "id": 74,
     "nama": "RISTA TAKZIAH",
     "nip": "200210032025062006",
+    "nik": "",
     "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "393198",
+    "phoneFingerprint": ""
   },
   {
     "id": 75,
     "nama": "YAMES GUANDA",
     "nip": "200307052025061002",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "371185",
+    "phoneFingerprint": ""
   },
   {
     "id": 76,
     "nama": "RUDI GUNAWAN",
     "nip": "199308182025061006",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "351863",
+    "phoneFingerprint": ""
   },
   {
     "id": 77,
     "nama": "MUHAMMAD RENDRA NATA",
     "nip": "200107022025061003",
+    "nik": "",
     "jabatan": "Operator Pelayanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "604037",
+    "phoneFingerprint": ""
   },
   {
     "id": 78,
     "nama": "AMIRA MAYA HAFIZA",
     "nip": "200108172025062013",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "144030",
+    "phoneFingerprint": ""
   },
   {
     "id": 79,
     "nama": "YOGIANOR",
     "nip": "200004132025061006",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "116314",
+    "phoneFingerprint": ""
   },
   {
     "id": 80,
     "nama": "AINUL YUDA",
     "nip": "199907142025061007",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "709298",
+    "phoneFingerprint": ""
   },
   {
     "id": 81,
     "nama": "MUHAMMAD ARIFIN",
     "nip": "199101022025061002",
+    "nik": "",
     "jabatan": "Teknisi Mesin Alat Berat",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "890354",
+    "phoneFingerprint": ""
   },
   {
     "id": 82,
     "nama": "APRI ANUGRAH WIJAYA",
     "nip": "199604062025061004",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "826248",
+    "phoneFingerprint": ""
   },
   {
     "id": 83,
     "nama": "ZAINUDIN",
     "nip": "199703162025061003",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "175027",
+    "phoneFingerprint": ""
   },
   {
     "id": 84,
     "nama": "IVANA ANGELITA",
     "nip": "200207142025062005",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "528765",
+    "phoneFingerprint": ""
   },
   {
     "id": 85,
     "nama": "CHRISTIN SEPTALITA SILALAHI ,A.md",
     "nip": "200107182025061005",
+    "nik": "",
     "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "538545",
+    "phoneFingerprint": ""
   },
   {
     "id": 86,
     "nama": "MUHAMMAD ALFARIZI PRASETIA",
     "nip": "200107182025062003",
+    "nik": "",
     "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "567478",
+    "phoneFingerprint": ""
   },
   {
     "id": 87,
     "nama": "ADI PRASETYO",
     "nip": "200005212025061006",
+    "nik": "",
     "jabatan": "Operator Pelayanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "347764",
+    "phoneFingerprint": ""
   },
   {
     "id": 88,
     "nama": "AHMAD RAIHAN ZACKY",
     "nip": "200406212025061002",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "120752",
+    "phoneFingerprint": ""
   },
   {
     "id": 89,
     "nama": "POPY WANDA APRILIA",
     "nip": "200604212025062003",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "353998",
+    "phoneFingerprint": ""
   },
   {
     "id": 90,
     "nama": "YULIANTO",
     "nip": "199207272025061002",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "674987",
+    "phoneFingerprint": ""
   },
   {
     "id": 91,
     "nama": "DEFRI JUNIANDA ARIF",
     "nip": "199306242025061002",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "244956",
+    "phoneFingerprint": ""
   },
   {
     "id": 92,
     "nama": "HARIYANTO RAHARJO",
     "nip": "199503082025061007",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "372890",
+    "phoneFingerprint": ""
   },
   {
     "id": 93,
     "nama": "AKHMAD FADILLAH",
     "nip": "199611152025061005",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "213358",
+    "phoneFingerprint": ""
   },
   {
     "id": 94,
     "nama": "SALEHA",
     "nip": "200504172025062001",
+    "nik": "",
     "jabatan": "Operator Pelayanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "531892",
+    "phoneFingerprint": ""
   },
   {
     "id": 95,
     "nama": "INDRIANI",
     "nip": "200209152025062008",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "969356",
+    "phoneFingerprint": ""
   },
   {
     "id": 96,
     "nama": "ACHMAD ARIEF SETIAWAN",
     "nip": "200206112025061004",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "429773",
+    "phoneFingerprint": ""
   },
   {
     "id": 97,
     "nama": "RAJUL RAJABI",
     "nip": "200010182025061003",
+    "nik": "",
     "jabatan": "Operator Pelayanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "286179",
+    "phoneFingerprint": ""
   },
   {
     "id": 98,
     "nama": "FAHRURRAZI",
     "nip": "199612012025061006",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "934423",
+    "phoneFingerprint": ""
   },
   {
     "id": 99,
     "nama": "HARSA PURNAMA",
     "nip": "199004292025061004",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "192338",
+    "phoneFingerprint": ""
   },
   {
     "id": 100,
     "nama": "USAMAH",
     "nip": "199311022025061003",
+    "nik": "",
     "jabatan": "Operator Pelayanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "456717",
+    "phoneFingerprint": ""
   },
   {
     "id": 101,
     "nama": "RASYID SHIDDIQ",
     "nip": "200009232025061008",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "329568",
+    "phoneFingerprint": ""
   },
   {
     "id": 102,
     "nama": "RISKA AULIA RAHMAN",
     "nip": "199612242025061009",
+    "nik": "",
     "jabatan": "Operator Pelayanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "565422",
+    "phoneFingerprint": ""
   },
   {
     "id": 103,
     "nama": "MITA LESTARI",
     "nip": "200111282025062012",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "913882",
+    "phoneFingerprint": ""
   },
   {
     "id": 104,
     "nama": "JULIAN IQBAL NUGRAHA",
     "nip": "200207232025061005",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "147892",
+    "phoneFingerprint": ""
   },
   {
     "id": 105,
     "nama": "YOEL PRATAMA",
     "nip": "200409112025061003",
+    "nik": "",
     "jabatan": "Operator Pelayanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "189098",
+    "phoneFingerprint": ""
   },
   {
     "id": 106,
     "nama": "BAGUS JOKO KRISDYANTO",
     "nip": "199609012025061008",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "300909",
+    "phoneFingerprint": ""
   },
   {
     "id": 107,
     "nama": "NEFHA KRISTILA",
     "nip": "200301082025062003",
+    "nik": "",
     "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "195020",
+    "phoneFingerprint": ""
   },
   {
     "id": 108,
     "nama": "ARISMA NOVIANA PUTRI",
     "nip": "199611192025062009",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "181248",
+    "phoneFingerprint": ""
   },
   {
     "id": 109,
     "nama": "YUSAFAT TRI BERIANTO",
     "nip": "200110062025061004",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "702131",
+    "phoneFingerprint": ""
   },
   {
     "id": 110,
     "nama": "MUHAMMAD HAJIANOR SHODIQIN",
     "nip": "199903222025061007",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "787325",
+    "phoneFingerprint": ""
   },
   {
     "id": 111,
     "nama": "SA'ADAH",
     "nip": "200508292025062001",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "443978",
+    "phoneFingerprint": ""
   },
   {
     "id": 112,
     "nama": "FIRMAN BUDIMULIA",
     "nip": "200103262025061011",
+    "nik": "",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "129101",
+    "phoneFingerprint": ""
   },
   {
     "id": 113,
     "nama": "DAVID HARNO PRASETYA",
     "nip": "199502172025061007",
+    "nik": "",
     "jabatan": "Operator Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "479028",
+    "phoneFingerprint": ""
   },
   {
     "id": 114,
     "nama": "HERLIZA PUTRI PERDANA, A.Md.T",
     "nip": "199906062025062020",
+    "nik": "",
     "jabatan": "Pengelola Layanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "754264",
+    "phoneFingerprint": ""
   },
   {
     "id": 115,
     "nama": "ANDI SETYAWAN RAMADANI ,A.Md.T",
     "nip": "200012042025061005",
+    "nik": "",
     "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "822525",
+    "phoneFingerprint": ""
   },
   {
     "id": 116,
     "nama": "JOSS SCUD QADHAFIE ,A.Md",
     "nip": "199102092025061002",
+    "nik": "",
     "jabatan": "Penata Bangunan Gedung dan Permukiman",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "217088",
+    "phoneFingerprint": ""
   },
   {
     "id": 117,
     "nama": "NOR KHALISA ,A.Md.T",
     "nip": "200112022025062007",
+    "nik": "",
     "jabatan": "Penata Bangunan Gedung dan Permukian",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "403770",
+    "phoneFingerprint": ""
   },
   {
     "id": 118,
     "nama": "HENI ARTATI BR MUNTE",
     "nip": "199804092025062011",
+    "nik": "",
     "jabatan": "PENATA BANGUNAN GEDUNG DAN PERMUKIMAN",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "734572",
+    "phoneFingerprint": ""
   },
   {
     "id": 119,
     "nama": "ADELIA PEBRIYANTI, A.Md.T",
     "nip": "200102112025062020",
+    "nik": "",
     "jabatan": "Pengelola Layanan Operasional",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "310107",
+    "phoneFingerprint": ""
   },
   {
     "id": 120,
     "nama": "YUSUF ARDYAN SETYA PRADANA, A.Md.T.",
     "nip": "200108032025061009",
+    "nik": "",
     "jabatan": "Teknisi Mesin Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "191606",
+    "phoneFingerprint": ""
   },
   {
     "id": 121,
     "nama": "ETI MUSYAROFAH",
     "nip": "199610142025062009",
+    "nik": "",
     "jabatan": "PENATA BANGUNAN GEDUNG DAN PERMUKIMAN",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "334929",
+    "phoneFingerprint": ""
   },
   {
     "id": 122,
     "nama": "DANIEL KAHARAP TARIP ,A.Md.T.",
     "nip": "200206122025061005",
+    "nik": "",
     "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "899186",
+    "phoneFingerprint": ""
   },
   {
     "id": 123,
     "nama": "ANITA SURYANINGSIH, A.Md.",
     "nip": "199310192025062006",
+    "nik": "",
     "jabatan": "Teknisi Mesin Alat Berat",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "339980",
+    "phoneFingerprint": ""
   },
   {
     "id": 124,
     "nama": "ERWIN AGUNG SANTOSO ,A.Md",
     "nip": "199007082025061005",
+    "nik": "",
     "jabatan": "Penata Bangunan Gedung dan Permukiman",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "618587",
+    "phoneFingerprint": ""
   },
   {
     "id": 125,
     "nama": "BETI MAHARANI ,A.Md.T.",
     "nip": "200201312025062010",
+    "nik": "",
     "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "325270",
+    "phoneFingerprint": ""
   },
   {
     "id": 126,
     "nama": "A. M. NUR ADIB KURNIAWAN RASYID",
     "nip": "200006232025061011",
+    "nik": "",
     "jabatan": "Teknisi Mesin Alat Berat",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "573760",
+    "phoneFingerprint": ""
   },
   {
     "id": 127,
     "nama": "SELVI ARDIANI ,A.Md",
     "nip": "199506112025062005",
+    "nik": "",
     "jabatan": "Penata Bangunan Gedung dan Permukian",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "538648",
+    "phoneFingerprint": ""
   },
   {
     "id": 128,
     "nama": "ADITYA BUANA FIQRI ,S.T",
     "nip": "200102202025061005",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "600529",
+    "phoneFingerprint": ""
   },
   {
     "id": 129,
     "nama": "FADHLI",
     "nip": "200004222025061005",
+    "nik": "",
     "jabatan": "PENGAWAS JARINGAN UTILITAS",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "120477",
+    "phoneFingerprint": ""
   },
   {
     "id": 130,
     "nama": "KRISNA CRISTA MAHENDRA ,S.T",
     "nip": "200007262025061002",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "871578",
+    "phoneFingerprint": ""
   },
   {
     "id": 131,
     "nama": "GABRIELLA OCTAVIRIA NOORMALIA HETRANI PUTRI ,S.Ars",
     "nip": "199310052025062006",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "753702",
+    "phoneFingerprint": ""
   },
   {
     "id": 132,
     "nama": "SAHRUL RAMADANI, S.T.",
     "nip": "199912172025061005",
+    "nik": "",
     "jabatan": "Penata Ruang Ahli Pertama",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "926646",
+    "phoneFingerprint": ""
   },
   {
     "id": 133,
     "nama": "GUSTIAN, S.T.",
     "nip": "200105262025061004",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "895005",
+    "phoneFingerprint": ""
   },
   {
     "id": 134,
     "nama": "HARY CHRISTIAN ANUGRAHNU ,S. Ars",
     "nip": "199611152025061001",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "804443",
+    "phoneFingerprint": ""
   },
   {
     "id": 135,
     "nama": "CINDERELLA SUZANNA CAROLYNDA",
     "nip": "200101292025062008",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "859637",
+    "phoneFingerprint": ""
   },
   {
     "id": 136,
     "nama": "DESI RAHMADANA ,S.T.",
     "nip": "199912122025062009",
+    "nik": "",
     "jabatan": "Pranata Kewilayahan",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "132583",
+    "phoneFingerprint": ""
   },
   {
     "id": 137,
     "nama": "MARIATUL KARIMAH, S.T.",
     "nip": "200203112025062008",
+    "nik": "",
     "jabatan": "Penata Ruang Ahli Pertama",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "567133",
+    "phoneFingerprint": ""
   },
   {
     "id": 138,
     "nama": "ESTER KLAUDIA TAMARA, S.T.",
     "nip": "200107292025062005",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "454284",
+    "phoneFingerprint": ""
   },
   {
     "id": 139,
     "nama": "PRA SETIAWAN SILAEN, S.T.",
     "nip": "199611132025061006",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "204524",
+    "phoneFingerprint": ""
   },
   {
     "id": 140,
     "nama": "VIDYA RESTU WIJAYA ,S.T.",
     "nip": "199810062025061006",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "725500",
+    "phoneFingerprint": ""
   },
   {
     "id": 141,
     "nama": "MUHAMAD RIZKI ,S.T.",
     "nip": "199905082025061009",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "222901",
+    "phoneFingerprint": ""
   },
   {
     "id": 142,
     "nama": "JOSUA ORIESTA SALOMO ,S.T.",
     "nip": "200001242025061012",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "943704",
+    "phoneFingerprint": ""
   },
   {
     "id": 143,
     "nama": "ZAIN SAPUTRA ,S.T",
     "nip": "199803032025061007",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "872223",
+    "phoneFingerprint": ""
   },
   {
     "id": 144,
     "nama": "ADJIE DWI SULISTYONO ,S.Stat",
     "nip": "200103292025061006",
+    "nik": "",
     "jabatan": "Pranata Kewilayahan",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "941018",
+    "phoneFingerprint": ""
   },
   {
     "id": 145,
     "nama": "BENEDICTUS PASCHAL ARYO SETYA ,S.Ars",
     "nip": "200203292025061003",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "425271",
+    "phoneFingerprint": ""
   },
   {
     "id": 146,
     "nama": "M. FACHTUR REZA, S.T.",
     "nip": "199912042025061011",
+    "nik": "",
     "jabatan": "Penata Ruang Ahli Pertama",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "538306",
+    "phoneFingerprint": ""
   },
   {
     "id": 147,
     "nama": "ERIANTY NUR APRILIANA ,S.T.",
     "nip": "199704062025062004",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "906607",
+    "phoneFingerprint": ""
   },
   {
     "id": 148,
     "nama": "ROBI, S.T.",
     "nip": "199408142025061008",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "157416",
+    "phoneFingerprint": ""
   },
   {
     "id": 149,
     "nama": "STEVANY ALIZA KHAIRANI, S.T",
     "nip": "200004042025062008",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "126798",
+    "phoneFingerprint": ""
   },
   {
     "id": 150,
     "nama": "NOVRINDO GABRIEL PANARA TARUNG ,S.T",
     "nip": "200011152025061007",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "620811",
+    "phoneFingerprint": ""
   },
   {
     "id": 151,
     "nama": "FANDRI, S.T",
     "nip": "199604152025061006",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "389493",
+    "phoneFingerprint": ""
   },
   {
     "id": 152,
     "nama": "AGUSTULUSNU ,S.T",
     "nip": "199508052025061006",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "189709",
+    "phoneFingerprint": ""
   },
   {
     "id": 153,
     "nama": "DEDE CHRISFANI",
     "nip": "199812012025061005",
+    "nik": "",
     "jabatan": "PENGAWAS JARINGAN UTILITAS",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "848125",
+    "phoneFingerprint": ""
   },
   {
     "id": 154,
     "nama": "AMALIA SETIARINI ,S.Ars",
     "nip": "200204232025062007",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "192302",
+    "phoneFingerprint": ""
   },
   {
     "id": 155,
     "nama": "LIUS KAHARAP BION INSO ,S.T.",
     "nip": "198911242025061001",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "314682",
+    "phoneFingerprint": ""
   },
   {
     "id": 156,
     "nama": "KARINA PANGAMIANI ,S.T.",
     "nip": "200306032025062002",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "522302",
+    "phoneFingerprint": ""
   },
   {
     "id": 157,
     "nama": "HENDI KRISTIAN ,S.Ars",
     "nip": "199802192025061002",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "831887",
+    "phoneFingerprint": ""
   },
   {
     "id": 158,
     "nama": "FITRI DEVI, S.T.",
     "nip": "200012262025062006",
+    "nik": "",
     "jabatan": "Penata Ruang Ahli Pertama",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "953573",
+    "phoneFingerprint": ""
   },
   {
     "id": 159,
     "nama": "INTAN ARDILLA ,S.H",
     "nip": "200201312025062009",
+    "nik": "",
     "jabatan": "Pranata Kewilayahan",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "667476",
+    "phoneFingerprint": ""
   },
   {
     "id": 160,
     "nama": "ISNAN NURUL AKBAR ,S.T.",
     "nip": "199709232025061010",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "256561",
+    "phoneFingerprint": ""
   },
   {
     "id": 161,
     "nama": "SHAHIFA INDIRA EFFENDI ,S.Kom",
     "nip": "200201152025062010",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "194243",
+    "phoneFingerprint": ""
   },
   {
     "id": 162,
     "nama": "MUHAMMAD PUJIADI ANGGARA PRAMANA PUTRA MANDALIKA , S.Ars.",
     "nip": "200107312025061012",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "583967",
+    "phoneFingerprint": ""
   },
   {
     "id": 163,
     "nama": "PANJI KUSNENDAR MZ ,S.T.",
     "nip": "199407192025061006",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "616821",
+    "phoneFingerprint": ""
   },
   {
     "id": 164,
     "nama": "ANDREAS ADI NUGROHO",
     "nip": "199710222025061006",
+    "nik": "",
     "jabatan": "PENGAWAS JARINGAN UTILITAS",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "245509",
+    "phoneFingerprint": ""
   },
   {
     "id": 165,
     "nama": "USWATUN HASANAH, S.T.",
     "nip": "200208272025062003",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "907595",
+    "phoneFingerprint": ""
   },
   {
     "id": 166,
     "nama": "IVAN KLIWON RICARDO ,S.T.",
     "nip": "200102232025061005",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "342518",
+    "phoneFingerprint": ""
   },
   {
     "id": 167,
     "nama": "INDAH FAJERI MEUTIA SAPUTRI ,S.T",
     "nip": "199909222025062016",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "504832",
+    "phoneFingerprint": ""
   },
   {
     "id": 168,
     "nama": "TUNJUNG DWIJAYANTI, S.Ars.",
     "nip": "200010032025062006",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "883353",
+    "phoneFingerprint": ""
   },
   {
     "id": 169,
     "nama": "MUHAMMAD HAFIZHIR RIDHA ,S.T.",
     "nip": "200010162025061006",
+    "nik": "",
     "jabatan": "Pengawas Jaringan Utilitas",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "559299",
+    "phoneFingerprint": ""
   },
   {
     "id": 170,
     "nama": "FAISAL MIFTAHUL HUDA, S.T",
     "nip": "199508142025061004",
+    "nik": "",
     "jabatan": "Penata Ruang Ahli Pertama",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "303649",
+    "phoneFingerprint": ""
   },
   {
     "id": 171,
     "nama": "ETY JULI ANDRIANITA ,S.T",
     "nip": "199607192025062003",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "367158",
+    "phoneFingerprint": ""
   },
   {
     "id": 172,
     "nama": "HENDRA NOVIANTARA, S.T.",
     "nip": "200103212025061004",
+    "nik": "",
     "jabatan": "Pranata Kewilayahan",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "809363",
+    "phoneFingerprint": ""
   },
   {
     "id": 173,
     "nama": "DWI LESTARI",
     "nip": "199706152025062006",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "361530",
+    "phoneFingerprint": ""
   },
   {
     "id": 174,
     "nama": "FEDRIAN SYAHPUTRA, S.T",
     "nip": "199404022025061003",
+    "nik": "",
     "jabatan": "Pranata Kewilayahan",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "922393",
+    "phoneFingerprint": ""
   },
   {
     "id": 175,
     "nama": "YUZTIRA WANAGITA ,S.Ars",
     "nip": "199708042025062010",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "987637",
+    "phoneFingerprint": ""
   },
   {
     "id": 176,
     "nama": "SALSABILA, S.T",
     "nip": "200105092025062012",
+    "nik": "",
     "jabatan": "Teknisi Sarana dan Prasarana",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "740642",
+    "phoneFingerprint": ""
   },
   {
     "id": 177,
     "nama": "NOOR MAULIDA SARI, S.T",
     "nip": "199806162025062011",
+    "nik": "",
     "jabatan": "Penata Ruang Ahli Pertama",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "495865",
+    "phoneFingerprint": ""
   },
   {
     "id": 178,
     "nama": "ANDRIANO ST /",
     "nip": "197111102006041026",
+    "nik": "",
     "jabatan": "Kepala Bidang Jasa Konstruksi",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "830987",
+    "phoneFingerprint": ""
   },
   {
     "id": 179,
     "nama": "MUHAMMAD OKTA FAHRIZAN NOOR, S.T",
     "nip": "198110222010011023",
+    "nik": "",
     "jabatan": "Kepala Bidang Tata Kota",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "374444",
+    "phoneFingerprint": ""
   },
   {
     "id": 180,
     "nama": "DEDI, S.T",
     "nip": "197407172008011020",
+    "nik": "",
     "jabatan": "Kepala Bidang Bina Marga",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "853651",
+    "phoneFingerprint": ""
   },
   {
     "id": 181,
     "nama": "HARTADI S.T.",
     "nip": "198111042010011018",
+    "nik": "",
     "jabatan": "Kepala UPT Balai ALKAL",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "835824",
+    "phoneFingerprint": ""
   },
   {
     "id": 182,
     "nama": "SYAHBUDI NOR, A.Md",
     "nip": "198506292014031001",
+    "nik": "",
     "jabatan": "Kasubbag TU UPT Balai ALKAL",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "835824",
+    "phoneFingerprint": ""
   },
   {
     "id": 183,
     "nama": "MUSLIMAH MURNI, S.T",
     "nip": "",
+    "nik": "",
     "jabatan": "Kasubbag Perencanaan dan Keuangan",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "UNIT_LEADER",
-    "password": ""
+    "password": "728370",
+    "phoneFingerprint": ""
   },
   {
     "id": 184,
     "nama": "SLAMET",
     "nip": "197707012007011021",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "936560",
+    "phoneFingerprint": ""
   },
   {
     "id": 185,
     "nama": "BON BENDI",
     "nip": "197908052007011013",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "357178",
+    "phoneFingerprint": ""
   },
   {
     "id": 186,
     "nama": "ARDIANSYAH GADUK",
     "nip": "197501012007011071",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "361263",
+    "phoneFingerprint": ""
   },
   {
     "id": 187,
     "nama": "RUSMINIE",
     "nip": "197808152009012001",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "710906",
+    "phoneFingerprint": ""
   },
   {
     "id": 188,
     "nama": "PAULUS FRANSISKO",
     "nip": "197512012007011011",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "133813",
+    "phoneFingerprint": ""
   },
   {
     "id": 189,
     "nama": "ANAYATUL MUFARROHAH",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "989164",
+    "phoneFingerprint": ""
   },
   {
     "id": 190,
     "nama": "M. SYAHRULLAH RIZKI, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "206490",
+    "phoneFingerprint": ""
   },
   {
     "id": 191,
     "nama": "M. ABDUL AZIZ",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "252685",
+    "phoneFingerprint": ""
   },
   {
     "id": 192,
     "nama": "ADELIA NOOR RIZKI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "254831",
+    "phoneFingerprint": ""
   },
   {
     "id": 193,
     "nama": "YOGA ABIFA RAMADHIA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "134616",
+    "phoneFingerprint": ""
   },
   {
     "id": 194,
     "nama": "DEWI AYU TRYANDHINY",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "576531",
+    "phoneFingerprint": ""
   },
   {
     "id": 195,
     "nama": "HENGKY PRANATA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "230557",
+    "phoneFingerprint": ""
   },
   {
     "id": 196,
     "nama": "MUH. TAROM, SE",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "637281",
+    "phoneFingerprint": ""
   },
   {
     "id": 197,
     "nama": "ARIS RINALDI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "373230",
+    "phoneFingerprint": ""
   },
   {
     "id": 198,
     "nama": "M. FERRY ROMADHONI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "947498",
+    "phoneFingerprint": ""
   },
   {
     "id": 199,
     "nama": "SUGIO PRANOTO",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "792090",
+    "phoneFingerprint": ""
   },
   {
     "id": 200,
     "nama": "ARDY WARDANI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "567339",
+    "phoneFingerprint": ""
   },
   {
     "id": 201,
     "nama": "MUHAMMAD SAFRIANSYAH",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "887620",
+    "phoneFingerprint": ""
   },
   {
     "id": 202,
     "nama": "RAUDATUL MUHLISA, SE",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "504527",
+    "phoneFingerprint": ""
   },
   {
     "id": 203,
     "nama": "PAHRORAZI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "163030",
+    "phoneFingerprint": ""
   },
   {
     "id": 204,
     "nama": "KIKI LIAYANI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "881531",
+    "phoneFingerprint": ""
   },
   {
     "id": 205,
     "nama": "KHAIRUDIN NOR",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "971076",
+    "phoneFingerprint": ""
   },
   {
     "id": 206,
     "nama": "FAISAL RIZKY DWISYACHPUTRA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "UPT ALKAL",
     "unit": "ALKAL",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "289329",
+    "phoneFingerprint": ""
   },
   {
     "id": 207,
     "nama": "GHAZALI AKBAR, A.MD",
     "nip": "199009072025211009",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "793340",
+    "phoneFingerprint": ""
   },
   {
     "id": 208,
     "nama": "LISA ANJELINA",
     "nip": "200005152025211004",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "441200",
+    "phoneFingerprint": ""
   },
   {
     "id": 209,
     "nama": "HASAN WAHYUDI",
     "nip": "199211172025211005",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "856216",
+    "phoneFingerprint": ""
   },
   {
     "id": 210,
     "nama": "MUTIARA PUSPITA",
     "nip": "199306162025212009",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "496124",
+    "phoneFingerprint": ""
   },
   {
     "id": 211,
     "nama": "RAFSAN ZIANNOOR, S.KOM",
     "nip": "199202112025211006",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "878818",
+    "phoneFingerprint": ""
   },
   {
     "id": 212,
     "nama": "HERI PURWANTO",
     "nip": "197307302025211002",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "213469",
+    "phoneFingerprint": ""
   },
   {
     "id": 213,
     "nama": "RINA NORLIYANTY, SE",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "794932",
+    "phoneFingerprint": ""
   },
   {
     "id": 214,
     "nama": "HAMZAH",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "869566",
+    "phoneFingerprint": ""
   },
   {
     "id": 215,
     "nama": "RIZCA AYU WULANDARI, S.KOM",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "548204",
+    "phoneFingerprint": ""
   },
   {
     "id": 216,
     "nama": "KHOFIFAH SILVIA K.C, Amd.T",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "434055",
+    "phoneFingerprint": ""
   },
   {
     "id": 217,
     "nama": "AHMAD AULIA RAHMAN",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "802666",
+    "phoneFingerprint": ""
   },
   {
     "id": 218,
     "nama": "MICHELIA MAHARANI, S.Ak",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "763787",
+    "phoneFingerprint": ""
   },
   {
     "id": 219,
     "nama": "KHAIRUNNISA AZZAHRA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "694014",
+    "phoneFingerprint": ""
   },
   {
     "id": 220,
     "nama": "MULIYADI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "978830",
+    "phoneFingerprint": ""
   },
   {
     "id": 221,
     "nama": "RITA PATERNUS",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "338519",
+    "phoneFingerprint": ""
   },
   {
     "id": 222,
     "nama": "SYAFRUDIN",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "804202",
+    "phoneFingerprint": ""
   },
   {
     "id": 223,
     "nama": "YENI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "143780",
+    "phoneFingerprint": ""
   },
   {
     "id": 224,
     "nama": "WATINI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "975648",
+    "phoneFingerprint": ""
   },
   {
     "id": 225,
     "nama": "MUHAMMAD ADNAN KARLI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "898582",
+    "phoneFingerprint": ""
   },
   {
     "id": 226,
     "nama": "SONA EFENDI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "384725",
+    "phoneFingerprint": ""
   },
   {
     "id": 227,
     "nama": "LINDA WATI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "780536",
+    "phoneFingerprint": ""
   },
   {
     "id": 228,
     "nama": "WALIADI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "939078",
+    "phoneFingerprint": ""
   },
   {
     "id": 229,
     "nama": "ANA MAHRITA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "504966",
+    "phoneFingerprint": ""
   },
   {
     "id": 230,
     "nama": "EPENDI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sekretariat",
     "unit": "SEKRETARIAT",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "116406",
+    "phoneFingerprint": ""
   },
   {
     "id": 231,
     "nama": "M. ZIKRI FANSURI, S.Kom",
     "nip": "199607202025211003",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "189276",
+    "phoneFingerprint": ""
   },
   {
     "id": 232,
     "nama": "TRY SUHARTONO, SE",
     "nip": "198905282025211005",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "849471",
+    "phoneFingerprint": ""
   },
   {
     "id": 233,
     "nama": "HELIYARIA RARA.S.AG",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "619518",
+    "phoneFingerprint": ""
   },
   {
     "id": 234,
     "nama": "EKA INDAH FABRIANI,ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "452107",
+    "phoneFingerprint": ""
   },
   {
     "id": 235,
     "nama": "M. FAJAR RAMADHANI, A.Md",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "412033",
+    "phoneFingerprint": ""
   },
   {
     "id": 236,
     "nama": "MARIOTO",
     "nip": "",
+    "nik": "",
     "jabatan": "Juru D.I. Trahean",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "951074",
+    "phoneFingerprint": ""
   },
   {
     "id": 237,
     "nama": "HELIANSYAH",
     "nip": "",
+    "nik": "",
     "jabatan": "Juru D.I. T. Laung",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "899777",
+    "phoneFingerprint": ""
   },
   {
     "id": 238,
     "nama": "SUHARDIMANTO",
     "nip": "",
+    "nik": "",
     "jabatan": "Juru D.I. Ketapang",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "393079",
+    "phoneFingerprint": ""
   },
   {
     "id": 239,
     "nama": "BAMBANG MAHYUDI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "199154",
+    "phoneFingerprint": ""
   },
   {
     "id": 240,
     "nama": "M. ADHITYA TRIWARDANA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "629577",
+    "phoneFingerprint": ""
   },
   {
     "id": 241,
     "nama": "ILHAM ILAHI",
     "nip": "",
+    "nik": "",
     "jabatan": "Juru D.I. Montallat",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "632500",
+    "phoneFingerprint": ""
   },
   {
     "id": 242,
     "nama": "ABDURRAHMAN",
     "nip": "",
+    "nik": "",
     "jabatan": "Juru D.I. Trinsing",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "762360",
+    "phoneFingerprint": ""
   },
   {
     "id": 243,
     "nama": "VARENSIA AGMEL VANDANA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "512431",
+    "phoneFingerprint": ""
   },
   {
     "id": 244,
     "nama": "AURORA ANGELINA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "432688",
+    "phoneFingerprint": ""
   },
   {
     "id": 245,
     "nama": "M. NOOR SYAMSU, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "113171",
+    "phoneFingerprint": ""
   },
   {
     "id": 246,
     "nama": "AKMALUDDIN YAHYA, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "552517",
+    "phoneFingerprint": ""
   },
   {
     "id": 247,
     "nama": "DELI MUTIARA, S.IP",
     "nip": "",
+    "nik": "",
     "jabatan": "Juru D.I. Malungai",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "614279",
+    "phoneFingerprint": ""
   },
   {
     "id": 248,
     "nama": "AHMAD NUZULRUL RAHMAN",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "176628",
+    "phoneFingerprint": ""
   },
   {
     "id": 249,
     "nama": "NELA APRILIA SUSANTI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "331099",
+    "phoneFingerprint": ""
   },
   {
     "id": 250,
     "nama": "DIAN KARTIKASARI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "206277",
+    "phoneFingerprint": ""
   },
   {
     "id": 251,
     "nama": "ARI SETIA GUNAWAN",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Sumber Daya Air",
     "unit": "SDA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "170865",
+    "phoneFingerprint": ""
   },
   {
     "id": 252,
     "nama": "MERRY NOLISA, A.Md",
     "nip": "197409232007012007",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "818836",
+    "phoneFingerprint": ""
   },
   {
     "id": 253,
     "nama": "REZA MUSTAQIM, S.T",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "957961",
+    "phoneFingerprint": ""
   },
   {
     "id": 254,
     "nama": "MASITAH PADMASARI, ST",
     "nip": "198203132023212021",
+    "nik": "",
     "jabatan": "Teknik Jalan dan Jembatan",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "748985",
+    "phoneFingerprint": ""
   },
   {
     "id": 255,
     "nama": "SILFIA NORAYANTY, ST",
     "nip": "199210312023212026",
+    "nik": "",
     "jabatan": "Teknik Jalan dan Jembatan",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "758094",
+    "phoneFingerprint": ""
   },
   {
     "id": 256,
     "nama": "BOBY FRANSHEN HOSANG, S.T",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "468235",
+    "phoneFingerprint": ""
   },
   {
     "id": 257,
     "nama": "ARIF ANWARI, S.T",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "541443",
+    "phoneFingerprint": ""
   },
   {
     "id": 258,
     "nama": "LUTHFI MUNAJAD, S.T",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "383858",
+    "phoneFingerprint": ""
   },
   {
     "id": 259,
     "nama": "AKHMAD MAULANA RIFANI, S.T",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "195256",
+    "phoneFingerprint": ""
   },
   {
     "id": 260,
     "nama": "RIFALDI ALFAYAT, S.Ak.",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "818001",
+    "phoneFingerprint": ""
   },
   {
     "id": 261,
     "nama": "ZANELLA ELSANOVA, SAB",
     "nip": "199408032025212007",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "283206",
+    "phoneFingerprint": ""
   },
   {
     "id": 262,
     "nama": "ARIEF PERDANA, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "228092",
+    "phoneFingerprint": ""
   },
   {
     "id": 263,
     "nama": "SUSANA, S.Pd",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "306609",
+    "phoneFingerprint": ""
   },
   {
     "id": 264,
     "nama": "LIA FITRIANI, S.HUT",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "129713",
+    "phoneFingerprint": ""
   },
   {
     "id": 265,
     "nama": "MUNAWAR SYARIF, SE",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "600411",
+    "phoneFingerprint": ""
   },
   {
     "id": 266,
     "nama": "SEDIMOLIANTO, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "823636",
+    "phoneFingerprint": ""
   },
   {
     "id": 267,
     "nama": "HARY BUDIYATMOKO, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "370930",
+    "phoneFingerprint": ""
   },
   {
     "id": 268,
     "nama": "WAHYU SARI SUMARLING, S.Pd",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "552945",
+    "phoneFingerprint": ""
   },
   {
     "id": 269,
     "nama": "ZEN ARIE SETIAWAN, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "382391",
+    "phoneFingerprint": ""
   },
   {
     "id": 270,
     "nama": "AVRI NOVIAN JARIS,A.,Md",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "472921",
+    "phoneFingerprint": ""
   },
   {
     "id": 271,
     "nama": "YOGA SAPUTRA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "548856",
+    "phoneFingerprint": ""
   },
   {
     "id": 272,
     "nama": "SULASTRI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "702675",
+    "phoneFingerprint": ""
   },
   {
     "id": 273,
     "nama": "NURUL AMELIA, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "118309",
+    "phoneFingerprint": ""
   },
   {
     "id": 274,
     "nama": "MARIANTO, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "137301",
+    "phoneFingerprint": ""
   },
   {
     "id": 275,
     "nama": "RAMDHAN FEBRIANSYAH,ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "749545",
+    "phoneFingerprint": ""
   },
   {
     "id": 276,
     "nama": "AHMAD RIZKY RISANI, SE",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "715662",
+    "phoneFingerprint": ""
   },
   {
     "id": 277,
     "nama": "M. AL HIDAYAT",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Bina Marga",
     "unit": "BINA_MARGA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "653496",
+    "phoneFingerprint": ""
   },
   {
     "id": 278,
     "nama": "M. SYAIFUL BASRI, A.MD",
     "nip": "199203012025211003",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "848557",
+    "phoneFingerprint": ""
   },
   {
     "id": 279,
     "nama": "FADTUL RAHIM",
     "nip": "198304082025211024",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "279559",
+    "phoneFingerprint": ""
   },
   {
     "id": 280,
     "nama": "AZIZAH DWI SUCI, S.T",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "513806",
+    "phoneFingerprint": ""
   },
   {
     "id": 281,
     "nama": "YODI PRANATA, S.Kom",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "598876",
+    "phoneFingerprint": ""
   },
   {
     "id": 282,
     "nama": "ANTUNG MISRA, SE",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "505052",
+    "phoneFingerprint": ""
   },
   {
     "id": 283,
     "nama": "ROBBY NADA SANJAYA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "156796",
+    "phoneFingerprint": ""
   },
   {
     "id": 284,
     "nama": "RACHMAD ANUGRAH, SH",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "622863",
+    "phoneFingerprint": ""
   },
   {
     "id": 285,
     "nama": "PETRUS PARLINDUNGAN AGNEUS MANIHURUK, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "462784",
+    "phoneFingerprint": ""
   },
   {
     "id": 286,
     "nama": "ACHMAT IRWANDY, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "303207",
+    "phoneFingerprint": ""
   },
   {
     "id": 287,
     "nama": "DEVIA CITA RACHMAN,S.Farm",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "207065",
+    "phoneFingerprint": ""
   },
   {
     "id": 288,
     "nama": "SITI FATIMAH AZZAHRA",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "657221",
+    "phoneFingerprint": ""
   },
   {
     "id": 289,
     "nama": "NURTIKA, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "360551",
+    "phoneFingerprint": ""
   },
   {
     "id": 290,
     "nama": "PERONIKA, SH",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "914537",
+    "phoneFingerprint": ""
   },
   {
     "id": 291,
     "nama": "SONY ATHALARIK S.M",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Cipta Karya",
     "unit": "CIPTA_KARYA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "769969",
+    "phoneFingerprint": ""
   },
   {
     "id": 292,
     "nama": "RUKMANA, S.Pd",
     "nip": "199308042025212007",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "953829",
+    "phoneFingerprint": ""
   },
   {
     "id": 293,
     "nama": "YUWANIKA, S.Pd",
     "nip": "",
+    "nik": "",
     "jabatan": "Staff Pelaksana",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "233024",
+    "phoneFingerprint": ""
   },
   {
     "id": 294,
     "nama": "JESRIKA ZACHAWERUS",
     "nip": "",
+    "nik": "",
     "jabatan": "cpns",
     "bidang": "Tata Kota",
     "unit": "TATA_KOTA",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "608152",
+    "phoneFingerprint": ""
   },
   {
     "id": 295,
     "nama": "BENY PRATAMA. S,Sos",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Tata Ruang",
     "unit": "TATA_RUANG",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "155656",
+    "phoneFingerprint": ""
   },
   {
     "id": 296,
     "nama": "RAHMA NAULI HUTABARAT",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "371854",
+    "phoneFingerprint": ""
   },
   {
     "id": 297,
     "nama": "BRAINYMAN, S.Pd.",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "806581",
+    "phoneFingerprint": ""
   },
   {
     "id": 298,
     "nama": "FAKHRI ABDURRAHMAN A. S.Kom",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "850751",
+    "phoneFingerprint": ""
   },
   {
     "id": 299,
     "nama": "JEFRI SIANTONI, ST",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "870623",
+    "phoneFingerprint": ""
   },
   {
     "id": 300,
     "nama": "AULIA RIDHA ANISYAH PUTRI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "120815",
+    "phoneFingerprint": ""
   },
   {
     "id": 301,
     "nama": "EKO ANIS SETYORINI",
     "nip": "",
+    "nik": "",
     "jabatan": "",
     "bidang": "Jasa Konstruksi",
     "unit": "JASA_KONSTRUKSI",
     "role": "EMPLOYEE",
-    "password": ""
+    "password": "834896",
+    "phoneFingerprint": ""
   },
   {
     "id": 302,
     "nama": "",
     "nip": "",
+    "nik": "",
     "jabatan": "Sekretaris Dinas",
     "bidang": "Dinas",
     "unit": "DINAS",
     "role": "EXECUTIVE",
-    "password": ""
+    "password": "335114",
+    "phoneFingerprint": ""
   }
 ]

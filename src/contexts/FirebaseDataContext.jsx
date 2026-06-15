@@ -9,6 +9,7 @@ import {
   APEL_REASON_PATH,
   APEL_SESSIONS,
   PENGAJUAN_PATH,
+  FINGERPRINT_PATH,
 } from "../bersama/konstanta_aplikasi";
 import { getApelStatus } from "../bersama/util_waktu_dan_apel";
 
@@ -260,6 +261,14 @@ export function FirebaseDataProvider({ children }) {
     [pengajuan, attendance]
   );
 
+  const handleSaveFingerprint = useCallback((pegawaiId, fingerprint) => {
+    set(ref(database, `${FINGERPRINT_PATH}/${pegawaiId}`), {
+      deviceId: fingerprint,
+      lastLogin: Date.now(),
+      deviceInfo: (navigator.userAgent || "").slice(0, 100),
+    });
+  }, []);
+
   const value = useMemo(
     () => ({
       attendance,
@@ -278,6 +287,7 @@ export function FirebaseDataProvider({ children }) {
       handleApelReasonChange,
       handlePengajuanSubmit,
       handlePengajuanVerifikasi,
+      handleSaveFingerprint,
     }),
     [
       attendance, apelSession, apelReason, apelReasonText, apelStatus, pengajuan,
@@ -285,6 +295,7 @@ export function FirebaseDataProvider({ children }) {
       handleScan, handleScanSimulate, handleReset, handleKoreksi,
       handleApelSessionChange, handleApelReasonChange,
       handlePengajuanSubmit, handlePengajuanVerifikasi,
+      handleSaveFingerprint,
     ]
   );
 

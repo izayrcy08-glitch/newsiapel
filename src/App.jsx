@@ -10,11 +10,13 @@ const DashboardPegawai = lazy(() => import("./pages/DashboardPegawai"));
 const DashboardPimpinan = lazy(() => import("./pages/DashboardPimpinan"));
 const DashboardAdmin = lazy(() => import("./pages/DashboardAdmin"));
 const DeveloperConsole = lazy(() => import("./pages/DeveloperConsole"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const DeveloperLogin = lazy(() => import("./pages/DeveloperLogin"));
 
 function AppRouter() {
   const {
     page, setPage, activePegawai, selectedPimpinan,
-    handleRoleSelect, handlePegawaiLogin, handlePimpinanSelect,
+    handleRoleSelect, handlePimpinanSelect,
     masterPegawaiData, pimpinanAccessRoles,
     handleAddPegawai, handleUpdatePegawai, handleDeletePegawai,
   } = useSession();
@@ -38,13 +40,7 @@ function AppRouter() {
       return <RoleSelector onSelect={handleRoleSelect} />;
 
     case "pegawai_login":
-      return (
-        <PegawaiLogin
-          people={masterPegawaiData}
-          onBack={() => setPage("role")}
-          onLogin={handlePegawaiLogin}
-        />
-      );
+      return <PegawaiLogin />;
 
     case "pegawai_dashboard":
       return activePegawai
@@ -68,6 +64,7 @@ function AppRouter() {
       return (
         <PimpinanSelector
           pimpinanAccessRoles={pimpinanAccessRoles}
+          masterPegawaiData={masterPegawaiData}
           onBack={() => setPage("role")}
           onSelect={handlePimpinanSelect}
         />
@@ -87,6 +84,9 @@ function AppRouter() {
           onBack={() => setPage("pimpinan_select")}
         />
       );
+
+    case "admin_login":
+      return wrap(<AdminLogin />);
 
     case "admin":
       return wrap(
@@ -110,6 +110,9 @@ function AppRouter() {
           onDeletePegawai={handleDeletePegawai}
         />
       );
+
+    case "developer_login":
+      return wrap(<DeveloperLogin />);
 
     case "developer":
       return wrap(

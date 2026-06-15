@@ -43,7 +43,7 @@ export default function PanelKelolaPegawai({ people, readOnly, onAddPegawai, onU
         unit: selectedPegawai.unit || "",
         bidang: selectedPegawai.bidang || "",
         role: selectedPegawai.role || "EMPLOYEE",
-        password: "",
+        password: selectedPegawai.password || "",
         isActive: selectedPegawai.isActive !== false,
       });
     } else {
@@ -234,7 +234,7 @@ export default function PanelKelolaPegawai({ people, readOnly, onAddPegawai, onU
                 <div>
                   <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Password</label>
                   <input value={draft.password} disabled={readOnly} onChange={(e) => setDraft((prev) => ({ ...prev, password: e.target.value }))}
-                    className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60" placeholder="Kosong jika tidak diubah" />
+                    className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500/60 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60" placeholder="Password saat ini" />
                 </div>
               </div>
             </div>
