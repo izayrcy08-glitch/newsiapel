@@ -8,7 +8,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production) | `refactor-phase-1` (dev)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
-- **Sesi terakhir:** 2026-06-15 — Active Session: cegah login tabrakan (masih bug — admin bisa dobel login)
+- **Sesi terakhir:** 2026-06-15 — Fix major: revert over-engineered active session + simplify (await-based, no fire-and-forget, no listenerStartTime hack)
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules terpasang
 - **Build:** `npm run build` ✅
 - **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase overrides password (path `pegawai_passwords`) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
@@ -38,6 +38,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `main` | **Deploy Production** — merge refactor-phase-1 → main (--no-ff), push GitHub, deploy Vercel (https://siapel.vercel.app), Firebase Rules terpasang, siap pilot |
 | 2026-06-15 | `main` | **Fix password sync lintas domain** — 3 fix inkonsistensi password (admin fallback 355454→123456, H.Rody 811800→123321, Sekretaris Dinas nama kosong). Fitur ganti password kini simpan ke Firebase RTDB (`pegawai_passwords/{key}`) agar berlaku di semua domain (localhost + production). LoginPage cek Firebase overrides dulu, lalu localStorage, lalu fallback. DeveloperConsole + PanelKelolaPegawai bridge via `handleSavePasswordOverride`. Build ✅ |
 | 2026-06-15 | `main` | **Active Session — Last-Login-Wins** — cegah 1 akun login di 2 device. `sessionId` unik tiap browser, tulis ke `/activeSessions/{userId}` di Firebase. Listener realtime detect conflict (loginAt > listenerStartTime). Force logout + banner "Sesi Berkonflik" di LoginPage. Fix race condition: navigation sebelum write selesai, data stale dari sesi sebelumnya. Update firebase-rules.json: tambah path activeSessions, fingerprints, pegawai_passwords. **⚠️ Masih ada bug: admin masih bisa dobel login (tidak terdeteksi conflict) — perlu diobrolan baru.** 5 file berubah, build ✅ |
+| 2026-06-15 | `main` | **Fix: revert + simplify active session** — Revert SessionContext, App.jsx, LoginPage ke struktur sebelum active session. Simplify FirebaseDataContext: sessionId pake useRef (bukan useState di SessionContext), subscription tanpa `listenerStartTime` hack, `handleSaveActiveSession` di-await with 3s timeout (bukan fire-and-forget). Admin login di HP ✅, double login terdeteksi ✅. 4 file berubah, build ✅ |
 
 ## Prioritas
 
@@ -45,7 +46,7 @@ Status proyek terkini. Update tiap selesai sesi.
 2. 🔴 **Reset Device Binding (DeveloperConsole)** — tombol reset device fingerprint pegawai di panel/developer
 3. 🔴 **DashboardAdmin panel lazy loading** — PanelAbsensi dkk masih eager-loaded
 4. 🟡 **Autentikasi Firebase** — Firebase Auth + role-based access (setelah login pilot stabil)
-5. 🟡 **Active Session (last-login-wins)** — /activeSessions Firebase, listener realtime. **Masih bug: false-positive conflict untuk admin di device berbeda + kadang tidak detect conflict sama sekali. Perlu perbaikan di sesi baru.**
+5. 🟢 **Active Session (last-login-wins)** ✅ — /activeSessions Firebase, listener realtime. Fix: await-based write (3s timeout), no fire-and-forget, no listenerStartTime hack, sessionId di useRef FirebaseDataContext. Double login terdeteksi, admin login di HP normal.
 6. 🟢 **DeveloperConsole fitur** ✅ — Menu Kelola Pegawai, Koreksi Absensi, Ganti Password admin/dev
 7. 🟢 **Ganti Password admin/dev (DeveloperConsole)** ✅ — Sekarang sync ke Firebase, berlaku lintas domain
 8. 🟢 **Unified Login Page** ✅ — 1 form untuk semua role, auto-detect, info kontak admin di bawah form

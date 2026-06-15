@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { ref, onValue, set, update, push } from "firebase/database";
 import { database } from "../firebase";
 import { deleteStorageFile } from "../utils/storage-helper";
@@ -18,7 +18,10 @@ import { getApelStatus } from "../bersama/util_waktu_dan_apel";
 const FirebaseDataContext = createContext(null);
 
 export function FirebaseDataProvider({ children }) {
-  const { masterPegawaiData, sessionId, activeUserId, forceSessionConflict } = useSession();
+  const { page, role, activePegawai, selectedPimpinan, goBack } = useSession();
+
+  // Session ID unik untuk browser ini — dipakai untuk deteksi login ganda
+  const sessionIdRef = useRef(crypto.randomUUID());
 
   const [attendance, setAttendance] = useState({});
   const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING);
@@ -122,31 +125,32 @@ export function FirebaseDataProvider({ children }) {
     return () => unsub();
   }, []);
 
-  // ── Subscription: Active Session (detect login dari device lain) ──
+  // ── Derived: activeUserId dari session state ──
+  const activeUserId = useMemo(() => {
+    if (page === "login") return null;
+    if (role === "admin") return "admin";
+    if (role === "developer") return "developer";
+    if (activePegawai) return `pegawai_${activePegawai.id}`;
+    if (selectedPimpinan?.pegawaiId) return `pegawai_${selectedPimpinan.pegawaiId}`;
+    return null;
+  }, [page, role, activePegawai, selectedPimpinan]);
+
+  // ── Subscription: Active Session (deteksi login dari device lain) ──
+  // Sederhana: jika data di Firebase berubah dan sessionId berbeda → force logout
   useEffect(() => {
     if (!activeUserId) return;
 
-    // Catat kapan listener ini mulai — untuk bedain "data stale" vs "login dari device lain"
-    const listenerStartTime = Date.now();
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
     const unsub = onValue(sessionRef, (snapshot) => {
       const val = snapshot.val();
-      // Trigger konflik HANYA jika loginAt di Firebase LEBIH BARU dari listenerStartTime.
-      // Ini mencegah false-positive saat fire-and-forget write masih pending
-      // dan listener keburu baca data LAMA (dari sesi sebelumnya).
-      if (val && val.sessionId && val.sessionId !== sessionId) {
-        if (val.loginAt && val.loginAt > listenerStartTime) {
-          forceSessionConflict(
-            "Akun ini telah login dari perangkat lain.\nAnda akan dialihkan ke halaman login."
-          );
-        }
-        // Jika loginAt <= listenerStartTime atau loginAt tidak ada:
-        // itu data stale dari sesi sebelumnya — abaikan.
+      // Tidak ada data session, atau sessionId berbeda → ada login dari device lain
+      if (!val || val.sessionId !== sessionIdRef.current) {
+        goBack();
       }
     });
 
     return () => unsub();
-  }, [activeUserId, sessionId, forceSessionConflict]);
+  }, [activeUserId, goBack]);
 
   // ── Auto-cleanup: hapus file storage >24j setelah disetujui ──
   useEffect(() => {
@@ -320,14 +324,13 @@ export function FirebaseDataProvider({ children }) {
 
   const handleSaveActiveSession = useCallback((userId) => {
     return set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), {
-      sessionId,
+      sessionId: sessionIdRef.current,
       loginAt: Date.now(),
     });
-  }, [sessionId]);
+  }, []);
 
   const handleClearActiveSession = useCallback((userId) => {
     if (!userId) return;
-    // Clear unconditional — user sengaja logout, hapus session dari Firebase
     set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), null);
   }, []);
 
