@@ -126,13 +126,22 @@ export function FirebaseDataProvider({ children }) {
   useEffect(() => {
     if (!activeUserId) return;
 
+    // Catat kapan listener ini mulai — untuk bedain "data stale" vs "login dari device lain"
+    const listenerStartTime = Date.now();
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
     const unsub = onValue(sessionRef, (snapshot) => {
       const val = snapshot.val();
+      // Trigger konflik HANYA jika loginAt di Firebase LEBIH BARU dari listenerStartTime.
+      // Ini mencegah false-positive saat fire-and-forget write masih pending
+      // dan listener keburu baca data LAMA (dari sesi sebelumnya).
       if (val && val.sessionId && val.sessionId !== sessionId) {
-        forceSessionConflict(
-          "Akun ini telah login dari perangkat lain.\nAnda akan dialihkan ke halaman login."
-        );
+        if (val.loginAt && val.loginAt > listenerStartTime) {
+          forceSessionConflict(
+            "Akun ini telah login dari perangkat lain.\nAnda akan dialihkan ke halaman login."
+          );
+        }
+        // Jika loginAt <= listenerStartTime atau loginAt tidak ada:
+        // itu data stale dari sesi sebelumnya — abaikan.
       }
     });
 
