@@ -21,16 +21,11 @@ function AppRouter() {
 
   const {
     attendance, apelStatus, apelSession, apelReason, apelReasonText,
-    pengajuan, firebaseReady,
+    pengajuan,
     handleScan, handleScanSimulate, handleReset, handleKoreksi,
     handleApelSessionChange, handleApelReasonChange,
     handlePengajuanSubmit, handlePengajuanVerifikasi,
   } = useFirebaseData();
-
-  // Tampilkan loading saat Firebase pertama kali memuat (kecuali di role selector)
-  if (!firebaseReady && page !== "role") {
-    return <LoadingSpinner message="Menghubungkan ke server..." />;
-  }
 
   const wrap = (children) => (
     <Suspense fallback={<LoadingSpinner message="Memuat halaman..." />}>

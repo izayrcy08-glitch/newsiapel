@@ -6,11 +6,12 @@ Status proyek terkini. Update tiap selesai sesi.
 
 ## Status Terkini
 - **Branch:** `refactor-phase-1`
-- **Sesi terakhir:** 2026-06-15 — Hapus Preview Data, pindah pencarian ke atas View As, dropdown overlay, sorting prefix, fix SearchInput remount bug
-- **Firebase:** Live — Realtime Database + Storage (upload file pengajuan)
+- **Sesi terakhir:** 2026-06-15 — Fix slowdown: Storage SDK lazy load + hapus firebaseReady blocking screen
+- **Firebase:** Live — Realtime Database + Storage lazy load (Storage SDK cuma di-download saat upload file, bukan di startup)
 - **Build:** `npm run build` ✅
-- **Developer Console:** Search + dropdown hasil (prefix-first sort) — cari pegawai → langsung View As; View As (4 role) + Summary Cards — tanpa Preview Data/placeholder
-- **Legacy:** pegawai_legacy.json & Data Source Toggle dihapus
+- **Firebase Storage:** Dipisah dari `firebase.js` → `src/utils/storage-helper.js` (dynamic import). Bundle awal turun ~33 kB (438 kB vs 471 kB)
+- **Loading screen:** Dihapus. Halaman langsung render tanpa nunggu response Firebase pertama (data masuk asinkron via onValue)
+- **Slowdown investigation:** Root cause bukan re-render/useClock — tapi Storage SDK di critical path + firebaseReady blocking
 
 ## Riwayat Sesi
 
@@ -22,6 +23,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `refactor-phase-1` | Feature audit: hapus 9 placeholder DeveloperConsole + Data Source Toggle + legacy JSON, implementasi Firebase Storage upload file, hapus DEMO_LAST_MONTH_DISCIPLINE |
 | 2026-06-15 | `refactor-phase-1` | **Fix akar data placeholder:** hapus mergeAttendanceWithPeople (biarkan Firebase mentah), cabang data kosong di calcAttendanceStats return 0, guard PerhatianList, tombol Reset Attendance di DeveloperConsole, hapus state_absensi.js |
 | 2026-06-15 | `refactor-phase-1` | **DeveloperConsole cleanup:** hapus Preview Data section, pindah search ke atas View As, dropdown overlay hasil pencarian, sorting prefix-first, fix SearchInput remount bug (pindah luar komponen biar tidak kehilangan fokus tiap render) |
+| 2026-06-15 | `refactor-phase-1` | **Fix slowdown + storage lazy:** Pisah Firebase Storage SDK ke `storage-helper.js` (dynamic import — cuma di-load saat upload), hapus `firebaseReady` blocking screen agar halaman render instan. Bundle awal turun 33 kB. |
 
 ## Prioritas
 

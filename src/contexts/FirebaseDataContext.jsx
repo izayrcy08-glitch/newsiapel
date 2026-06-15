@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import { ref, onValue, set, update, push } from "firebase/database";
-import { ref as storageRef, deleteObject } from "firebase/storage";
-import { database, storage } from "../firebase";
+import { database } from "../firebase";
+import { deleteStorageFile } from "../utils/storage-helper";
 import { useSession } from "./SessionContext";
 import {
   ATTENDANCE_PATH,
@@ -114,8 +114,7 @@ export function FirebaseDataProvider({ children }) {
         item.approvedAt &&
         now - item.approvedAt >= FILE_TTL_MS
       ) {
-        const fileRef = storageRef(storage, item.dokumenPath);
-        deleteObject(fileRef)
+        deleteStorageFile(item.dokumenPath)
           .then(() => {
             // Hapus referensi file di database
             update(ref(database, `${PENGAJUAN_PATH}/${item.id}`), {

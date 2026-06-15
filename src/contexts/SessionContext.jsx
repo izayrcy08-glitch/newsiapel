@@ -27,7 +27,22 @@ const normalizePegawaiRecord = (pegawai, fallbackId) => {
 const normalizePegawaiData = (people = []) =>
   people.map((pegawai, index) => normalizePegawaiRecord(pegawai, index + 1));
 
-const loadMasterPegawaiData = () => normalizePegawaiData(pegawaiData);
+const loadMasterPegawaiData = () => {
+  // Prioritas 1: Baca dari localStorage (data hasil edit/admin sebelumnya)
+  try {
+    const saved = window.localStorage.getItem(MASTER_PEGAWAI_STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return normalizePegawaiData(parsed);
+      }
+    }
+  } catch (_) {
+    // Abaikan error baca localStorage — fallback ke JSON
+  }
+  // Prioritas 2: Fallback ke file statis (first run / cache kosong)
+  return normalizePegawaiData(pegawaiData);
+};
 
 const restoreSession = (masterData) => {
   try {

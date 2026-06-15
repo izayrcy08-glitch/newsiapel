@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase";
+import { uploadPengajuanFile } from "../utils/storage-helper";
 import { Card } from "../components/Card";
 import { StatusBadge } from "../components/StatusBadge";
 import { STATUS_OPTIONS } from "../bersama/konstanta_aplikasi";
@@ -40,14 +39,11 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
       let dokumenUrl = "";
       let dokumenPath = "";
 
-      // Upload file ke Firebase Storage jika ada
+      // Upload file ke Firebase Storage jika ada (lazy — SDK hanya di-load saat upload)
       if (file) {
-        const timestamp = Date.now();
-        const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-        const fileRef = ref(storage, `pengajuan/${pegawai.id}/${timestamp}_${safeName}`);
-        const snapshot = await uploadBytes(fileRef, file);
-        dokumenUrl = await getDownloadURL(snapshot.ref);
-        dokumenPath = fileRef.fullPath;
+        const result = await uploadPengajuanFile(pegawai.id, file);
+        dokumenUrl = result.downloadUrl;
+        dokumenPath = result.path;
       }
 
       // Kirim pengajuan ke Firebase via callback
