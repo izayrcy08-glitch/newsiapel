@@ -8,7 +8,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production) | `refactor-phase-1` (dev)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
-- **Sesi terakhir:** 2026-06-15 — 🔒 Firebase Anonymous Auth + rules diperketat (`auth !== null`), bersihkan `.catch(() => {})`
+- **Sesi terakhir:** 2026-06-15 — Fix AuthInit loading forever (bug initiatedRef)
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth) ✅
 - **⚠️ Firebase Console:** Rules sudah di-update di repo, **masih perlu di-copy manual ke Firebase Console** (Realtime Database → Rules → Publish)
 - **Build:** `npm run build` ✅
@@ -43,6 +43,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `main` | **Fix: seragamkan admin password + guard overrides loading** — 3 sumber mismatch admin password (LoginPage `123456`, DeveloperConsole `355454`, AdminLogin `355454`) diseragamkan ke `123455`. Tambah `passwordOverridesLoaded` state + guard submit (LoginPage tunggu Firebase overrides termuat). Auto-sync admin password ke Firebase saat pertama load. Fix FirebaseDataContext crash: `masterPegawaiData` undefined di `handleScanSimulate`. Push ke GitHub, deploy Vercel. 5 file berubah, build ✅ |
 | 2026-06-15 | `main` | **Cleanup .vercel lokal** — Hapus folder `.vercel` (project duplikat "siapel" no production). Project resmi: `newsiapel` (auto-deploy dari GitHub). Domain `siapel.vercel.app` dan `newsiapel.vercel.app` serve kode sama. |
 | 2026-06-15 | `main` | **🔒 Firebase Anonymous Auth + Rules `auth !== null`** — Tambah AuthInit component (signInAnonymously), semua `.read`/`.write` dari `true` jadi `auth !== null` di firebase-rules.json. Hapus `.catch(() => {})` di LoginPage & FirebaseDataContext (ganti console.error). Bundle build masih sama. Fix email Firebase Test Mode expire 5 hari. |
+| 2026-06-15 | `main` | **Fix AuthInit loading forever** — Bug: `initiatedRef` di-set `true` sebelum `onAuthStateChanged` callback, jadi `signInAnonymously` tidak pernah kepanggil. Fix: hapus ref, panggil langsung dari callback saat user `null`. Loading cuma ~0.5-1 detik di kunjungan pertama. |
 
 ## Prioritas (Sekarang)
 
