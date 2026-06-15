@@ -13,7 +13,7 @@
 | Field | Value |
 |---|---|
 | Username | `admin` |
-| Password | `123456` |
+| Password | `123455` |
 
 ## 🔧 Developer
 
@@ -28,7 +28,7 @@ Username: NIP (prioritas) → NIK → Nama. Password 6 digit.
 
 | No | Role | Nama | Username | Password |
 |---|---|---|---|---|
-| 1 | EXECUTIVE | H. Rody, ST. MT | `196710151993031008` | `123321` |
+| 1 | EXECUTIVE | H. Rody, ST. MT | `196710151993031008` | `811800` |
 | 2 | UNIT_LEADER | PATRIA S.T., M.S. | `197307202005011007` | `540565` |
 | 3 | UNIT_LEADER | IGNASIUS S.T | `197610072007011007` | `943021` |
 | 4 | UNIT_LEADER | SUBIYANTORO ST.,M.T. / | `198107312008041002` | `931275` |

@@ -146,8 +146,11 @@ const LoginPage = () => {
     setSelectedPimpinan,
     handleUpdatePegawai,
     handlePimpinanSelect,
+    sessionId,
+    sessionConflictMessage,
+    resolveSessionConflict,
   } = useSession();
-  const { handleSaveFingerprint, passwordOverrides } = useFirebaseData();
+  const { handleSaveFingerprint, passwordOverrides, handleSaveActiveSession } = useFirebaseData();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -188,6 +191,7 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
+        handleSaveActiveSession("admin");
         setRole("admin");
         setPage("admin");
         return;
@@ -200,6 +204,7 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
+        handleSaveActiveSession("developer");
         setRole("developer");
         setPage("developer");
         return;
@@ -225,6 +230,9 @@ const LoginPage = () => {
         return;
       }
 
+      const userId = `pegawai_${pegawai.id}`;
+      handleSaveActiveSession(userId);
+
       const fp = getDeviceFingerprint();
       handleSaveFingerprint(pegawai.id, fp);
       handleUpdatePegawai(pegawai.id, { phoneFingerprint: fp });
@@ -232,6 +240,7 @@ const LoginPage = () => {
       if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
         handlePimpinanSelect({
           id: `${pegawai.role.toLowerCase()}-${pegawai.nip || pegawai.nama}`,
+          pegawaiId: pegawai.id,
           group: pegawai.role,
           name: pegawai.nama,
           nip: pegawai.nip || "",
@@ -476,6 +485,37 @@ const LoginPage = () => {
                 </motion.div>
               </div>
 
+              {/* ── Session conflict banner ── */}
+              <AnimatePresence>
+                {sessionConflictMessage && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                    className="relative z-10 mb-4 px-4 py-3 rounded-xl bg-amber-500/15 border border-amber-500/30"
+                  >
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                      </svg>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-amber-300 text-sm font-medium">Sesi Berkonflik</p>
+                        <p className="text-amber-200/70 text-xs mt-1 whitespace-pre-line">{sessionConflictMessage}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={resolveSessionConflict}
+                        className="text-amber-400/60 hover:text-amber-300 transition-colors shrink-0"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* ── Login form ── */}
               <form onSubmit={handleLogin} className="space-y-5 relative z-10">
                 <motion.div
@@ -490,7 +530,7 @@ const LoginPage = () => {
                     type="text"
                     placeholder="Masukkan username"
                     value={username}
-                    onChange={(e) => { setUsername(e.target.value); setError(""); }}
+                    onChange={(e) => { setUsername(e.target.value); setError(""); resolveSessionConflict(); }}
                     onFocus={() => {}}
                     onBlur={() => {}}
                     onKeyDown={handleKeyDown}

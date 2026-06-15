@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useCallback } from "react";
 import { SessionProvider, useSession } from "./contexts/SessionContext";
 import { FirebaseDataProvider, useFirebaseData } from "./contexts/FirebaseDataContext";
 import { LoginPage } from "./pages/LoginPage";
@@ -14,6 +14,7 @@ function AppRouter() {
     page, activePegawai, selectedPimpinan,
     masterPegawaiData, handleRoleSelect,
     handleAddPegawai, handleUpdatePegawai, handleDeletePegawai,
+    activeUserId,
   } = useSession();
 
   const {
@@ -22,8 +23,14 @@ function AppRouter() {
     handleScan, handleScanSimulate, handleReset, handleKoreksi,
     handleApelSessionChange, handleApelReasonChange,
     handlePengajuanSubmit, handlePengajuanVerifikasi,
-    handleSavePasswordOverride,
+    handleSavePasswordOverride, handleClearActiveSession,
   } = useFirebaseData();
+
+  // Logout: hapus active session dari Firebase, lalu kembali ke login
+  const handleLogout = useCallback(() => {
+    handleClearActiveSession(activeUserId);
+    handleRoleSelect();
+  }, [activeUserId, handleClearActiveSession, handleRoleSelect]);
 
   // Bridge: saat password pegawai diubah, simpan juga ke Firebase
   const handleUpdatePegawaiWithFirebase = (pegawaiId, updates) => {
@@ -56,7 +63,7 @@ function AppRouter() {
               apelReasonText={apelReasonText}
               onScan={handleScan}
               onPengajuanSubmit={handlePengajuanSubmit}
-              onBack={() => handleRoleSelect()}
+              onBack={handleLogout}
             />
           )
         : null;

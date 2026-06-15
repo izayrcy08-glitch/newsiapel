@@ -6,6 +6,21 @@ const SessionContext = createContext(null);
 
 const MASTER_PEGAWAI_STORAGE_KEY = "siapel.masterPegawaiData.v3";
 const SESSION_KEY = "siapel.session.v1";
+const SESSION_ID_KEY = "siapel.sessionId";
+
+/** Generate atau ambil sessionId unik dari sessionStorage */
+const getOrCreateSessionId = () => {
+  try {
+    let sid = window.sessionStorage.getItem(SESSION_ID_KEY);
+    if (!sid) {
+      sid = crypto.randomUUID();
+      window.sessionStorage.setItem(SESSION_ID_KEY, sid);
+    }
+    return sid;
+  } catch {
+    return `siapel-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  }
+};
 
 const normalizePegawaiRecord = (pegawai, fallbackId) => {
   const unit = pegawai.unit || pegawai.bidang || "";
@@ -90,11 +105,22 @@ export function SessionProvider({ children }) {
   const [activePegawai, setActivePegawai] = useState(initialSession.activePegawai || null);
   const [selectedPimpinan, setSelectedPimpinan] = useState(initialSession.selectedPimpinan || null);
   const [masterPegawaiData, setMasterPegawaiData] = useState(initialMaster);
+  const [sessionId] = useState(getOrCreateSessionId);
+  const [sessionConflictMessage, setSessionConflictMessage] = useState("");
 
   const pimpinanAccessRoles = useMemo(
     () => buildPimpinanAccessRoles(masterPegawaiData),
     [masterPegawaiData]
   );
+
+  const activeUserId = useMemo(() => {
+    if (page === "login") return null;
+    if (role === "admin") return "admin";
+    if (role === "developer") return "developer";
+    if (activePegawai) return `pegawai_${activePegawai.id}`;
+    if (selectedPimpinan?.pegawaiId) return `pegawai_${selectedPimpinan.pegawaiId}`;
+    return null;
+  }, [page, role, activePegawai, selectedPimpinan]);
 
   // Persist master data ke localStorage
   useEffect(() => {
@@ -164,6 +190,19 @@ export function SessionProvider({ children }) {
     setRole(null);
     setActivePegawai(null);
     setSelectedPimpinan(null);
+    setSessionConflictMessage("");
+  }, []);
+
+  const forceSessionConflict = useCallback((msg) => {
+    setSessionConflictMessage(msg);
+    setPage("login");
+    setRole(null);
+    setActivePegawai(null);
+    setSelectedPimpinan(null);
+  }, []);
+
+  const resolveSessionConflict = useCallback(() => {
+    setSessionConflictMessage("");
   }, []);
 
   // ── Pegawai CRUD handlers ──
@@ -204,6 +243,9 @@ export function SessionProvider({ children }) {
       selectedPimpinan,
       masterPegawaiData,
       pimpinanAccessRoles,
+      sessionId,
+      sessionConflictMessage,
+      activeUserId,
       setPage,
       setRole,
       setActivePegawai,
@@ -212,13 +254,17 @@ export function SessionProvider({ children }) {
       handlePegawaiLogin,
       handlePimpinanSelect,
       goBack,
+      forceSessionConflict,
+      resolveSessionConflict,
       handleAddPegawai,
       handleUpdatePegawai,
       handleDeletePegawai,
     }),
     [
       page, role, activePegawai, selectedPimpinan, masterPegawaiData, pimpinanAccessRoles,
+      sessionId, sessionConflictMessage, activeUserId,
       handleRoleSelect, handlePegawaiLogin, handlePimpinanSelect, goBack,
+      forceSessionConflict, resolveSessionConflict,
       handleAddPegawai, handleUpdatePegawai, handleDeletePegawai,
     ]
   );

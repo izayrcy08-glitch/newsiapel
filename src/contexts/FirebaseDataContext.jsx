@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
-import { ref, onValue, set, update, push } from "firebase/database";
+import { ref, onValue, set, update, push, get } from "firebase/database";
 import { database } from "../firebase";
 import { deleteStorageFile } from "../utils/storage-helper";
 import { useSession } from "./SessionContext";
@@ -11,13 +11,14 @@ import {
   PENGAJUAN_PATH,
   FINGERPRINT_PATH,
   PEGAWAI_PASSWORDS_PATH,
+  ACTIVE_SESSION_PATH,
 } from "../bersama/konstanta_aplikasi";
 import { getApelStatus } from "../bersama/util_waktu_dan_apel";
 
 const FirebaseDataContext = createContext(null);
 
 export function FirebaseDataProvider({ children }) {
-  const { masterPegawaiData } = useSession();
+  const { masterPegawaiData, sessionId, activeUserId, forceSessionConflict } = useSession();
 
   const [attendance, setAttendance] = useState({});
   const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING);
@@ -120,6 +121,23 @@ export function FirebaseDataProvider({ children }) {
     );
     return () => unsub();
   }, []);
+
+  // ── Subscription: Active Session (detect login dari device lain) ──
+  useEffect(() => {
+    if (!activeUserId) return;
+
+    const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
+    const unsub = onValue(sessionRef, (snapshot) => {
+      const val = snapshot.val();
+      if (val && val.sessionId && val.sessionId !== sessionId) {
+        forceSessionConflict(
+          "Akun ini telah login dari perangkat lain.\nAnda akan dialihkan ke halaman login."
+        );
+      }
+    });
+
+    return () => unsub();
+  }, [activeUserId, sessionId, forceSessionConflict]);
 
   // ── Auto-cleanup: hapus file storage >24j setelah disetujui ──
   useEffect(() => {
@@ -291,6 +309,27 @@ export function FirebaseDataProvider({ children }) {
     set(ref(database, `${PEGAWAI_PASSWORDS_PATH}/${key}`), password);
   }, []);
 
+  const handleSaveActiveSession = useCallback((userId) => {
+    set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), {
+      sessionId,
+      loginAt: Date.now(),
+    });
+  }, [sessionId]);
+
+  const handleClearActiveSession = useCallback((userId) => {
+    if (!userId) return;
+    // Compare-and-delete: hanya hapus jika sessionId masih milik kita
+    const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${userId}`);
+    get(sessionRef).then((snapshot) => {
+      const val = snapshot.val();
+      if (val && val.sessionId === sessionId) {
+        set(sessionRef, null);
+      }
+    }).catch(() => {
+      // Abaikan error — user sudah logout
+    });
+  }, [sessionId]);
+
   const value = useMemo(
     () => ({
       attendance,
@@ -312,6 +351,8 @@ export function FirebaseDataProvider({ children }) {
       handlePengajuanVerifikasi,
       handleSaveFingerprint,
       handleSavePasswordOverride,
+      handleSaveActiveSession,
+      handleClearActiveSession,
     }),
     [
       attendance, apelSession, apelReason, apelReasonText, apelStatus, pengajuan, passwordOverrides,
@@ -320,6 +361,7 @@ export function FirebaseDataProvider({ children }) {
       handleApelSessionChange, handleApelReasonChange,
       handlePengajuanSubmit, handlePengajuanVerifikasi,
       handleSaveFingerprint, handleSavePasswordOverride,
+      handleSaveActiveSession, handleClearActiveSession,
     ]
   );
 

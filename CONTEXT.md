@@ -8,11 +8,11 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production) | `refactor-phase-1` (dev)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
-- **Sesi terakhir:** 2026-06-15 — Deploy ke Vercel + merge refactor-phase-1 → main
+- **Sesi terakhir:** 2026-06-15 — Fix password persistence lintas domain (Firebase sync)
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules terpasang
 - **Build:** `npm run build` ✅
-- **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
-- **Catatan:** Data masih di localStorage tiap browser — belum sync ke Firebase Realtime Database
+- **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase overrides password (path `pegawai_passwords`) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
+- **Catatan:** Data pegawai masih di localStorage tiap browser — belum sync ke Firebase Realtime Database (kecuali password override)
 
 ## Riwayat Sesi
 
@@ -36,16 +36,17 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `refactor-phase-1` | **DeveloperConsole → PanelKoreksi** — ganti PanelPengajuan modal dengan PanelKoreksi full-page (sama dengan Admin). Menu 'Pengajuan Status' → 'Koreksi Absensi'. Konsisten antara Admin & DeveloperConsole. Build ✅ |
 | 2026-06-15 | `refactor-phase-1` | **Dead code cleanup** — hapus PanelPengajuan.jsx (97 baris, 0 imports), update SIAPEL_README.md. Semua fungsi pengajuan sudah di PanelKoreksi. Build ✅ |
 | 2026-06-15 | `main` | **Deploy Production** — merge refactor-phase-1 → main (--no-ff), push GitHub, deploy Vercel (https://siapel.vercel.app), Firebase Rules terpasang, siap pilot |
+| 2026-06-15 | `main` | **Fix password sync lintas domain** — 3 fix inkonsistensi password (admin fallback 355454→123456, H.Rody 811800→123321, Sekretaris Dinas nama kosong). Fitur ganti password kini simpan ke Firebase RTDB (`pegawai_passwords/{key}`) agar berlaku di semua domain (localhost + production). LoginPage cek Firebase overrides dulu, lalu localStorage, lalu fallback. DeveloperConsole + PanelKelolaPegawai bridge via `handleSavePasswordOverride`. Build ✅ |
 
 ## Prioritas
 
-1. 🔴 **Dashboard Pegawai — Ganti Password** — form ganti password 6 digit di dashboard pegawai, sync ke Firebase Realtime Database (bukan cuma localStorage)
+1. 🔴 **Dashboard Pegawai — Ganti Password** — form ganti password 6 digit di dashboard pegawai (backend Firebase sync ✅ — tinggal bikin UI)
 2. 🔴 **Reset Device Binding (DeveloperConsole)** — tombol reset device fingerprint pegawai di panel/developer
 3. 🔴 **DashboardAdmin panel lazy loading** — PanelAbsensi dkk masih eager-loaded
 4. 🟡 **Paket 5 — Device Binding** — Firebase `/config/deviceBindingEnabled` toggle, kode siap tapi OFF sampai produksi masal
 5. 🟡 **Autentikasi Firebase** — Firebase Auth + role-based access (setelah login pilot stabil)
 6. 🟢 **DeveloperConsole fitur** ✅ — Menu Kelola Pegawai, Koreksi Absensi, Ganti Password admin/dev
-7. 🟢 **Ganti Password admin/dev (DeveloperConsole)** ✅ — 1 kolom + eye toggle, langsung ubah localStorage, integrasi login verified
+7. 🟢 **Ganti Password admin/dev (DeveloperConsole)** ✅ — Sekarang sync ke Firebase, berlaku lintas domain
 8. 🟢 **Unified Login Page** ✅ — 1 form untuk semua role, auto-detect, info kontak admin di bawah form
 
 ## Arsitektur Inti
@@ -57,7 +58,8 @@ Status proyek terkini. Update tiap selesai sesi.
 ## Source of Truth
 - **Data pegawai:** `src/data/pegawai_master.json` (302 org) — jangan pakai dummy
 - **Firebase:** attendance, apel session, apel reason, pengajuan — realtime via FirebaseDataContext, data mentah (tanpa merge)
-- **localStorage:** master pegawai persist — initial load prioritas dari localStorage, fallback ke JSON jika kosong
+- **Firebase /pegawai_passwords:** override password admin, developer, dan tiap pegawai — dibaca LoginPage sebagai prioritas pertama, lalu localStorage, lalu fallback JSON
+- **localStorage:** master pegawai persist + cache password admin/developer — initial load prioritas dari localStorage, fallback ke JSON jika kosong
 - **sessionStorage:** sesi user (role, halaman, pegawai terpilih)
 
 ## Data Flow Ringkas
@@ -69,6 +71,7 @@ Firebase /apel/session    → FirebaseDataContext → apelSession
 Firebase /apel/reason     → FirebaseDataContext → apelReason + apelReasonText
 Firebase /pengajuan       → FirebaseDataContext → pengajuan[]
 Firebase /fingerprints/{id} → handleSaveFingerprint (device fingerprint saat login)
+Firebase /pegawai_passwords/{key} → handleSavePasswordOverride (ganti password admin/dev/pegawai — lintas domain)
 Firebase Cloud Storage    → Upload file dokumen pengajuan (via PengajuanStatusForm)
 QR /qr/current            → useQrGenerator (Admin) → Pegawai scan (TTL 10 detik)
 ```
