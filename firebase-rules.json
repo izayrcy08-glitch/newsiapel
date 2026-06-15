@@ -84,6 +84,32 @@
         "createdAt": { ".validate": "newData.isNumber()" },
         "$other": { ".validate": false }
       }
+    },
+    "activeSessions": {
+      ".read": true,
+      ".write": true,
+      "$userId": {
+        "sessionId": { ".validate": "newData.isString()" },
+        "loginAt": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
+      }
+    },
+    "fingerprints": {
+      ".read": true,
+      ".write": true,
+      "$pegawaiId": {
+        "deviceId": { ".validate": "newData.isString()" },
+        "lastLogin": { ".validate": "newData.isNumber()" },
+        "deviceInfo": { ".validate": "newData.isString()" },
+        "$other": { ".validate": false }
+      }
+    },
+    "pegawai_passwords": {
+      ".read": true,
+      ".write": true,
+      "$key": {
+        ".validate": "newData.isString() && newData.val().length >= 4"
+      }
     }
   }
 }

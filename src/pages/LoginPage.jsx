@@ -191,7 +191,8 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
-        await handleSaveActiveSession("admin");
+        // Fire-and-forget — session protection tidak boleh blocking login
+        handleSaveActiveSession("admin").catch(() => {});
         setRole("admin");
         setPage("admin");
         return;
@@ -204,7 +205,7 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
-        await handleSaveActiveSession("developer");
+        handleSaveActiveSession("developer").catch(() => {});
         setRole("developer");
         setPage("developer");
         return;
@@ -231,10 +232,11 @@ const LoginPage = () => {
       }
 
       const userId = `pegawai_${pegawai.id}`;
-      await handleSaveActiveSession(userId);
+      handleSaveActiveSession(userId).catch(() => {});
 
       const fp = getDeviceFingerprint();
-      handleSaveFingerprint(pegawai.id, fp);
+      // Fire-and-forget — fingerprint penting tapi tidak blocking login
+      try { handleSaveFingerprint(pegawai.id, fp); } catch (_) {}
       handleUpdatePegawai(pegawai.id, { phoneFingerprint: fp });
 
       if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
