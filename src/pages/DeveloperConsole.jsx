@@ -1,12 +1,45 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import { Card } from "../components/Card";
 import { BackButton } from "../components/BackButton";
+import { Eye, EyeOff } from "lucide-react";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { DashboardPegawai } from "./DashboardPegawai";
 import { DashboardPimpinan } from "./DashboardPimpinan";
 import { DashboardAdmin } from "./DashboardAdmin";
 import { getUnitLabel } from "../bersama/util_unit_dan_scope";
+import PanelKelolaPegawai from "../panels/PanelKelolaPegawai";
+import PanelKoreksi from "../panels/PanelKoreksi";
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════════════════════
+
+const PASSWORD_STORAGE = {
+  admin: { key: "siapel.adminPassword", default: "355454" },
+  developer: { key: "siapel.developerPassword", default: "723254" },
+};
+
+const getStoredPassword = (type) => {
+  const cfg = PASSWORD_STORAGE[type];
+  if (!cfg) return "";
+  try {
+    return window.localStorage.getItem(cfg.key) || cfg.default;
+  } catch {
+    return cfg.default;
+  }
+};
+
+const savePassword = (type, newPw) => {
+  const cfg = PASSWORD_STORAGE[type];
+  if (!cfg) return false;
+  try {
+    window.localStorage.setItem(cfg.key, newPw);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 // ══════════════════════════════════════════════════════════════════════════════
 // STATIC sub-components (defined OUTSIDE to prevent React remount on re-render)
@@ -32,7 +65,6 @@ const SearchInput = ({ value, onChange, placeholder }) => (
 function searchPegawai(people, query) {
   const q = (query || "").toLowerCase().trim();
   if (!q) return [];
-
   const matched = people.filter((p) => {
     const haystack = [p.nama, p.nip, p.jabatan, p.unit, p.role]
       .filter(Boolean)
@@ -40,8 +72,6 @@ function searchPegawai(people, query) {
       .toLowerCase();
     return haystack.includes(q);
   });
-
-  // Sort: prefix matches on nama first, then the rest
   return matched.sort((a, b) => {
     const aName = (a.nama || "").toLowerCase();
     const bName = (b.nama || "").toLowerCase();
@@ -50,6 +80,134 @@ function searchPegawai(people, query) {
     return aPrefix - bPrefix;
   });
 }
+
+// ── Inner password form — 1 field: tampilkan password saat ini, ubah langsung ──
+const PasswordForm = ({ type }) => {
+  const [password, setPassword] = useState(getStoredPassword(type));
+  const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+
+  const label = type === "admin" ? "Admin" : "Developer";
+  const emoji = type === "admin" ? "🛡️" : "🔧";
+
+  const handleSave = () => {
+    setMessage("");
+    setIsError(false);
+
+    if (!/^\d{6}$/.test(password)) {
+      setMessage("Password harus 6 digit angka");
+      setIsError(true);
+      return;
+    }
+
+    const ok = savePassword(type, password);
+    if (!ok) {
+      setMessage("Gagal menyimpan — coba lagi");
+      setIsError(true);
+      return;
+    }
+
+    setMessage("✓ Password berhasil diubah");
+    setIsError(false);
+  };
+
+  return (
+    <Card className="p-4 border-slate-700/60 bg-slate-900/80">
+      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-800">
+        <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-lg">
+          {emoji}
+        </div>
+        <div>
+          <div className="text-white text-sm font-bold">Akun {label}</div>
+          <div className="text-slate-500 text-[11px]">
+            Username: <span className="font-mono text-slate-400">{type}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            Password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              inputMode="numeric"
+              value={password}
+              onFocus={(e) => e.target.select()}
+              onChange={(e) => { setPassword(e.target.value.replace(/\D/g, "")); setMessage(""); }}
+              maxLength={6}
+              className="w-full rounded-xl border border-slate-700/60 bg-slate-900/80 px-3 py-2.5 pr-11 text-sm text-white text-center tracking-[0.3em] placeholder-slate-600 focus:border-violet-500/60 focus:outline-none"
+              placeholder="password saat ini"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        {message && (
+          <div className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs ${
+            isError
+              ? "bg-red-500/10 border border-red-500/20 text-red-400"
+              : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+          }`}>
+            <span>{message}</span>
+          </div>
+        )}
+
+        <button
+          onClick={handleSave}
+          disabled={!/^\d{6}$/.test(password)}
+          className="w-full rounded-xl bg-violet-500/20 border border-violet-500/30 py-3 text-sm font-semibold text-violet-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-violet-500/30 transition-colors"
+        >
+          Simpan Password
+        </button>
+      </div>
+    </Card>
+  );
+};
+
+// ── Ganti Password Page (with Admin / Developer tabs) ──
+const PasswordChangeForm = ({ onBack }) => {
+  const [tab, setTab] = useState("admin");
+
+  return (
+    <div className="min-h-screen bg-[#080c14] px-4 py-6">
+      <div className="relative z-10 max-w-sm mx-auto">
+        <BackButton onClick={onBack} />
+        <div className="mb-4">
+          <h2 className="text-xl font-black text-white">Ganti Password</h2>
+          <p className="mt-1 text-slate-500 text-xs">Ubah password akun admin atau developer — 6 digit angka.</p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex rounded-xl border border-slate-700/60 bg-slate-900/60 p-0.5 mb-4">
+          <button onClick={() => setTab("admin")}
+            className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+              tab === "admin" ? "bg-violet-500/20 text-violet-300 shadow-sm" : "text-slate-400 hover:text-slate-200"
+            }`}>
+            🛡️ Admin
+          </button>
+          <button onClick={() => setTab("developer")}
+            className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
+              tab === "developer" ? "bg-violet-500/20 text-violet-300 shadow-sm" : "text-slate-400 hover:text-slate-200"
+            }`}>
+            🔧 Developer
+          </button>
+        </div>
+
+        <PasswordForm key={tab} type={tab} />
+      </div>
+    </div>
+  );
+};
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DEVELOPER CONSOLE
@@ -78,6 +236,7 @@ const DeveloperConsole = ({
   const [search, setSearch] = useState("");
   const [viewAsRole, setViewAsRole] = useState(null);
   const [viewAsPersonId, setViewAsPersonId] = useState("");
+  const [activeMenu, setActiveMenu] = useState(null);
 
   const summaryCards = [
     { label: "Total Data", value: masterPegawaiData.length, tone: "text-white" },
@@ -123,6 +282,42 @@ const DeveloperConsole = ({
     : null;
 
   const handleSearchChange = (e) => setSearch(e.target.value);
+
+  // ── Panel routing (full-page panels) ──
+  if (activeMenu === "kelola") {
+    return (
+      <PanelKelolaPegawai
+        people={masterPegawaiData}
+        readOnly={false}
+        onAddPegawai={onAddPegawai}
+        onUpdatePegawai={onUpdatePegawai}
+        onDeletePegawai={onDeletePegawai}
+        onBack={() => setActiveMenu(null)}
+      />
+    );
+  }
+
+  if (activeMenu === "koreksi") {
+    return (
+      <PanelKoreksi
+        people={masterPegawaiData}
+        attendance={attendance}
+        onKoreksi={onKoreksi}
+        onBack={() => setActiveMenu(null)}
+        pengajuan={pengajuan}
+        onPengajuanVerifikasi={onPengajuanVerifikasi}
+        readOnly={false}
+      />
+    );
+  }
+
+  if (activeMenu === "gantiPassword") {
+    return (
+      <PasswordChangeForm
+        onBack={() => setActiveMenu(null)}
+      />
+    );
+  }
 
   // ══════════════════════════════════════════════════════════════════════════
   // VIEW AS MODE
@@ -288,6 +483,27 @@ const DeveloperConsole = ({
           <p className="mt-1 text-slate-500 text-xs">Akun teknis internal untuk simulasi, audit, dan recovery.</p>
         </div>
 
+        {/* ════════════════════════════════════════════════════ */}
+        {/* FEATURE MENU — kelola pegawai, pengajuan, password  */}
+        {/* ════════════════════════════════════════════════════ */}
+        <div className="grid grid-cols-3 gap-3 mb-5">
+          {[
+            { id: "kelola", label: "Kelola Pegawai", icon: "👥", desc: "CRUD data master pegawai", color: "from-blue-500/20 to-indigo-500/10", border: "hover:border-blue-500/50" },
+            { id: "koreksi", label: "Koreksi Absensi", icon: "✏️", desc: "Koreksi manual & verifikasi pengajuan", color: "from-amber-500/20 to-yellow-500/10", border: "hover:border-amber-500/50" },
+            { id: "gantiPassword", label: "Ganti Password", icon: "🔑", desc: "Ubah password admin/dev", color: "from-violet-500/20 to-purple-500/10", border: "hover:border-violet-500/50" },
+          ].map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setActiveMenu(m.id)}
+              className={`text-left p-3 rounded-xl bg-gradient-to-br ${m.color} border border-slate-700/60 ${m.border} transition-all duration-150 active:scale-[0.97]`}
+            >
+              <div className="text-2xl mb-1">{m.icon}</div>
+              <div className="text-white text-xs font-semibold leading-tight">{m.label}</div>
+              <div className="text-slate-500 text-[9px] mt-1 leading-tight">{m.desc}</div>
+            </button>
+          ))}
+        </div>
+
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-2 mb-3">
           {summaryCards.map((item) => (
@@ -422,6 +638,7 @@ const DeveloperConsole = ({
           </div>
         </Card>
       </div>
+
     </div>
   );
 };
