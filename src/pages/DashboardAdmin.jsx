@@ -13,7 +13,6 @@ import PanelAbsensi from "../panels/PanelAbsensi";
 import PanelKoreksi from "../panels/PanelKoreksi";
 import PanelLaporan from "../panels/PanelLaporan";
 import PanelKelolaPegawai from "../panels/PanelKelolaPegawai";
-import PanelPengajuan from "../panels/PanelPengajuan";
 import PanelApel from "../panels/PanelApel";
 import PanelQR from "../panels/PanelQR";
 
@@ -61,7 +60,7 @@ const DashboardAdmin = ({
 
   // ── Panel routing ──
   if (activeMenu === "absensi") return <PanelAbsensi people={people} attendance={attendance} now={now} onBack={() => setActiveMenu(null)} />;
-  if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} />;
+  if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} pengajuan={pengajuan} onPengajuanVerifikasi={onPengajuanVerifikasi} readOnly={readOnly} />;
   if (activeMenu === "laporan") return <PanelLaporan people={people} attendance={attendance} stats={stats} now={now} onBack={() => setActiveMenu(null)} />;
   if (activeMenu === "kelola") return <PanelKelolaPegawai people={people} readOnly={readOnly} onAddPegawai={onAddPegawai} onUpdatePegawai={onUpdatePegawai} onDeletePegawai={onDeletePegawai} onBack={() => setActiveMenu(null)} />;
 
@@ -131,7 +130,6 @@ const DashboardAdmin = ({
             { id: "laporan", label: "Laporan Harian", icon: "📊", color: "from-emerald-500/20 to-teal-500/10", border: "hover:border-emerald-500/50" },
             { id: "kelola", label: "Kelola Pegawai", icon: "👥", color: "from-blue-500/20 to-indigo-500/10", border: "hover:border-blue-500/50" },
             { id: "koreksi", label: "Koreksi Absensi", icon: "✏️", color: "from-amber-500/20 to-yellow-500/10", border: "hover:border-amber-500/50" },
-            { id: "pengajuan", label: "Pengajuan Status", icon: "📥", color: "from-orange-500/20 to-red-500/10", border: "hover:border-orange-500/50" },
             { id: "apel", label: "Pengaturan Apel", icon: "⏱️", color: "from-violet-500/20 to-purple-500/10", border: "hover:border-violet-500/50" },
           ].map(m => (
             <button key={m.id} onClick={() => setActiveMenu(m.id)}
@@ -142,11 +140,6 @@ const DashboardAdmin = ({
           ))}
         </div>
       </div>
-
-      {/* Pengajuan Modal */}
-      {activeMenu === "pengajuan" && (
-        <PanelPengajuan pengajuan={pengajuan} readOnly={readOnly} onPengajuanVerifikasi={onPengajuanVerifikasi} onClose={() => setActiveMenu(null)} />
-      )}
 
       {/* Apel Modal */}
       {activeMenu === "apel" && (
