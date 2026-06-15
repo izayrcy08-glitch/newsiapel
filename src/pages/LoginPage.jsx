@@ -203,7 +203,7 @@ const LoginPage = () => {
           return;
         }
         // Simpan session ke Firebase — await with timeout 3 detik
-        await withTimeout(handleSaveActiveSession("admin"), 3000).catch(() => {});
+        await withTimeout(handleSaveActiveSession("admin"), 3000).catch(err => console.error("Session admin gagal:", err));
         setRole("admin");
         setPage("admin");
         return;
@@ -216,7 +216,7 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
-        await withTimeout(handleSaveActiveSession("developer"), 3000).catch(() => {});
+        await withTimeout(handleSaveActiveSession("developer"), 3000).catch(err => console.error("Session developer gagal:", err));
         setRole("developer");
         setPage("developer");
         return;
@@ -243,7 +243,7 @@ const LoginPage = () => {
       }
 
       const userId = `pegawai_${pegawai.id}`;
-      await withTimeout(handleSaveActiveSession(userId), 3000).catch(() => {});
+      await withTimeout(handleSaveActiveSession(userId), 3000).catch(err => console.error("Session pegawai gagal:", err));
 
       const fp = getDeviceFingerprint();
       handleSaveFingerprint(pegawai.id, fp);

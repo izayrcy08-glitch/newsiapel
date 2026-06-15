@@ -3,8 +3,8 @@
     "attendance": {
       ".indexOn": ["status"],
       "today": {
-        ".read": true,
-        ".write": true,
+        ".read": "auth !== null",
+        ".write": "auth !== null",
         "$pegawaiId": {
           ".validate": "newData.hasChildren(['status']) && newData.child('status').isString()",
           "status": {
@@ -25,13 +25,13 @@
     },
     "apel": {
       "session": {
-        ".read": true,
-        ".write": true,
+        ".read": "auth !== null",
+        ".write": "auth !== null",
         ".validate": "newData.isString() && (newData.val() === 'before' || newData.val() === 'ongoing' || newData.val() === 'ended' || newData.val() === 'ditiadakan')"
       },
       "reason": {
-        ".read": true,
-        ".write": true,
+        ".read": "auth !== null",
+        ".write": "auth !== null",
         ".validate": "newData.isString() || newData.hasChildren(['id', 'text'])"
       },
       "$other": {
@@ -41,8 +41,8 @@
     },
     "qr": {
       "current": {
-        ".read": true,
-        ".write": true,
+        ".read": "auth !== null",
+        ".write": "auth !== null",
         ".validate": "newData.hasChildren(['token', 'issuedAt', 'expiresAt'])",
         "token": {
           ".validate": "newData.isString() && newData.val().length === 6"
@@ -63,8 +63,8 @@
       }
     },
     "pengajuan": {
-      ".read": true,
-      ".write": true,
+      ".read": "auth !== null",
+      ".write": "auth !== null",
       ".indexOn": ["pegawaiId", "statusVerifikasi", "createdAt"],
       "$pengajuanId": {
         ".validate": "newData.hasChildren(['pegawaiId', 'nama', 'statusBaru', 'keterangan', 'statusVerifikasi', 'createdAt'])",
@@ -86,8 +86,8 @@
       }
     },
     "activeSessions": {
-      ".read": true,
-      ".write": true,
+      ".read": "auth !== null",
+      ".write": "auth !== null",
       "$userId": {
         "sessionId": { ".validate": "newData.isString()" },
         "loginAt": { ".validate": "newData.isNumber()" },
@@ -95,8 +95,8 @@
       }
     },
     "fingerprints": {
-      ".read": true,
-      ".write": true,
+      ".read": "auth !== null",
+      ".write": "auth !== null",
       "$pegawaiId": {
         "deviceId": { ".validate": "newData.isString()" },
         "lastLogin": { ".validate": "newData.isNumber()" },
@@ -105,8 +105,8 @@
       }
     },
     "pegawai_passwords": {
-      ".read": true,
-      ".write": true,
+      ".read": "auth !== null",
+      ".write": "auth !== null",
       "$key": {
         ".validate": "newData.isString() && newData.val().length >= 4"
       }

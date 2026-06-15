@@ -123,7 +123,7 @@ export function FirebaseDataProvider({ children }) {
           // Sync admin password default ke Firebase sekali saat pertama load
           // supaya tidak ada mismatch antara kode dan Firebase override
           if (!val?.admin) {
-            set(ref(database, `${PEGAWAI_PASSWORDS_PATH}/admin`), "123455").catch(() => {});
+            set(ref(database, `${PEGAWAI_PASSWORDS_PATH}/admin`), "123455").catch(err => console.error("Gagal sync admin password:", err));
           }
         }
       },
@@ -179,7 +179,7 @@ export function FirebaseDataProvider({ children }) {
             update(ref(database, `${PENGAJUAN_PATH}/${item.id}`), {
               dokumenPath: "",
               dokumen: "",
-            }).catch(() => {});
+            }).catch(err => console.error("Gagal hapus referensi dokumen (1):", err));
           })
           .catch((err) => {
             if (err.code === "storage/object-not-found") {
@@ -187,7 +187,7 @@ export function FirebaseDataProvider({ children }) {
               update(ref(database, `${PENGAJUAN_PATH}/${item.id}`), {
                 dokumenPath: "",
                 dokumen: "",
-              }).catch(() => {});
+              }).catch(err2 => console.error("Gagal hapus referensi dokumen (2):", err2));
             } else {
               console.error("Gagal hapus file storage:", item.dokumenPath, err);
             }

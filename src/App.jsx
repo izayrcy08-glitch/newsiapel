@@ -3,6 +3,7 @@ import { SessionProvider, useSession } from "./contexts/SessionContext";
 import { FirebaseDataProvider, useFirebaseData } from "./contexts/FirebaseDataContext";
 import { LoginPage } from "./pages/LoginPage";
 import { LoadingSpinner } from "./components/LoadingSpinner";
+import { AuthInit } from "./components/AuthInit";
 
 const DashboardPegawai = lazy(() => import("./pages/DashboardPegawai"));
 const DashboardPimpinan = lazy(() => import("./pages/DashboardPimpinan"));
@@ -136,12 +137,14 @@ export default function App() {
   } catch (_) {}
 
   return (
-    <SessionProvider>
-      <FirebaseDataProvider>
-        <div style={{ fontFamily: "'DM Sans', 'Inter', system-ui, sans-serif" }}>
-          <AppRouter />
-        </div>
-      </FirebaseDataProvider>
-    </SessionProvider>
+    <AuthInit>
+      <SessionProvider>
+        <FirebaseDataProvider>
+          <div style={{ fontFamily: "'DM Sans', 'Inter', system-ui, sans-serif" }}>
+            <AppRouter />
+          </div>
+        </FirebaseDataProvider>
+      </SessionProvider>
+    </AuthInit>
   );
 }
