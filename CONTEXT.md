@@ -6,12 +6,11 @@ Status proyek terkini. Update tiap selesai sesi.
 
 ## Status Terkini
 - **Branch:** `refactor-phase-1`
-- **Sesi terakhir:** 2026-06-15 — Fix slowdown: Storage SDK lazy load + hapus firebaseReady blocking screen
-- **Firebase:** Live — Realtime Database + Storage lazy load (Storage SDK cuma di-download saat upload file, bukan di startup)
+- **Sesi terakhir:** 2026-06-15 — Fix persistensi master pegawai admin
+- **Firebase:** Live — Realtime Database + Storage lazy load
 - **Build:** `npm run build` ✅
-- **Firebase Storage:** Dipisah dari `firebase.js` → `src/utils/storage-helper.js` (dynamic import). Bundle awal turun ~33 kB (438 kB vs 471 kB)
-- **Loading screen:** Dihapus. Halaman langsung render tanpa nunggu response Firebase pertama (data masuk asinkron via onValue)
-- **Slowdown investigation:** Root cause bukan re-render/useClock — tapi Storage SDK di critical path + firebaseReady blocking
+- **Persistensi data pegawai:** Admin edits sekarang permanen via localStorage — init load prioritaskan cache lokal, fallback ke JSON
+- **Catatan:** Data masih di localStorage tiap browser — belum sync ke Firebase Realtime Database
 
 ## Riwayat Sesi
 
@@ -24,6 +23,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `refactor-phase-1` | **Fix akar data placeholder:** hapus mergeAttendanceWithPeople (biarkan Firebase mentah), cabang data kosong di calcAttendanceStats return 0, guard PerhatianList, tombol Reset Attendance di DeveloperConsole, hapus state_absensi.js |
 | 2026-06-15 | `refactor-phase-1` | **DeveloperConsole cleanup:** hapus Preview Data section, pindah search ke atas View As, dropdown overlay hasil pencarian, sorting prefix-first, fix SearchInput remount bug (pindah luar komponen biar tidak kehilangan fokus tiap render) |
 | 2026-06-15 | `refactor-phase-1` | **Fix slowdown + storage lazy:** Pisah Firebase Storage SDK ke `storage-helper.js` (dynamic import — cuma di-load saat upload), hapus `firebaseReady` blocking screen agar halaman render instan. Bundle awal turun 33 kB. |
+| 2026-06-15 | `refactor-phase-1` | **Fix persistensi master pegawai:** `loadMasterPegawaiData()` kini baca dari localStorage dulu sebelum fallback ke `pegawai_master.json`. Perubahan data pegawai (bidang, unit, role) dari admin/kelola pegawai tidak hilang setelah refresh. |
 
 ## Prioritas
 
@@ -41,7 +41,7 @@ Status proyek terkini. Update tiap selesai sesi.
 ## Source of Truth
 - **Data pegawai:** `src/data/pegawai_master.json` (302 org) — jangan pakai dummy
 - **Firebase:** attendance, apel session, apel reason, pengajuan — realtime via FirebaseDataContext, data mentah (tanpa merge)
-- **localStorage:** admin edits saja — initial load selalu dari JSON
+- **localStorage:** master pegawai persist — initial load prioritas dari localStorage, fallback ke JSON jika kosong
 - **sessionStorage:** sesi user (role, halaman, pegawai terpilih)
 
 ## Data Flow Ringkas
