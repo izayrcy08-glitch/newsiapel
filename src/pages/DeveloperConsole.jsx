@@ -16,7 +16,7 @@ import PanelKoreksi from "../panels/PanelKoreksi";
 // ══════════════════════════════════════════════════════════════════════════════
 
 const PASSWORD_STORAGE = {
-  admin: { key: "siapel.adminPassword", default: "355454" },
+  admin: { key: "siapel.adminPassword", default: "123455" },
   developer: { key: "siapel.developerPassword", default: "723254" },
 };
 

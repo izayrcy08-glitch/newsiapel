@@ -20,8 +20,8 @@ const withTimeout = (promise, ms) =>
 const getAdminCred = (overrides = {}) => {
   try {
     const stored = window.localStorage.getItem("siapel.adminPassword");
-    return { username: "admin", password: overrides.admin || stored || "123456" };
-  } catch { return { username: "admin", password: overrides.admin || "123456" }; }
+    return { username: "admin", password: overrides.admin || stored || "123455" };
+  } catch { return { username: "admin", password: overrides.admin || "123455" }; }
 };
 const getDeveloperCred = (overrides = {}) => {
   try {
@@ -154,7 +154,7 @@ const LoginPage = () => {
     handleUpdatePegawai,
     handlePimpinanSelect,
   } = useSession();
-  const { handleSaveFingerprint, passwordOverrides, handleSaveActiveSession } = useFirebaseData();
+  const { handleSaveFingerprint, passwordOverrides, passwordOverridesLoaded, handleSaveActiveSession } = useFirebaseData();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -186,6 +186,13 @@ const LoginPage = () => {
     if (!username.trim()) { setError("Masukkan username"); return; }
     if (!password.trim()) { setError("Masukkan password"); return; }
     setLoading(true);
+
+    // Guard: tunggu password Firebase termuat sebelum validasi login
+    if (!passwordOverridesLoaded) {
+      setError("Memuat data... Silakan coba lagi.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const adminCred = getAdminCred(passwordOverrides);

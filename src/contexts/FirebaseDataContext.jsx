@@ -18,7 +18,7 @@ import { getApelStatus } from "../bersama/util_waktu_dan_apel";
 const FirebaseDataContext = createContext(null);
 
 export function FirebaseDataProvider({ children }) {
-  const { page, role, activePegawai, selectedPimpinan, goBack } = useSession();
+  const { page, role, activePegawai, selectedPimpinan, goBack, masterPegawaiData } = useSession();
 
   // Session ID unik untuk browser ini — dipakai untuk deteksi login ganda
   const sessionIdRef = useRef(crypto.randomUUID());
@@ -29,6 +29,7 @@ export function FirebaseDataProvider({ children }) {
   const [apelReasonText, setApelReasonText] = useState("");
   const [pengajuan, setPengajuan] = useState([]);
   const [passwordOverrides, setPasswordOverrides] = useState({});
+  const [passwordOverridesLoaded, setPasswordOverridesLoaded] = useState(false);
   const [firebaseReady, setFirebaseReady] = useState(false);
   const [firebaseError, setFirebaseError] = useState(null);
 
@@ -117,6 +118,14 @@ export function FirebaseDataProvider({ children }) {
       (snapshot) => {
         const val = snapshot.val();
         setPasswordOverrides(val || {});
+        if (!passwordOverridesLoaded) {
+          setPasswordOverridesLoaded(true);
+          // Sync admin password default ke Firebase sekali saat pertama load
+          // supaya tidak ada mismatch antara kode dan Firebase override
+          if (!val?.admin) {
+            set(ref(database, `${PEGAWAI_PASSWORDS_PATH}/admin`), "123455").catch(() => {});
+          }
+        }
       },
       (error) => {
         console.error("Gagal memuat password overrides:", error);
@@ -343,6 +352,7 @@ export function FirebaseDataProvider({ children }) {
       apelStatus,
       pengajuan,
       passwordOverrides,
+      passwordOverridesLoaded,
       firebaseReady,
       firebaseError,
       handleScan,
@@ -360,6 +370,7 @@ export function FirebaseDataProvider({ children }) {
     }),
     [
       attendance, apelSession, apelReason, apelReasonText, apelStatus, pengajuan, passwordOverrides,
+      passwordOverridesLoaded,
       firebaseReady, firebaseError,
       handleScan, handleScanSimulate, handleReset, handleKoreksi,
       handleApelSessionChange, handleApelReasonChange,

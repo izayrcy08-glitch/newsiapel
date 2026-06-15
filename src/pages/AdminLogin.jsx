@@ -7,7 +7,7 @@ import { BackButton } from "../components/BackButton";
 // Username: admin | Password: 355454
 // ══════════════════════════════════════════════════════════════════════════════
 const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "355454";
+const ADMIN_PASSWORD = "123455";
 
 const AdminLogin = () => {
   const { setPage, goBack } = useSession();
