@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vite *)"
+    ]
+  },
+  "systemInstructions": "SETIAP KALI SESI DIMULAI: 1) Baca CONTEXT.md di root proyek 2) Baca CLAUDE.md 3) Gunakan keduanya sebagai konteks utama. JANGAN lanjut before baca CONTEXT.md dulu. Setelah selesai, update CONTEXT.md dengan status terbaru."
+}
