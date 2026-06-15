@@ -6,10 +6,11 @@ Status proyek terkini. Update tiap selesai sesi.
 
 ## Status Terkini
 - **Branch:** `refactor-phase-1`
-- **Sesi terakhir:** 2026-06-15 — Finalisasi CONTEXT.md + CLAUDE.md ramping + settings.json auto-baca konteks
-- **Firebase:** Live — realtime via `onValue`
+- **Sesi terakhir:** 2026-06-15 — Feature audit: hapus 9 placeholder + legacy JSON, implementasi Firebase Storage upload, dead code cleanup
+- **Firebase:** Live — Realtime Database + Storage (upload file pengajuan)
 - **Build:** `npm run build` ✅
-- **Role:** /pimpinan, /admin, /pegawai?nip=xxx (static di URL, Auth belum ada)
+- **Developer Console:** View As (4 role) + Summary Cards + Preview Data — tanpa placeholder/dead items
+- **Legacy:** pegawai_legacy.json & Data Source Toggle dihapus
 
 ## Riwayat Sesi
 
@@ -18,6 +19,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-13 | `refactor-phase-1` | Restruktur Admin, Pengajuan end-to-end, Fix stat "Belum Hadir"/"Tanpa Keterangan", Code splitting, Dead code cleanup |
 | 2026-06-15 | `refactor-phase-1` | Arsitektur baru: 6 custom hooks, SessionContext + FirebaseDataContext, App.jsx 438→120 baris, DashboardAdmin 961→130 baris (7 panel), ErrorBoundary, usePegawaiSearch di semua page |
 | 2026-06-15 | `refactor-phase-1` | Final: CONTEXT.md sebagai status dinamis, CLAUDE.md fokus aturan, settings.json auto-baca CONTEXT tiap sesi |
+| 2026-06-15 | `refactor-phase-1` | Feature audit: hapus 9 placeholder DeveloperConsole + Data Source Toggle + legacy JSON, implementasi Firebase Storage upload file, hapus DEMO_LAST_MONTH_DISCIPLINE |
 
 ## Prioritas
 
@@ -45,6 +47,7 @@ Firebase /attendance/today → FirebaseDataContext → attendance{}
 Firebase /apel/session    → FirebaseDataContext → apelSession
 Firebase /apel/reason     → FirebaseDataContext → apelReason + apelReasonText
 Firebase /pengajuan       → FirebaseDataContext → pengajuan[]
+Firebase Cloud Storage    → Upload file dokumen pengajuan (via PengajuanStatusForm)
 QR /qr/current            → useQrGenerator (Admin) → Pegawai scan (TTL 10 detik)
 ```
 

@@ -1,6 +1,6 @@
 [
   {
-    "id": 2,
+    "id": 1,
     "nama": "H. Rody, ST. MT",
     "nip": "196710151993031008",
     "jabatan": "Kadis PUPR",
@@ -10,7 +10,7 @@
     "password": ""
   },
   {
-    "id": 3,
+    "id": 2,
     "nama": "ALHAMDANI UMAR ST, M.S.",
     "nip": "198003082005011010",
     "jabatan": "JF Surveyor Pemetaan Madya",
@@ -20,7 +20,7 @@
     "password": ""
   },
   {
-    "id": 4,
+    "id": 3,
     "nama": "PATRIA S.T., M.S.",
     "nip": "197307202005011007",
     "jabatan": "Kepala Bidang Tata Ruang",
@@ -30,7 +30,7 @@
     "password": ""
   },
   {
-    "id": 5,
+    "id": 4,
     "nama": "IGNASIUS S.T",
     "nip": "197610072007011007",
     "jabatan": "Kepala Bidang Cipta Karya",
@@ -40,7 +40,7 @@
     "password": ""
   },
   {
-    "id": 7,
+    "id": 5,
     "nama": "MUJIBURRAHMAN S.P",
     "nip": "197402042007011012",
     "jabatan": "JFT Teknik Penyehatan Lingkungan",
@@ -50,7 +50,7 @@
     "password": ""
   },
   {
-    "id": 8,
+    "id": 6,
     "nama": "MARIA HELMIDA ST",
     "nip": "197304092006042015",
     "jabatan": "Staff Pelaksana",
@@ -60,7 +60,7 @@
     "password": ""
   },
   {
-    "id": 9,
+    "id": 7,
     "nama": "ERIANTONI IWANATA S HUT",
     "nip": "198204252006041008",
     "jabatan": "JFT Penataan Ruang",
@@ -70,7 +70,7 @@
     "password": ""
   },
   {
-    "id": 10,
+    "id": 8,
     "nama": "SEKRENING S.ST",
     "nip": "197007091994031004",
     "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
@@ -80,7 +80,7 @@
     "password": ""
   },
   {
-    "id": 11,
+    "id": 9,
     "nama": "WARNO SST",
     "nip": "197411161994031003",
     "jabatan": "JFT Teknik Pengairan",
@@ -90,7 +90,7 @@
     "password": ""
   },
   {
-    "id": 12,
+    "id": 10,
     "nama": "SUTIKNO S.Hut",
     "nip": "197408071994031005",
     "jabatan": "JFT Penataan Ruang",
@@ -100,7 +100,7 @@
     "password": ""
   },
   {
-    "id": 13,
+    "id": 11,
     "nama": "FORTIS TAUFIK SELNITI BUDI S.ST",
     "nip": "197306191994031008",
     "jabatan": "Staff Pelaksana",
@@ -110,7 +110,7 @@
     "password": ""
   },
   {
-    "id": 14,
+    "id": 12,
     "nama": "SUBIYANTORO ST.,M.T. /",
     "nip": "198107312008041002",
     "jabatan": "Kepala Bidang Sumber Daya Air",
@@ -120,7 +120,7 @@
     "password": ""
   },
   {
-    "id": 15,
+    "id": 13,
     "nama": "SUHERMAN ST",
     "nip": "197411152008011016",
     "jabatan": "JFT Teknik Jalan dan Jembatan",
@@ -130,7 +130,7 @@
     "password": ""
   },
   {
-    "id": 16,
+    "id": 14,
     "nama": "ARSETO ADY NUGROHO S.T",
     "nip": "198112182008041001",
     "jabatan": "Staff Pelaksana",
@@ -140,7 +140,7 @@
     "password": ""
   },
   {
-    "id": 17,
+    "id": 15,
     "nama": "RONY SURYADI ST",
     "nip": "197605122009011003",
     "jabatan": "JFT Penataan Ruang",
@@ -150,7 +150,7 @@
     "password": ""
   },
   {
-    "id": 18,
+    "id": 16,
     "nama": "ROY LANDI WOPA HOSANG S.T",
     "nip": "198104032010011013",
     "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
@@ -160,7 +160,7 @@
     "password": ""
   },
   {
-    "id": 20,
+    "id": 17,
     "nama": "MIRA APRIYANTINADA S.T",
     "nip": "198004272011012008",
     "jabatan": "Kasubbag Tata Usaha, Data dan Informasi Publik",
@@ -170,7 +170,7 @@
     "password": ""
   },
   {
-    "id": 21,
+    "id": 18,
     "nama": "RAHAYU DWI MUMPUNI S.T",
     "nip": "198110192011012005",
     "jabatan": "Staff Pelaksana",
@@ -180,7 +180,7 @@
     "password": ""
   },
   {
-    "id": 22,
+    "id": 19,
     "nama": "ROBY CHAHYADI ST",
     "nip": "197911102010011010",
     "jabatan": "Staff Pelaksana",
@@ -190,7 +190,7 @@
     "password": ""
   },
   {
-    "id": 24,
+    "id": 20,
     "nama": "ALFIAN NUR A.Md",
     "nip": "197505171998031005",
     "jabatan": "JFT Teknik Tata Bangunan Dan Perumahan",
@@ -200,7 +200,7 @@
     "password": ""
   },
   {
-    "id": 25,
+    "id": 21,
     "nama": "FETRIS SUGIAN ST",
     "nip": "198007192014031001",
     "jabatan": "Staff Pelaksana",
@@ -210,7 +210,7 @@
     "password": ""
   },
   {
-    "id": 26,
+    "id": 22,
     "nama": "MUHAMMAD EKSAN S.E",
     "nip": "197207212007011015",
     "jabatan": "Staff Pelaksana",
@@ -220,7 +220,7 @@
     "password": ""
   },
   {
-    "id": 27,
+    "id": 23,
     "nama": "TRI UTAMI HANDAYANI,SE",
     "nip": "199103212015032003",
     "jabatan": "Staff Pelaksana",
@@ -230,7 +230,7 @@
     "password": ""
   },
   {
-    "id": 29,
+    "id": 24,
     "nama": "ASMUNI",
     "nip": "197208021993031009",
     "jabatan": "JFT Teknik Penyehatan Lingkungan",
@@ -240,7 +240,7 @@
     "password": ""
   },
   {
-    "id": 30,
+    "id": 25,
     "nama": "IMBAI",
     "nip": "196909121997031006",
     "jabatan": "Staff Pelaksana",
@@ -250,7 +250,7 @@
     "password": ""
   },
   {
-    "id": 31,
+    "id": 26,
     "nama": "ABDUL WILDAN",
     "nip": "197010201998031003",
     "jabatan": "Staff Pelaksana",
@@ -260,7 +260,7 @@
     "password": ""
   },
   {
-    "id": 32,
+    "id": 27,
     "nama": "AGUS PATRIADI S.A.P.",
     "nip": "197708192006041006",
     "jabatan": "Staff Pelaksana",
@@ -270,7 +270,7 @@
     "password": ""
   },
   {
-    "id": 34,
+    "id": 28,
     "nama": "IBNU WARDANI S.E",
     "nip": "197910092008011022",
     "jabatan": "Staff Pelaksana",
@@ -280,7 +280,7 @@
     "password": ""
   },
   {
-    "id": 35,
+    "id": 29,
     "nama": "KUSHARYADI S A.Md",
     "nip": "198101302011011004",
     "jabatan": "Staff Pelaksana",
@@ -290,7 +290,7 @@
     "password": ""
   },
   {
-    "id": 36,
+    "id": 30,
     "nama": "NUR ARIFIN S.E",
     "nip": "198202082009011004",
     "jabatan": "Staff Pelaksana",
@@ -300,7 +300,7 @@
     "password": ""
   },
   {
-    "id": 37,
+    "id": 31,
     "nama": "HADRIANOOR S.T.",
     "nip": "198001112007011010",
     "jabatan": "Staff Pelaksana",
@@ -310,7 +310,7 @@
     "password": ""
   },
   {
-    "id": 38,
+    "id": 32,
     "nama": "JOAN MARTHEN BADJADJI A.Md",
     "nip": "197703062007011015",
     "jabatan": "Staff Pelaksana",
@@ -320,7 +320,7 @@
     "password": ""
   },
   {
-    "id": 39,
+    "id": 33,
     "nama": "ELDIANA HERIYANIE A.Md",
     "nip": "197511282007012007",
     "jabatan": "Staff Pelaksana",
@@ -330,7 +330,7 @@
     "password": ""
   },
   {
-    "id": 40,
+    "id": 34,
     "nama": "PASKADIME TURAY, ST",
     "nip": "198709242022031000",
     "jabatan": "JFT Surveyor Pemetaan",
@@ -340,7 +340,7 @@
     "password": ""
   },
   {
-    "id": 41,
+    "id": 35,
     "nama": "FRIEDMAN TARIDA MARPAUNG S.T",
     "nip": "198809232022031001",
     "jabatan": "Staff Pelaksana",
@@ -350,7 +350,7 @@
     "password": ""
   },
   {
-    "id": 42,
+    "id": 36,
     "nama": "FRANSISCO RAMA RIO S.T.",
     "nip": "199303302022031001",
     "jabatan": "JFT Penata Ruang",
@@ -360,7 +360,7 @@
     "password": ""
   },
   {
-    "id": 43,
+    "id": 37,
     "nama": "YANESAR HAWILEY S.T.",
     "nip": "199401222022031002",
     "jabatan": "JFT Penata Ruang",
@@ -370,7 +370,7 @@
     "password": ""
   },
   {
-    "id": 44,
+    "id": 38,
     "nama": "HENGKI PRADANA S.T",
     "nip": "199308062022031001",
     "jabatan": "JFT Pengawas Jalan dan Jembatan",
@@ -380,7 +380,7 @@
     "password": ""
   },
   {
-    "id": 45,
+    "id": 39,
     "nama": "AGIL PAHLEVI ALHAZMI S.T",
     "nip": "199503132022031002",
     "jabatan": "JFT Penata Ruang",
@@ -390,7 +390,7 @@
     "password": ""
   },
   {
-    "id": 46,
+    "id": 40,
     "nama": "PERMANA ADI PUTERA S.T.",
     "nip": "199401202022031001",
     "jabatan": "JFT Surveyor Pemetaan",
@@ -400,7 +400,7 @@
     "password": ""
   },
   {
-    "id": 47,
+    "id": 41,
     "nama": "LEDY DAYANA .S. PUTES S.T",
     "nip": "199607292022032001",
     "jabatan": "Pengawas Jalan dan Jembatan",
@@ -410,7 +410,7 @@
     "password": ""
   },
   {
-    "id": 48,
+    "id": 42,
     "nama": "YOSUA LAMA LEWA S.T",
     "nip": "199612142022031001",
     "jabatan": "JFT 'Pengawas Jalan dan Jembatan",
@@ -420,7 +420,7 @@
     "password": ""
   },
   {
-    "id": 49,
+    "id": 43,
     "nama": "SYAHRYAN DHARMA AJI S.T.",
     "nip": "199705022022031001",
     "jabatan": "JFT Surveyor Pemetaan",
@@ -430,7 +430,7 @@
     "password": ""
   },
   {
-    "id": 50,
+    "id": 44,
     "nama": "ANNISA NURUL HIDAYAH S.T.",
     "nip": "199807162022032001",
     "jabatan": "JFT Surveyor Pemetaan",
@@ -440,7 +440,7 @@
     "password": ""
   },
   {
-    "id": 51,
+    "id": 45,
     "nama": "OLVA DWI FAUJI HANDAYANI S.P.W.K.",
     "nip": "199709072022032001",
     "jabatan": "JFT Penata Ruang",
@@ -450,7 +450,7 @@
     "password": ""
   },
   {
-    "id": 52,
+    "id": 46,
     "nama": "KRISTUANTO NUGROHO SAPUTRO S.P.W.K",
     "nip": "199211282014031001",
     "jabatan": "Staff Pelaksana",
@@ -460,7 +460,7 @@
     "password": ""
   },
   {
-    "id": 53,
+    "id": 47,
     "nama": "EDI ERIANTO",
     "nip": "198203282008011007",
     "jabatan": "Staff Pelaksana",
@@ -470,7 +470,7 @@
     "password": ""
   },
   {
-    "id": 54,
+    "id": 48,
     "nama": "DELTAYANA",
     "nip": "197110102007012022",
     "jabatan": "Staff Pelaksana",
@@ -480,7 +480,7 @@
     "password": ""
   },
   {
-    "id": 55,
+    "id": 49,
     "nama": "RUSLINE",
     "nip": "197407072007012016",
     "jabatan": "Staff Pelaksana",
@@ -490,7 +490,7 @@
     "password": ""
   },
   {
-    "id": 56,
+    "id": 50,
     "nama": "NOVA ARDONO, S.M",
     "nip": "197311162012121001",
     "jabatan": "Staff Pelaksana",
@@ -500,7 +500,7 @@
     "password": ""
   },
   {
-    "id": 57,
+    "id": 51,
     "nama": "CECE SYAPUTRA",
     "nip": "197710132008011017",
     "jabatan": "Staff Pelaksana",
@@ -510,7 +510,7 @@
     "password": ""
   },
   {
-    "id": 58,
+    "id": 52,
     "nama": "LINA RAHMAWATI",
     "nip": "197708272007012006",
     "jabatan": "Staff Pelaksana",
@@ -520,7 +520,7 @@
     "password": ""
   },
   {
-    "id": 59,
+    "id": 53,
     "nama": "YAYAT ULANTARI",
     "nip": "198010152007012000",
     "jabatan": "Bendahara Pengeluaran Pembantu",
@@ -530,7 +530,7 @@
     "password": ""
   },
   {
-    "id": 60,
+    "id": 54,
     "nama": "ANTON SUJARWADI",
     "nip": "197703032007011017",
     "jabatan": "Staff Pelaksana",
@@ -540,7 +540,7 @@
     "password": ""
   },
   {
-    "id": 61,
+    "id": 55,
     "nama": "RADEN RORO NIKEN GAYATRI WOELANSARI",
     "nip": "197311222008012006",
     "jabatan": "Staff Pelaksana",
@@ -550,7 +550,7 @@
     "password": ""
   },
   {
-    "id": 62,
+    "id": 56,
     "nama": "MARGIANTO",
     "nip": "197703232008011016",
     "jabatan": "Staff Pelaksana",
@@ -560,7 +560,7 @@
     "password": ""
   },
   {
-    "id": 63,
+    "id": 57,
     "nama": "SUKARIA",
     "nip": "197810312008011007",
     "jabatan": "Staff Pelaksana",
@@ -570,7 +570,7 @@
     "password": ""
   },
   {
-    "id": 64,
+    "id": 58,
     "nama": "OCTANI INDRIAWATI",
     "nip": "198010012008012018",
     "jabatan": "Staff Pelaksana",
@@ -580,7 +580,7 @@
     "password": ""
   },
   {
-    "id": 65,
+    "id": 59,
     "nama": "GEZALI",
     "nip": "197302042007011015",
     "jabatan": "Staff Pelaksana",
@@ -590,7 +590,7 @@
     "password": ""
   },
   {
-    "id": 66,
+    "id": 60,
     "nama": "HENRI LUKAS",
     "nip": "197101172007011014",
     "jabatan": "Juru OPHAR",
@@ -600,7 +600,7 @@
     "password": ""
   },
   {
-    "id": 67,
+    "id": 61,
     "nama": "SALIANSYAH",
     "nip": "197407052007011026",
     "jabatan": "Staff Pelaksana",
@@ -610,7 +610,7 @@
     "password": ""
   },
   {
-    "id": 68,
+    "id": 62,
     "nama": "SUPRIADI",
     "nip": "197404012009011006",
     "jabatan": "Juru OPHAR",
@@ -620,7 +620,7 @@
     "password": ""
   },
   {
-    "id": 69,
+    "id": 63,
     "nama": "EMMY SUTANTY",
     "nip": "197905152010012017",
     "jabatan": "Staff Pelaksana",
@@ -630,7 +630,7 @@
     "password": ""
   },
   {
-    "id": 70,
+    "id": 64,
     "nama": "ARLINAWATI",
     "nip": "197807042009012002",
     "jabatan": "Juru OPHAR",
@@ -640,7 +640,7 @@
     "password": ""
   },
   {
-    "id": 71,
+    "id": 65,
     "nama": "LAMBAK",
     "nip": "198301302008011012",
     "jabatan": "Staff Pelaksana",
@@ -650,7 +650,7 @@
     "password": ""
   },
   {
-    "id": 72,
+    "id": 66,
     "nama": "SAIDI",
     "nip": "197905132007011007",
     "jabatan": "Juru Pengairan",
@@ -660,7 +660,7 @@
     "password": ""
   },
   {
-    "id": 73,
+    "id": 67,
     "nama": "SENGHO MARGONO",
     "nip": "197707072012121002",
     "jabatan": "Staff Pelaksana",
@@ -670,7 +670,7 @@
     "password": ""
   },
   {
-    "id": 74,
+    "id": 68,
     "nama": "SUGIHERTONO",
     "nip": "196908142006041009",
     "jabatan": "Pengamat Pengairan",
@@ -680,7 +680,7 @@
     "password": ""
   },
   {
-    "id": 75,
+    "id": 69,
     "nama": "BUDIMAN",
     "nip": "197506102007011020",
     "jabatan": "Juru Pengairan",
@@ -690,7 +690,7 @@
     "password": ""
   },
   {
-    "id": 76,
+    "id": 70,
     "nama": "ABDUL ROHMAN",
     "nip": "197903122008011023",
     "jabatan": "Pengawas Irigasi",
@@ -700,7 +700,7 @@
     "password": ""
   },
   {
-    "id": 77,
+    "id": 71,
     "nama": "SUKARDI",
     "nip": "198312222012121002",
     "jabatan": "Staff Pelaksana",
@@ -710,7 +710,7 @@
     "password": ""
   },
   {
-    "id": 78,
+    "id": 72,
     "nama": "FERDI DWI ARIYANTO",
     "nip": "200301252025061004",
     "jabatan": "Operator Pelayanan Operasional",
@@ -720,7 +720,7 @@
     "password": ""
   },
   {
-    "id": 79,
+    "id": 73,
     "nama": "RAHMAN",
     "nip": "199310092025061001",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -730,7 +730,7 @@
     "password": ""
   },
   {
-    "id": 80,
+    "id": 74,
     "nama": "RISTA TAKZIAH",
     "nip": "200210032025062006",
     "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
@@ -740,7 +740,7 @@
     "password": ""
   },
   {
-    "id": 81,
+    "id": 75,
     "nama": "YAMES GUANDA",
     "nip": "200307052025061002",
     "jabatan": "Operator Alat Berat",
@@ -750,7 +750,7 @@
     "password": ""
   },
   {
-    "id": 82,
+    "id": 76,
     "nama": "RUDI GUNAWAN",
     "nip": "199308182025061006",
     "jabatan": "Operator Alat Berat",
@@ -760,7 +760,7 @@
     "password": ""
   },
   {
-    "id": 83,
+    "id": 77,
     "nama": "MUHAMMAD RENDRA NATA",
     "nip": "200107022025061003",
     "jabatan": "Operator Pelayanan Operasional",
@@ -770,7 +770,7 @@
     "password": ""
   },
   {
-    "id": 84,
+    "id": 78,
     "nama": "AMIRA MAYA HAFIZA",
     "nip": "200108172025062013",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -780,7 +780,7 @@
     "password": ""
   },
   {
-    "id": 85,
+    "id": 79,
     "nama": "YOGIANOR",
     "nip": "200004132025061006",
     "jabatan": "Operator Alat Berat",
@@ -790,7 +790,7 @@
     "password": ""
   },
   {
-    "id": 86,
+    "id": 80,
     "nama": "AINUL YUDA",
     "nip": "199907142025061007",
     "jabatan": "Operator Alat Berat",
@@ -800,7 +800,7 @@
     "password": ""
   },
   {
-    "id": 87,
+    "id": 81,
     "nama": "MUHAMMAD ARIFIN",
     "nip": "199101022025061002",
     "jabatan": "Teknisi Mesin Alat Berat",
@@ -810,7 +810,7 @@
     "password": ""
   },
   {
-    "id": 88,
+    "id": 82,
     "nama": "APRI ANUGRAH WIJAYA",
     "nip": "199604062025061004",
     "jabatan": "Operator Alat Berat",
@@ -820,7 +820,7 @@
     "password": ""
   },
   {
-    "id": 89,
+    "id": 83,
     "nama": "ZAINUDIN",
     "nip": "199703162025061003",
     "jabatan": "Operator Alat Berat",
@@ -830,7 +830,7 @@
     "password": ""
   },
   {
-    "id": 90,
+    "id": 84,
     "nama": "IVANA ANGELITA",
     "nip": "200207142025062005",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -840,7 +840,7 @@
     "password": ""
   },
   {
-    "id": 91,
+    "id": 85,
     "nama": "CHRISTIN SEPTALITA SILALAHI ,A.md",
     "nip": "200107182025061005",
     "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
@@ -850,7 +850,7 @@
     "password": ""
   },
   {
-    "id": 91,
+    "id": 86,
     "nama": "MUHAMMAD ALFARIZI PRASETIA",
     "nip": "200107182025062003",
     "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
@@ -860,7 +860,7 @@
     "password": ""
   },
   {
-    "id": 92,
+    "id": 87,
     "nama": "ADI PRASETYO",
     "nip": "200005212025061006",
     "jabatan": "Operator Pelayanan Operasional",
@@ -870,7 +870,7 @@
     "password": ""
   },
   {
-    "id": 93,
+    "id": 88,
     "nama": "AHMAD RAIHAN ZACKY",
     "nip": "200406212025061002",
     "jabatan": "Operator Alat Berat",
@@ -880,7 +880,7 @@
     "password": ""
   },
   {
-    "id": 94,
+    "id": 89,
     "nama": "POPY WANDA APRILIA",
     "nip": "200604212025062003",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -890,7 +890,7 @@
     "password": ""
   },
   {
-    "id": 95,
+    "id": 90,
     "nama": "YULIANTO",
     "nip": "199207272025061002",
     "jabatan": "Operator Alat Berat",
@@ -900,7 +900,7 @@
     "password": ""
   },
   {
-    "id": 96,
+    "id": 91,
     "nama": "DEFRI JUNIANDA ARIF",
     "nip": "199306242025061002",
     "jabatan": "Operator Alat Berat",
@@ -910,7 +910,7 @@
     "password": ""
   },
   {
-    "id": 97,
+    "id": 92,
     "nama": "HARIYANTO RAHARJO",
     "nip": "199503082025061007",
     "jabatan": "Operator Alat Berat",
@@ -920,7 +920,7 @@
     "password": ""
   },
   {
-    "id": 98,
+    "id": 93,
     "nama": "AKHMAD FADILLAH",
     "nip": "199611152025061005",
     "jabatan": "Operator Alat Berat",
@@ -930,7 +930,7 @@
     "password": ""
   },
   {
-    "id": 99,
+    "id": 94,
     "nama": "SALEHA",
     "nip": "200504172025062001",
     "jabatan": "Operator Pelayanan Operasional",
@@ -940,7 +940,7 @@
     "password": ""
   },
   {
-    "id": 100,
+    "id": 95,
     "nama": "INDRIANI",
     "nip": "200209152025062008",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -950,7 +950,7 @@
     "password": ""
   },
   {
-    "id": 101,
+    "id": 96,
     "nama": "ACHMAD ARIEF SETIAWAN",
     "nip": "200206112025061004",
     "jabatan": "Operator Alat Berat",
@@ -960,7 +960,7 @@
     "password": ""
   },
   {
-    "id": 102,
+    "id": 97,
     "nama": "RAJUL RAJABI",
     "nip": "200010182025061003",
     "jabatan": "Operator Pelayanan Operasional",
@@ -970,7 +970,7 @@
     "password": ""
   },
   {
-    "id": 103,
+    "id": 98,
     "nama": "FAHRURRAZI",
     "nip": "199612012025061006",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -980,7 +980,7 @@
     "password": ""
   },
   {
-    "id": 104,
+    "id": 99,
     "nama": "HARSA PURNAMA",
     "nip": "199004292025061004",
     "jabatan": "Operator Alat Berat",
@@ -990,7 +990,7 @@
     "password": ""
   },
   {
-    "id": 105,
+    "id": 100,
     "nama": "USAMAH",
     "nip": "199311022025061003",
     "jabatan": "Operator Pelayanan Operasional",
@@ -1000,7 +1000,7 @@
     "password": ""
   },
   {
-    "id": 106,
+    "id": 101,
     "nama": "RASYID SHIDDIQ",
     "nip": "200009232025061008",
     "jabatan": "Operator Alat Berat",
@@ -1010,7 +1010,7 @@
     "password": ""
   },
   {
-    "id": 107,
+    "id": 102,
     "nama": "RISKA AULIA RAHMAN",
     "nip": "199612242025061009",
     "jabatan": "Operator Pelayanan Operasional",
@@ -1020,7 +1020,7 @@
     "password": ""
   },
   {
-    "id": 108,
+    "id": 103,
     "nama": "MITA LESTARI",
     "nip": "200111282025062012",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -1030,7 +1030,7 @@
     "password": ""
   },
   {
-    "id": 109,
+    "id": 104,
     "nama": "JULIAN IQBAL NUGRAHA",
     "nip": "200207232025061005",
     "jabatan": "Operator Alat Berat",
@@ -1040,7 +1040,7 @@
     "password": ""
   },
   {
-    "id": 110,
+    "id": 105,
     "nama": "YOEL PRATAMA",
     "nip": "200409112025061003",
     "jabatan": "Operator Pelayanan Operasional",
@@ -1050,7 +1050,7 @@
     "password": ""
   },
   {
-    "id": 111,
+    "id": 106,
     "nama": "BAGUS JOKO KRISDYANTO",
     "nip": "199609012025061008",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -1060,7 +1060,7 @@
     "password": ""
   },
   {
-    "id": 112,
+    "id": 107,
     "nama": "NEFHA KRISTILA",
     "nip": "200301082025062003",
     "jabatan": "PETUGAS OPERASI DAN PEMELIHARAAN",
@@ -1070,7 +1070,7 @@
     "password": ""
   },
   {
-    "id": 113,
+    "id": 108,
     "nama": "ARISMA NOVIANA PUTRI",
     "nip": "199611192025062009",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -1080,7 +1080,7 @@
     "password": ""
   },
   {
-    "id": 114,
+    "id": 109,
     "nama": "YUSAFAT TRI BERIANTO",
     "nip": "200110062025061004",
     "jabatan": "Operator Alat Berat",
@@ -1090,7 +1090,7 @@
     "password": ""
   },
   {
-    "id": 115,
+    "id": 110,
     "nama": "MUHAMMAD HAJIANOR SHODIQIN",
     "nip": "199903222025061007",
     "jabatan": "Operator Alat Berat",
@@ -1100,7 +1100,7 @@
     "password": ""
   },
   {
-    "id": 116,
+    "id": 111,
     "nama": "SA'ADAH",
     "nip": "200508292025062001",
     "jabatan": "Operator Alat Berat",
@@ -1110,7 +1110,7 @@
     "password": ""
   },
   {
-    "id": 117,
+    "id": 112,
     "nama": "FIRMAN BUDIMULIA",
     "nip": "200103262025061011",
     "jabatan": "Petugas Operasi dan Pemeliharaan",
@@ -1120,7 +1120,7 @@
     "password": ""
   },
   {
-    "id": 118,
+    "id": 113,
     "nama": "DAVID HARNO PRASETYA",
     "nip": "199502172025061007",
     "jabatan": "Operator Alat Berat",
@@ -1130,7 +1130,7 @@
     "password": ""
   },
   {
-    "id": 119,
+    "id": 114,
     "nama": "HERLIZA PUTRI PERDANA, A.Md.T",
     "nip": "199906062025062020",
     "jabatan": "Pengelola Layanan Operasional",
@@ -1140,7 +1140,7 @@
     "password": ""
   },
   {
-    "id": 120,
+    "id": 115,
     "nama": "ANDI SETYAWAN RAMADANI ,A.Md.T",
     "nip": "200012042025061005",
     "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
@@ -1150,7 +1150,7 @@
     "password": ""
   },
   {
-    "id": 121,
+    "id": 116,
     "nama": "JOSS SCUD QADHAFIE ,A.Md",
     "nip": "199102092025061002",
     "jabatan": "Penata Bangunan Gedung dan Permukiman",
@@ -1160,7 +1160,7 @@
     "password": ""
   },
   {
-    "id": 122,
+    "id": 117,
     "nama": "NOR KHALISA ,A.Md.T",
     "nip": "200112022025062007",
     "jabatan": "Penata Bangunan Gedung dan Permukian",
@@ -1170,7 +1170,7 @@
     "password": ""
   },
   {
-    "id": 123,
+    "id": 118,
     "nama": "HENI ARTATI BR MUNTE",
     "nip": "199804092025062011",
     "jabatan": "PENATA BANGUNAN GEDUNG DAN PERMUKIMAN",
@@ -1180,7 +1180,7 @@
     "password": ""
   },
   {
-    "id": 124,
+    "id": 119,
     "nama": "ADELIA PEBRIYANTI, A.Md.T",
     "nip": "200102112025062020",
     "jabatan": "Pengelola Layanan Operasional",
@@ -1190,7 +1190,7 @@
     "password": ""
   },
   {
-    "id": 125,
+    "id": 120,
     "nama": "YUSUF ARDYAN SETYA PRADANA, A.Md.T.",
     "nip": "200108032025061009",
     "jabatan": "Teknisi Mesin Alat Berat",
@@ -1200,7 +1200,7 @@
     "password": ""
   },
   {
-    "id": 126,
+    "id": 121,
     "nama": "ETI MUSYAROFAH",
     "nip": "199610142025062009",
     "jabatan": "PENATA BANGUNAN GEDUNG DAN PERMUKIMAN",
@@ -1210,7 +1210,7 @@
     "password": ""
   },
   {
-    "id": 127,
+    "id": 122,
     "nama": "DANIEL KAHARAP TARIP ,A.Md.T.",
     "nip": "200206122025061005",
     "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
@@ -1220,7 +1220,7 @@
     "password": ""
   },
   {
-    "id": 128,
+    "id": 123,
     "nama": "ANITA SURYANINGSIH, A.Md.",
     "nip": "199310192025062006",
     "jabatan": "Teknisi Mesin Alat Berat",
@@ -1230,7 +1230,7 @@
     "password": ""
   },
   {
-    "id": 129,
+    "id": 124,
     "nama": "ERWIN AGUNG SANTOSO ,A.Md",
     "nip": "199007082025061005",
     "jabatan": "Penata Bangunan Gedung dan Permukiman",
@@ -1240,7 +1240,7 @@
     "password": ""
   },
   {
-    "id": 130,
+    "id": 125,
     "nama": "BETI MAHARANI ,A.Md.T.",
     "nip": "200201312025062010",
     "jabatan": "Juru Operasi dan Pemeliharaan Sumber Daya Air",
@@ -1250,7 +1250,7 @@
     "password": ""
   },
   {
-    "id": 131,
+    "id": 126,
     "nama": "A. M. NUR ADIB KURNIAWAN RASYID",
     "nip": "200006232025061011",
     "jabatan": "Teknisi Mesin Alat Berat",
@@ -1260,7 +1260,7 @@
     "password": ""
   },
   {
-    "id": 132,
+    "id": 127,
     "nama": "SELVI ARDIANI ,A.Md",
     "nip": "199506112025062005",
     "jabatan": "Penata Bangunan Gedung dan Permukian",
@@ -1270,7 +1270,7 @@
     "password": ""
   },
   {
-    "id": 134,
+    "id": 128,
     "nama": "ADITYA BUANA FIQRI ,S.T",
     "nip": "200102202025061005",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1280,7 +1280,7 @@
     "password": ""
   },
   {
-    "id": 135,
+    "id": 129,
     "nama": "FADHLI",
     "nip": "200004222025061005",
     "jabatan": "PENGAWAS JARINGAN UTILITAS",
@@ -1290,7 +1290,7 @@
     "password": ""
   },
   {
-    "id": 136,
+    "id": 130,
     "nama": "KRISNA CRISTA MAHENDRA ,S.T",
     "nip": "200007262025061002",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1300,7 +1300,7 @@
     "password": ""
   },
   {
-    "id": 137,
+    "id": 131,
     "nama": "GABRIELLA OCTAVIRIA NOORMALIA HETRANI PUTRI ,S.Ars",
     "nip": "199310052025062006",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1310,7 +1310,7 @@
     "password": ""
   },
   {
-    "id": 138,
+    "id": 132,
     "nama": "SAHRUL RAMADANI, S.T.",
     "nip": "199912172025061005",
     "jabatan": "Penata Ruang Ahli Pertama",
@@ -1320,7 +1320,7 @@
     "password": ""
   },
   {
-    "id": 140,
+    "id": 133,
     "nama": "GUSTIAN, S.T.",
     "nip": "200105262025061004",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1330,7 +1330,7 @@
     "password": ""
   },
   {
-    "id": 141,
+    "id": 134,
     "nama": "HARY CHRISTIAN ANUGRAHNU ,S. Ars",
     "nip": "199611152025061001",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1340,7 +1340,7 @@
     "password": ""
   },
   {
-    "id": 142,
+    "id": 135,
     "nama": "CINDERELLA SUZANNA CAROLYNDA",
     "nip": "200101292025062008",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1350,7 +1350,7 @@
     "password": ""
   },
   {
-    "id": 143,
+    "id": 136,
     "nama": "DESI RAHMADANA ,S.T.",
     "nip": "199912122025062009",
     "jabatan": "Pranata Kewilayahan",
@@ -1360,7 +1360,7 @@
     "password": ""
   },
   {
-    "id": 144,
+    "id": 137,
     "nama": "MARIATUL KARIMAH, S.T.",
     "nip": "200203112025062008",
     "jabatan": "Penata Ruang Ahli Pertama",
@@ -1370,7 +1370,7 @@
     "password": ""
   },
   {
-    "id": 145,
+    "id": 138,
     "nama": "ESTER KLAUDIA TAMARA, S.T.",
     "nip": "200107292025062005",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1380,7 +1380,7 @@
     "password": ""
   },
   {
-    "id": 146,
+    "id": 139,
     "nama": "PRA SETIAWAN SILAEN, S.T.",
     "nip": "199611132025061006",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1390,7 +1390,7 @@
     "password": ""
   },
   {
-    "id": 147,
+    "id": 140,
     "nama": "VIDYA RESTU WIJAYA ,S.T.",
     "nip": "199810062025061006",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1400,7 +1400,7 @@
     "password": ""
   },
   {
-    "id": 148,
+    "id": 141,
     "nama": "MUHAMAD RIZKI ,S.T.",
     "nip": "199905082025061009",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1410,7 +1410,7 @@
     "password": ""
   },
   {
-    "id": 149,
+    "id": 142,
     "nama": "JOSUA ORIESTA SALOMO ,S.T.",
     "nip": "200001242025061012",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1420,7 +1420,7 @@
     "password": ""
   },
   {
-    "id": 150,
+    "id": 143,
     "nama": "ZAIN SAPUTRA ,S.T",
     "nip": "199803032025061007",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1430,7 +1430,7 @@
     "password": ""
   },
   {
-    "id": 151,
+    "id": 144,
     "nama": "ADJIE DWI SULISTYONO ,S.Stat",
     "nip": "200103292025061006",
     "jabatan": "Pranata Kewilayahan",
@@ -1440,7 +1440,7 @@
     "password": ""
   },
   {
-    "id": 152,
+    "id": 145,
     "nama": "BENEDICTUS PASCHAL ARYO SETYA ,S.Ars",
     "nip": "200203292025061003",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1450,7 +1450,7 @@
     "password": ""
   },
   {
-    "id": 153,
+    "id": 146,
     "nama": "M. FACHTUR REZA, S.T.",
     "nip": "199912042025061011",
     "jabatan": "Penata Ruang Ahli Pertama",
@@ -1460,7 +1460,7 @@
     "password": ""
   },
   {
-    "id": 154,
+    "id": 147,
     "nama": "ERIANTY NUR APRILIANA ,S.T.",
     "nip": "199704062025062004",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1470,7 +1470,7 @@
     "password": ""
   },
   {
-    "id": 155,
+    "id": 148,
     "nama": "ROBI, S.T.",
     "nip": "199408142025061008",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1480,7 +1480,7 @@
     "password": ""
   },
   {
-    "id": 156,
+    "id": 149,
     "nama": "STEVANY ALIZA KHAIRANI, S.T",
     "nip": "200004042025062008",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1490,7 +1490,7 @@
     "password": ""
   },
   {
-    "id": 157,
+    "id": 150,
     "nama": "NOVRINDO GABRIEL PANARA TARUNG ,S.T",
     "nip": "200011152025061007",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1500,7 +1500,7 @@
     "password": ""
   },
   {
-    "id": 158,
+    "id": 151,
     "nama": "FANDRI, S.T",
     "nip": "199604152025061006",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1510,7 +1510,7 @@
     "password": ""
   },
   {
-    "id": 159,
+    "id": 152,
     "nama": "AGUSTULUSNU ,S.T",
     "nip": "199508052025061006",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1520,7 +1520,7 @@
     "password": ""
   },
   {
-    "id": 160,
+    "id": 153,
     "nama": "DEDE CHRISFANI",
     "nip": "199812012025061005",
     "jabatan": "PENGAWAS JARINGAN UTILITAS",
@@ -1530,7 +1530,7 @@
     "password": ""
   },
   {
-    "id": 161,
+    "id": 154,
     "nama": "AMALIA SETIARINI ,S.Ars",
     "nip": "200204232025062007",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1540,7 +1540,7 @@
     "password": ""
   },
   {
-    "id": 162,
+    "id": 155,
     "nama": "LIUS KAHARAP BION INSO ,S.T.",
     "nip": "198911242025061001",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1550,7 +1550,7 @@
     "password": ""
   },
   {
-    "id": 163,
+    "id": 156,
     "nama": "KARINA PANGAMIANI ,S.T.",
     "nip": "200306032025062002",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1560,7 +1560,7 @@
     "password": ""
   },
   {
-    "id": 164,
+    "id": 157,
     "nama": "HENDI KRISTIAN ,S.Ars",
     "nip": "199802192025061002",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1570,7 +1570,7 @@
     "password": ""
   },
   {
-    "id": 165,
+    "id": 158,
     "nama": "FITRI DEVI, S.T.",
     "nip": "200012262025062006",
     "jabatan": "Penata Ruang Ahli Pertama",
@@ -1580,7 +1580,7 @@
     "password": ""
   },
   {
-    "id": 166,
+    "id": 159,
     "nama": "INTAN ARDILLA ,S.H",
     "nip": "200201312025062009",
     "jabatan": "Pranata Kewilayahan",
@@ -1590,7 +1590,7 @@
     "password": ""
   },
   {
-    "id": 167,
+    "id": 160,
     "nama": "ISNAN NURUL AKBAR ,S.T.",
     "nip": "199709232025061010",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1600,7 +1600,7 @@
     "password": ""
   },
   {
-    "id": 168,
+    "id": 161,
     "nama": "SHAHIFA INDIRA EFFENDI ,S.Kom",
     "nip": "200201152025062010",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1610,7 +1610,7 @@
     "password": ""
   },
   {
-    "id": 169,
+    "id": 162,
     "nama": "MUHAMMAD PUJIADI ANGGARA PRAMANA PUTRA MANDALIKA , S.Ars.",
     "nip": "200107312025061012",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1620,7 +1620,7 @@
     "password": ""
   },
   {
-    "id": 170,
+    "id": 163,
     "nama": "PANJI KUSNENDAR MZ ,S.T.",
     "nip": "199407192025061006",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1630,7 +1630,7 @@
     "password": ""
   },
   {
-    "id": 171,
+    "id": 164,
     "nama": "ANDREAS ADI NUGROHO",
     "nip": "199710222025061006",
     "jabatan": "PENGAWAS JARINGAN UTILITAS",
@@ -1640,7 +1640,7 @@
     "password": ""
   },
   {
-    "id": 172,
+    "id": 165,
     "nama": "USWATUN HASANAH, S.T.",
     "nip": "200208272025062003",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1650,7 +1650,7 @@
     "password": ""
   },
   {
-    "id": 173,
+    "id": 166,
     "nama": "IVAN KLIWON RICARDO ,S.T.",
     "nip": "200102232025061005",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1660,7 +1660,7 @@
     "password": ""
   },
   {
-    "id": 174,
+    "id": 167,
     "nama": "INDAH FAJERI MEUTIA SAPUTRI ,S.T",
     "nip": "199909222025062016",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1670,7 +1670,7 @@
     "password": ""
   },
   {
-    "id": 175,
+    "id": 168,
     "nama": "TUNJUNG DWIJAYANTI, S.Ars.",
     "nip": "200010032025062006",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1680,7 +1680,7 @@
     "password": ""
   },
   {
-    "id": 176,
+    "id": 169,
     "nama": "MUHAMMAD HAFIZHIR RIDHA ,S.T.",
     "nip": "200010162025061006",
     "jabatan": "Pengawas Jaringan Utilitas",
@@ -1690,7 +1690,7 @@
     "password": ""
   },
   {
-    "id": 177,
+    "id": 170,
     "nama": "FAISAL MIFTAHUL HUDA, S.T",
     "nip": "199508142025061004",
     "jabatan": "Penata Ruang Ahli Pertama",
@@ -1700,7 +1700,7 @@
     "password": ""
   },
   {
-    "id": 178,
+    "id": 171,
     "nama": "ETY JULI ANDRIANITA ,S.T",
     "nip": "199607192025062003",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1710,7 +1710,7 @@
     "password": ""
   },
   {
-    "id": 179,
+    "id": 172,
     "nama": "HENDRA NOVIANTARA, S.T.",
     "nip": "200103212025061004",
     "jabatan": "Pranata Kewilayahan",
@@ -1720,7 +1720,7 @@
     "password": ""
   },
   {
-    "id": 180,
+    "id": 173,
     "nama": "DWI LESTARI",
     "nip": "199706152025062006",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1730,7 +1730,7 @@
     "password": ""
   },
   {
-    "id": 181,
+    "id": 174,
     "nama": "FEDRIAN SYAHPUTRA, S.T",
     "nip": "199404022025061003",
     "jabatan": "Pranata Kewilayahan",
@@ -1740,7 +1740,7 @@
     "password": ""
   },
   {
-    "id": 182,
+    "id": 175,
     "nama": "YUZTIRA WANAGITA ,S.Ars",
     "nip": "199708042025062010",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1750,7 +1750,7 @@
     "password": ""
   },
   {
-    "id": 183,
+    "id": 176,
     "nama": "SALSABILA, S.T",
     "nip": "200105092025062012",
     "jabatan": "Teknisi Sarana dan Prasarana",
@@ -1760,7 +1760,7 @@
     "password": ""
   },
   {
-    "id": 184,
+    "id": 177,
     "nama": "NOOR MAULIDA SARI, S.T",
     "nip": "199806162025062011",
     "jabatan": "Penata Ruang Ahli Pertama",
@@ -1770,7 +1770,7 @@
     "password": ""
   },
   {
-    "id": 185,
+    "id": 178,
     "nama": "ANDRIANO ST /",
     "nip": "197111102006041026",
     "jabatan": "Kepala Bidang Jasa Konstruksi",
@@ -1780,7 +1780,7 @@
     "password": ""
   },
   {
-    "id": 186,
+    "id": 179,
     "nama": "MUHAMMAD OKTA FAHRIZAN NOOR, S.T",
     "nip": "198110222010011023",
     "jabatan": "Kepala Bidang Tata Kota",
@@ -1790,7 +1790,7 @@
     "password": ""
   },
   {
-    "id": 187,
+    "id": 180,
     "nama": "DEDI, S.T",
     "nip": "197407172008011020",
     "jabatan": "Kepala Bidang Bina Marga",
@@ -1800,7 +1800,7 @@
     "password": ""
   },
   {
-    "id": 189,
+    "id": 181,
     "nama": "HARTADI S.T.",
     "nip": "198111042010011018",
     "jabatan": "Kepala UPT Balai ALKAL",
@@ -1810,7 +1810,7 @@
     "password": ""
   },
   {
-    "id": 190,
+    "id": 182,
     "nama": "SYAHBUDI NOR, A.Md",
     "nip": "198506292014031001",
     "jabatan": "Kasubbag TU UPT Balai ALKAL",
@@ -1820,7 +1820,7 @@
     "password": ""
   },
   {
-    "id": 191,
+    "id": 183,
     "nama": "MUSLIMAH MURNI, S.T",
     "nip": "",
     "jabatan": "Kasubbag Perencanaan dan Keuangan",
@@ -1830,7 +1830,7 @@
     "password": ""
   },
   {
-    "id": 192,
+    "id": 184,
     "nama": "SLAMET",
     "nip": "197707012007011021",
     "jabatan": "Staff Pelaksana",
@@ -1840,7 +1840,7 @@
     "password": ""
   },
   {
-    "id": 193,
+    "id": 185,
     "nama": "BON BENDI",
     "nip": "197908052007011013",
     "jabatan": "Staff Pelaksana",
@@ -1850,7 +1850,7 @@
     "password": ""
   },
   {
-    "id": 194,
+    "id": 186,
     "nama": "ARDIANSYAH GADUK",
     "nip": "197501012007011071",
     "jabatan": "Staff Pelaksana",
@@ -1860,7 +1860,7 @@
     "password": ""
   },
   {
-    "id": 195,
+    "id": 187,
     "nama": "RUSMINIE",
     "nip": "197808152009012001",
     "jabatan": "Staff Pelaksana",
@@ -1870,7 +1870,7 @@
     "password": ""
   },
   {
-    "id": 196,
+    "id": 188,
     "nama": "PAULUS FRANSISKO",
     "nip": "197512012007011011",
     "jabatan": "Staff Pelaksana",
@@ -1880,7 +1880,7 @@
     "password": ""
   },
   {
-    "id": 197,
+    "id": 189,
     "nama": "ANAYATUL MUFARROHAH",
     "nip": "",
     "jabatan": "",
@@ -1890,7 +1890,7 @@
     "password": ""
   },
   {
-    "id": 198,
+    "id": 190,
     "nama": "M. SYAHRULLAH RIZKI, ST",
     "nip": "",
     "jabatan": "",
@@ -1900,7 +1900,7 @@
     "password": ""
   },
   {
-    "id": 199,
+    "id": 191,
     "nama": "M. ABDUL AZIZ",
     "nip": "",
     "jabatan": "",
@@ -1910,7 +1910,7 @@
     "password": ""
   },
   {
-    "id": 200,
+    "id": 192,
     "nama": "ADELIA NOOR RIZKI",
     "nip": "",
     "jabatan": "",
@@ -1920,7 +1920,7 @@
     "password": ""
   },
   {
-    "id": 201,
+    "id": 193,
     "nama": "YOGA ABIFA RAMADHIA",
     "nip": "",
     "jabatan": "",
@@ -1930,7 +1930,7 @@
     "password": ""
   },
   {
-    "id": 202,
+    "id": 194,
     "nama": "DEWI AYU TRYANDHINY",
     "nip": "",
     "jabatan": "",
@@ -1940,7 +1940,7 @@
     "password": ""
   },
   {
-    "id": 203,
+    "id": 195,
     "nama": "HENGKY PRANATA",
     "nip": "",
     "jabatan": "",
@@ -1950,7 +1950,7 @@
     "password": ""
   },
   {
-    "id": 204,
+    "id": 196,
     "nama": "MUH. TAROM, SE",
     "nip": "",
     "jabatan": "",
@@ -1960,7 +1960,7 @@
     "password": ""
   },
   {
-    "id": 205,
+    "id": 197,
     "nama": "ARIS RINALDI",
     "nip": "",
     "jabatan": "",
@@ -1970,7 +1970,7 @@
     "password": ""
   },
   {
-    "id": 206,
+    "id": 198,
     "nama": "M. FERRY ROMADHONI",
     "nip": "",
     "jabatan": "",
@@ -1980,7 +1980,7 @@
     "password": ""
   },
   {
-    "id": 207,
+    "id": 199,
     "nama": "SUGIO PRANOTO",
     "nip": "",
     "jabatan": "",
@@ -1990,7 +1990,7 @@
     "password": ""
   },
   {
-    "id": 208,
+    "id": 200,
     "nama": "ARDY WARDANI",
     "nip": "",
     "jabatan": "",
@@ -2000,7 +2000,7 @@
     "password": ""
   },
   {
-    "id": 209,
+    "id": 201,
     "nama": "MUHAMMAD SAFRIANSYAH",
     "nip": "",
     "jabatan": "",
@@ -2010,7 +2010,7 @@
     "password": ""
   },
   {
-    "id": 210,
+    "id": 202,
     "nama": "RAUDATUL MUHLISA, SE",
     "nip": "",
     "jabatan": "",
@@ -2020,7 +2020,7 @@
     "password": ""
   },
   {
-    "id": 211,
+    "id": 203,
     "nama": "PAHRORAZI",
     "nip": "",
     "jabatan": "",
@@ -2030,7 +2030,7 @@
     "password": ""
   },
   {
-    "id": 212,
+    "id": 204,
     "nama": "KIKI LIAYANI",
     "nip": "",
     "jabatan": "",
@@ -2040,7 +2040,7 @@
     "password": ""
   },
   {
-    "id": 213,
+    "id": 205,
     "nama": "KHAIRUDIN NOR",
     "nip": "",
     "jabatan": "",
@@ -2050,7 +2050,7 @@
     "password": ""
   },
   {
-    "id": 214,
+    "id": 206,
     "nama": "FAISAL RIZKY DWISYACHPUTRA",
     "nip": "",
     "jabatan": "",
@@ -2060,7 +2060,7 @@
     "password": ""
   },
   {
-    "id": 215,
+    "id": 207,
     "nama": "GHAZALI AKBAR, A.MD",
     "nip": "199009072025211009",
     "jabatan": "Staff Pelaksana",
@@ -2070,7 +2070,7 @@
     "password": ""
   },
   {
-    "id": 216,
+    "id": 208,
     "nama": "LISA ANJELINA",
     "nip": "200005152025211004",
     "jabatan": "Staff Pelaksana",
@@ -2080,7 +2080,7 @@
     "password": ""
   },
   {
-    "id": 217,
+    "id": 209,
     "nama": "HASAN WAHYUDI",
     "nip": "199211172025211005",
     "jabatan": "Staff Pelaksana",
@@ -2090,7 +2090,7 @@
     "password": ""
   },
   {
-    "id": 218,
+    "id": 210,
     "nama": "MUTIARA PUSPITA",
     "nip": "199306162025212009",
     "jabatan": "Staff Pelaksana",
@@ -2100,7 +2100,7 @@
     "password": ""
   },
   {
-    "id": 219,
+    "id": 211,
     "nama": "RAFSAN ZIANNOOR, S.KOM",
     "nip": "199202112025211006",
     "jabatan": "Staff Pelaksana",
@@ -2110,7 +2110,7 @@
     "password": ""
   },
   {
-    "id": 220,
+    "id": 212,
     "nama": "HERI PURWANTO",
     "nip": "197307302025211002",
     "jabatan": "Staff Pelaksana",
@@ -2120,7 +2120,7 @@
     "password": ""
   },
   {
-    "id": 221,
+    "id": 213,
     "nama": "RINA NORLIYANTY, SE",
     "nip": "",
     "jabatan": "",
@@ -2130,7 +2130,7 @@
     "password": ""
   },
   {
-    "id": 222,
+    "id": 214,
     "nama": "HAMZAH",
     "nip": "",
     "jabatan": "",
@@ -2140,7 +2140,7 @@
     "password": ""
   },
   {
-    "id": 223,
+    "id": 215,
     "nama": "RIZCA AYU WULANDARI, S.KOM",
     "nip": "",
     "jabatan": "",
@@ -2150,7 +2150,7 @@
     "password": ""
   },
   {
-    "id": 224,
+    "id": 216,
     "nama": "KHOFIFAH SILVIA K.C, Amd.T",
     "nip": "",
     "jabatan": "",
@@ -2160,7 +2160,7 @@
     "password": ""
   },
   {
-    "id": 225,
+    "id": 217,
     "nama": "AHMAD AULIA RAHMAN",
     "nip": "",
     "jabatan": "",
@@ -2170,7 +2170,7 @@
     "password": ""
   },
   {
-    "id": 226,
+    "id": 218,
     "nama": "MICHELIA MAHARANI, S.Ak",
     "nip": "",
     "jabatan": "",
@@ -2180,7 +2180,7 @@
     "password": ""
   },
   {
-    "id": 227,
+    "id": 219,
     "nama": "KHAIRUNNISA AZZAHRA",
     "nip": "",
     "jabatan": "",
@@ -2190,7 +2190,7 @@
     "password": ""
   },
   {
-    "id": 228,
+    "id": 220,
     "nama": "MULIYADI",
     "nip": "",
     "jabatan": "",
@@ -2200,7 +2200,7 @@
     "password": ""
   },
   {
-    "id": 229,
+    "id": 221,
     "nama": "RITA PATERNUS",
     "nip": "",
     "jabatan": "",
@@ -2210,7 +2210,7 @@
     "password": ""
   },
   {
-    "id": 230,
+    "id": 222,
     "nama": "SYAFRUDIN",
     "nip": "",
     "jabatan": "",
@@ -2220,7 +2220,7 @@
     "password": ""
   },
   {
-    "id": 231,
+    "id": 223,
     "nama": "YENI",
     "nip": "",
     "jabatan": "",
@@ -2230,7 +2230,7 @@
     "password": ""
   },
   {
-    "id": 232,
+    "id": 224,
     "nama": "WATINI",
     "nip": "",
     "jabatan": "",
@@ -2240,7 +2240,7 @@
     "password": ""
   },
   {
-    "id": 233,
+    "id": 225,
     "nama": "MUHAMMAD ADNAN KARLI",
     "nip": "",
     "jabatan": "",
@@ -2250,7 +2250,7 @@
     "password": ""
   },
   {
-    "id": 234,
+    "id": 226,
     "nama": "SONA EFENDI",
     "nip": "",
     "jabatan": "",
@@ -2260,7 +2260,7 @@
     "password": ""
   },
   {
-    "id": 235,
+    "id": 227,
     "nama": "LINDA WATI",
     "nip": "",
     "jabatan": "",
@@ -2270,7 +2270,7 @@
     "password": ""
   },
   {
-    "id": 236,
+    "id": 228,
     "nama": "WALIADI",
     "nip": "",
     "jabatan": "",
@@ -2280,7 +2280,7 @@
     "password": ""
   },
   {
-    "id": 237,
+    "id": 229,
     "nama": "ANA MAHRITA",
     "nip": "",
     "jabatan": "",
@@ -2290,7 +2290,7 @@
     "password": ""
   },
   {
-    "id": 238,
+    "id": 230,
     "nama": "EPENDI",
     "nip": "",
     "jabatan": "",
@@ -2300,7 +2300,7 @@
     "password": ""
   },
   {
-    "id": 239,
+    "id": 231,
     "nama": "M. ZIKRI FANSURI, S.Kom",
     "nip": "199607202025211003",
     "jabatan": "",
@@ -2310,7 +2310,7 @@
     "password": ""
   },
   {
-    "id": 240,
+    "id": 232,
     "nama": "TRY SUHARTONO, SE",
     "nip": "198905282025211005",
     "jabatan": "",
@@ -2320,7 +2320,7 @@
     "password": ""
   },
   {
-    "id": 241,
+    "id": 233,
     "nama": "HELIYARIA RARA.S.AG",
     "nip": "",
     "jabatan": "",
@@ -2330,7 +2330,7 @@
     "password": ""
   },
   {
-    "id": 242,
+    "id": 234,
     "nama": "EKA INDAH FABRIANI,ST",
     "nip": "",
     "jabatan": "",
@@ -2340,7 +2340,7 @@
     "password": ""
   },
   {
-    "id": 243,
+    "id": 235,
     "nama": "M. FAJAR RAMADHANI, A.Md",
     "nip": "",
     "jabatan": "",
@@ -2350,7 +2350,7 @@
     "password": ""
   },
   {
-    "id": 244,
+    "id": 236,
     "nama": "MARIOTO",
     "nip": "",
     "jabatan": "Juru D.I. Trahean",
@@ -2360,7 +2360,7 @@
     "password": ""
   },
   {
-    "id": 245,
+    "id": 237,
     "nama": "HELIANSYAH",
     "nip": "",
     "jabatan": "Juru D.I. T. Laung",
@@ -2370,7 +2370,7 @@
     "password": ""
   },
   {
-    "id": 246,
+    "id": 238,
     "nama": "SUHARDIMANTO",
     "nip": "",
     "jabatan": "Juru D.I. Ketapang",
@@ -2380,7 +2380,7 @@
     "password": ""
   },
   {
-    "id": 247,
+    "id": 239,
     "nama": "BAMBANG MAHYUDI",
     "nip": "",
     "jabatan": "",
@@ -2390,7 +2390,7 @@
     "password": ""
   },
   {
-    "id": 248,
+    "id": 240,
     "nama": "M. ADHITYA TRIWARDANA",
     "nip": "",
     "jabatan": "",
@@ -2400,7 +2400,7 @@
     "password": ""
   },
   {
-    "id": 249,
+    "id": 241,
     "nama": "ILHAM ILAHI",
     "nip": "",
     "jabatan": "Juru D.I. Montallat",
@@ -2410,7 +2410,7 @@
     "password": ""
   },
   {
-    "id": 250,
+    "id": 242,
     "nama": "ABDURRAHMAN",
     "nip": "",
     "jabatan": "Juru D.I. Trinsing",
@@ -2420,7 +2420,7 @@
     "password": ""
   },
   {
-    "id": 251,
+    "id": 243,
     "nama": "VARENSIA AGMEL VANDANA",
     "nip": "",
     "jabatan": "",
@@ -2430,7 +2430,7 @@
     "password": ""
   },
   {
-    "id": 252,
+    "id": 244,
     "nama": "AURORA ANGELINA",
     "nip": "",
     "jabatan": "",
@@ -2440,7 +2440,7 @@
     "password": ""
   },
   {
-    "id": 253,
+    "id": 245,
     "nama": "M. NOOR SYAMSU, ST",
     "nip": "",
     "jabatan": "",
@@ -2450,7 +2450,7 @@
     "password": ""
   },
   {
-    "id": 254,
+    "id": 246,
     "nama": "AKMALUDDIN YAHYA, ST",
     "nip": "",
     "jabatan": "",
@@ -2460,7 +2460,7 @@
     "password": ""
   },
   {
-    "id": 255,
+    "id": 247,
     "nama": "DELI MUTIARA, S.IP",
     "nip": "",
     "jabatan": "Juru D.I. Malungai",
@@ -2470,7 +2470,7 @@
     "password": ""
   },
   {
-    "id": 256,
+    "id": 248,
     "nama": "AHMAD NUZULRUL RAHMAN",
     "nip": "",
     "jabatan": "",
@@ -2480,7 +2480,7 @@
     "password": ""
   },
   {
-    "id": 257,
+    "id": 249,
     "nama": "NELA APRILIA SUSANTI",
     "nip": "",
     "jabatan": "",
@@ -2490,7 +2490,7 @@
     "password": ""
   },
   {
-    "id": 258,
+    "id": 250,
     "nama": "DIAN KARTIKASARI",
     "nip": "",
     "jabatan": "",
@@ -2500,7 +2500,7 @@
     "password": ""
   },
   {
-    "id": 259,
+    "id": 251,
     "nama": "ARI SETIA GUNAWAN",
     "nip": "",
     "jabatan": "",
@@ -2510,7 +2510,7 @@
     "password": ""
   },
   {
-    "id": 260,
+    "id": 252,
     "nama": "MERRY NOLISA, A.Md",
     "nip": "197409232007012007",
     "jabatan": "",
@@ -2520,7 +2520,7 @@
     "password": ""
   },
   {
-    "id": 261,
+    "id": 253,
     "nama": "REZA MUSTAQIM, S.T",
     "nip": "",
     "jabatan": "",
@@ -2530,7 +2530,7 @@
     "password": ""
   },
   {
-    "id": 262,
+    "id": 254,
     "nama": "MASITAH PADMASARI, ST",
     "nip": "198203132023212021",
     "jabatan": "Teknik Jalan dan Jembatan",
@@ -2540,7 +2540,7 @@
     "password": ""
   },
   {
-    "id": 263,
+    "id": 255,
     "nama": "SILFIA NORAYANTY, ST",
     "nip": "199210312023212026",
     "jabatan": "Teknik Jalan dan Jembatan",
@@ -2550,7 +2550,7 @@
     "password": ""
   },
   {
-    "id": 264,
+    "id": 256,
     "nama": "BOBY FRANSHEN HOSANG, S.T",
     "nip": "",
     "jabatan": "",
@@ -2560,7 +2560,7 @@
     "password": ""
   },
   {
-    "id": 265,
+    "id": 257,
     "nama": "ARIF ANWARI, S.T",
     "nip": "",
     "jabatan": "",
@@ -2570,7 +2570,7 @@
     "password": ""
   },
   {
-    "id": 266,
+    "id": 258,
     "nama": "LUTHFI MUNAJAD, S.T",
     "nip": "",
     "jabatan": "",
@@ -2580,7 +2580,7 @@
     "password": ""
   },
   {
-    "id": 267,
+    "id": 259,
     "nama": "AKHMAD MAULANA RIFANI, S.T",
     "nip": "",
     "jabatan": "",
@@ -2590,7 +2590,7 @@
     "password": ""
   },
   {
-    "id": 268,
+    "id": 260,
     "nama": "RIFALDI ALFAYAT, S.Ak.",
     "nip": "",
     "jabatan": "",
@@ -2600,7 +2600,7 @@
     "password": ""
   },
   {
-    "id": 269,
+    "id": 261,
     "nama": "ZANELLA ELSANOVA, SAB",
     "nip": "199408032025212007",
     "jabatan": "",
@@ -2610,7 +2610,7 @@
     "password": ""
   },
   {
-    "id": 270,
+    "id": 262,
     "nama": "ARIEF PERDANA, ST",
     "nip": "",
     "jabatan": "",
@@ -2620,7 +2620,7 @@
     "password": ""
   },
   {
-    "id": 271,
+    "id": 263,
     "nama": "SUSANA, S.Pd",
     "nip": "",
     "jabatan": "",
@@ -2630,7 +2630,7 @@
     "password": ""
   },
   {
-    "id": 272,
+    "id": 264,
     "nama": "LIA FITRIANI, S.HUT",
     "nip": "",
     "jabatan": "",
@@ -2640,7 +2640,7 @@
     "password": ""
   },
   {
-    "id": 273,
+    "id": 265,
     "nama": "MUNAWAR SYARIF, SE",
     "nip": "",
     "jabatan": "",
@@ -2650,7 +2650,7 @@
     "password": ""
   },
   {
-    "id": 274,
+    "id": 266,
     "nama": "SEDIMOLIANTO, ST",
     "nip": "",
     "jabatan": "",
@@ -2660,7 +2660,7 @@
     "password": ""
   },
   {
-    "id": 275,
+    "id": 267,
     "nama": "HARY BUDIYATMOKO, ST",
     "nip": "",
     "jabatan": "",
@@ -2670,7 +2670,7 @@
     "password": ""
   },
   {
-    "id": 276,
+    "id": 268,
     "nama": "WAHYU SARI SUMARLING, S.Pd",
     "nip": "",
     "jabatan": "",
@@ -2680,7 +2680,7 @@
     "password": ""
   },
   {
-    "id": 277,
+    "id": 269,
     "nama": "ZEN ARIE SETIAWAN, ST",
     "nip": "",
     "jabatan": "",
@@ -2690,7 +2690,7 @@
     "password": ""
   },
   {
-    "id": 278,
+    "id": 270,
     "nama": "AVRI NOVIAN JARIS,A.,Md",
     "nip": "",
     "jabatan": "",
@@ -2700,7 +2700,7 @@
     "password": ""
   },
   {
-    "id": 279,
+    "id": 271,
     "nama": "YOGA SAPUTRA",
     "nip": "",
     "jabatan": "",
@@ -2710,7 +2710,7 @@
     "password": ""
   },
   {
-    "id": 280,
+    "id": 272,
     "nama": "SULASTRI",
     "nip": "",
     "jabatan": "",
@@ -2720,7 +2720,7 @@
     "password": ""
   },
   {
-    "id": 281,
+    "id": 273,
     "nama": "NURUL AMELIA, ST",
     "nip": "",
     "jabatan": "",
@@ -2730,7 +2730,7 @@
     "password": ""
   },
   {
-    "id": 282,
+    "id": 274,
     "nama": "MARIANTO, ST",
     "nip": "",
     "jabatan": "",
@@ -2740,7 +2740,7 @@
     "password": ""
   },
   {
-    "id": 283,
+    "id": 275,
     "nama": "RAMDHAN FEBRIANSYAH,ST",
     "nip": "",
     "jabatan": "",
@@ -2750,7 +2750,7 @@
     "password": ""
   },
   {
-    "id": 284,
+    "id": 276,
     "nama": "AHMAD RIZKY RISANI, SE",
     "nip": "",
     "jabatan": "",
@@ -2760,7 +2760,7 @@
     "password": ""
   },
   {
-    "id": 285,
+    "id": 277,
     "nama": "M. AL HIDAYAT",
     "nip": "",
     "jabatan": "",
@@ -2770,7 +2770,7 @@
     "password": ""
   },
   {
-    "id": 286,
+    "id": 278,
     "nama": "M. SYAIFUL BASRI, A.MD",
     "nip": "199203012025211003",
     "jabatan": "",
@@ -2780,7 +2780,7 @@
     "password": ""
   },
   {
-    "id": 287,
+    "id": 279,
     "nama": "FADTUL RAHIM",
     "nip": "198304082025211024",
     "jabatan": "",
@@ -2790,7 +2790,7 @@
     "password": ""
   },
   {
-    "id": 288,
+    "id": 280,
     "nama": "AZIZAH DWI SUCI, S.T",
     "nip": "",
     "jabatan": "",
@@ -2800,7 +2800,7 @@
     "password": ""
   },
   {
-    "id": 289,
+    "id": 281,
     "nama": "YODI PRANATA, S.Kom",
     "nip": "",
     "jabatan": "",
@@ -2810,7 +2810,7 @@
     "password": ""
   },
   {
-    "id": 290,
+    "id": 282,
     "nama": "ANTUNG MISRA, SE",
     "nip": "",
     "jabatan": "",
@@ -2820,7 +2820,7 @@
     "password": ""
   },
   {
-    "id": 291,
+    "id": 283,
     "nama": "ROBBY NADA SANJAYA",
     "nip": "",
     "jabatan": "",
@@ -2830,7 +2830,7 @@
     "password": ""
   },
   {
-    "id": 292,
+    "id": 284,
     "nama": "RACHMAD ANUGRAH, SH",
     "nip": "",
     "jabatan": "",
@@ -2840,7 +2840,7 @@
     "password": ""
   },
   {
-    "id": 293,
+    "id": 285,
     "nama": "PETRUS PARLINDUNGAN AGNEUS MANIHURUK, ST",
     "nip": "",
     "jabatan": "",
@@ -2850,7 +2850,7 @@
     "password": ""
   },
   {
-    "id": 294,
+    "id": 286,
     "nama": "ACHMAT IRWANDY, ST",
     "nip": "",
     "jabatan": "",
@@ -2860,7 +2860,7 @@
     "password": ""
   },
   {
-    "id": 295,
+    "id": 287,
     "nama": "DEVIA CITA RACHMAN,S.Farm",
     "nip": "",
     "jabatan": "",
@@ -2870,7 +2870,7 @@
     "password": ""
   },
   {
-    "id": 296,
+    "id": 288,
     "nama": "SITI FATIMAH AZZAHRA",
     "nip": "",
     "jabatan": "",
@@ -2880,7 +2880,7 @@
     "password": ""
   },
   {
-    "id": 297,
+    "id": 289,
     "nama": "NURTIKA, ST",
     "nip": "",
     "jabatan": "",
@@ -2890,7 +2890,7 @@
     "password": ""
   },
   {
-    "id": 298,
+    "id": 290,
     "nama": "PERONIKA, SH",
     "nip": "",
     "jabatan": "",
@@ -2900,7 +2900,7 @@
     "password": ""
   },
   {
-    "id": 299,
+    "id": 291,
     "nama": "SONY ATHALARIK S.M",
     "nip": "",
     "jabatan": "",
@@ -2910,7 +2910,7 @@
     "password": ""
   },
   {
-    "id": 300,
+    "id": 292,
     "nama": "RUKMANA, S.Pd",
     "nip": "199308042025212007",
     "jabatan": "Staff Pelaksana",
@@ -2920,17 +2920,7 @@
     "password": ""
   },
   {
-    "id": 301,
-    "nama": "Tunjung Dwijayanti",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 302,
+    "id": 293,
     "nama": "YUWANIKA, S.Pd",
     "nip": "",
     "jabatan": "Staff Pelaksana",
@@ -2940,1317 +2930,7 @@
     "password": ""
   },
   {
-    "id": 303,
-    "nama": "EKA YULIANDA, SKM",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 304,
-    "nama": "HESNAPRAHESTIE",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 305,
-    "nama": "ELMADINA PUTERI LESTARI, SKM",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 306,
-    "nama": "FITRIYANTI, S.PD",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 307,
-    "nama": "IIN SYARASWATI",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 308,
-    "nama": "FATMA AMELIA",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 309,
-    "nama": "ARDHI RIYANTO, ST",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 310,
-    "nama": "DADANG HARYONO, SE",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 311,
-    "nama": "QAHFI AL AZMI, ST",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 312,
-    "nama": "MUHAMMAD ARFAHRIZAL",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 313,
-    "nama": "BOBY SAPUTRA, SE",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 314,
-    "nama": "AHUR",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 315,
-    "nama": "MUHAMMAD ABDUL QHOIR, ST",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 316,
-    "nama": "MUHAMMAD ALDIANOR",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 317,
-    "nama": "DENI SUPRIANTO",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 318,
-    "nama": "ANUGERAH SAWMIL",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 319,
-    "nama": "RIVALDY RAMADHAN",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 320,
-    "nama": "PEMERLIANSYAH",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 321,
-    "nama": "IBRAHIM CAHAYA SUKMA",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 322,
-    "nama": "DANDY SAPUTRA",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 323,
-    "nama": "KARSONO",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 324,
-    "nama": "Muhammad Aditiya Nurrahim",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 325,
-    "nama": "Ahmad Miraji Efendi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 326,
-    "nama": "Beny Malik",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 327,
-    "nama": "Ahmad Rijali Hadi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 328,
-    "nama": "Amrullah Almukminin",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 329,
-    "nama": "Ella",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 330,
-    "nama": "Jumrianto",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 331,
-    "nama": "Suprastyo",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 332,
-    "nama": "Herman Nurgafur",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 333,
-    "nama": "Otma Hidayatullah",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 334,
-    "nama": "Ahmad Safei",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 335,
-    "nama": "Ahmad Untung Suparmanto",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 336,
-    "nama": "M.Zuhri Khanafi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 337,
-    "nama": "M.Raziv",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 338,
-    "nama": "Munawir Ahmad",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 339,
-    "nama": "Heru Gusandi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 340,
-    "nama": "Yahya",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 341,
-    "nama": "Imam Safi'i",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 342,
-    "nama": "Iman",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 343,
-    "nama": "Romansyah Bagan",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 344,
-    "nama": "Galo Sitaboyan",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 345,
-    "nama": "M.Syariffudin Susanto",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 346,
-    "nama": "M. Apriano Adhi Pratama",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 347,
-    "nama": "Delina Puspita",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 348,
-    "nama": "M.Sarkani",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 349,
-    "nama": "Sunarto",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 350,
-    "nama": "Wajir",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 351,
-    "nama": "Gunadi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 352,
-    "nama": "Nurul Qomari",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 353,
-    "nama": "Nyamin",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 354,
-    "nama": "Fatikhul Ikhsan",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 355,
-    "nama": "Sutrisno",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 356,
-    "nama": "Metdri",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 357,
-    "nama": "Sandi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 358,
-    "nama": "M.Mukhlis",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 359,
-    "nama": "Edi Triono",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 360,
-    "nama": "Chandra Lesmana",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 361,
-    "nama": "Ihin",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 362,
-    "nama": "Abdul Rachman",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 363,
-    "nama": "Nda",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 364,
-    "nama": "Rosidi Menton",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 365,
-    "nama": "Amin",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 366,
-    "nama": "Fahrul",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 367,
-    "nama": "Suriani",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 368,
-    "nama": "Welan Cahyadi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 369,
-    "nama": "Nuridan",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 370,
-    "nama": "Mulyono",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 371,
-    "nama": "Hasanul Fitriadi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 372,
-    "nama": "Lamota",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 373,
-    "nama": "Ali Fermadi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 374,
-    "nama": "Ahmad Noorahman",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 375,
-    "nama": "A.Samial Radadi Sidik",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 376,
-    "nama": "Nur Ngabidin",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 377,
-    "nama": "Muhammad Aditya",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 378,
-    "nama": "Ahmad Jordiansyah",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 379,
-    "nama": "Eric Samolla",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 380,
-    "nama": "Yaser Arahman",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 381,
-    "nama": "Wahyu Aji Purnomo",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 382,
-    "nama": "Mi'raj Fadillah",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 383,
-    "nama": "Imam Rujali",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 384,
-    "nama": "Muamar Noor Ragil",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 385,
-    "nama": "Muhammad Rizky",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 386,
-    "nama": "Irna Purwanti",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 387,
-    "nama": "Tukiran",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 388,
-    "nama": "Kholypah Puspita",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 389,
-    "nama": "Isnawati",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 390,
-    "nama": "B. Baith Baydillah BB",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 391,
-    "nama": "Sriyati",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 392,
-    "nama": "Agus Wibowo",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 393,
-    "nama": "Afgan Respati",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 394,
-    "nama": "Lumbertus Beni Murdani",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 395,
-    "nama": "Gusti Fauza",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 396,
-    "nama": "Muhammad Rahmadani",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 397,
-    "nama": "Suratun",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 398,
-    "nama": "Usman Mahyudi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 399,
-    "nama": "Lilis Masula",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 400,
-    "nama": "Muhammad riyadi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 401,
-    "nama": "Sri Kasmiyati",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 402,
-    "nama": "Sarjono",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 403,
-    "nama": "Ari Sumanti",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 404,
-    "nama": "Hefrianto",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 405,
-    "nama": "Ninik",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 406,
-    "nama": "Albanik",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 407,
-    "nama": "Satiyem",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 408,
-    "nama": "Hermony",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 409,
-    "nama": "Rohimah",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 410,
-    "nama": "Sri Sumiati",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 411,
-    "nama": "Sulistriani",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 412,
-    "nama": "Supatmi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 413,
-    "nama": "Muhammad Rizki Purnama",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 414,
-    "nama": "Siti Sholikhati",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 415,
-    "nama": "Supian Nedy",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 416,
-    "nama": "Agi Pangestu",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 417,
-    "nama": "Mistar Mulyono",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 418,
-    "nama": "Mursi",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 419,
-    "nama": "Muhammad Iqbal Saputra",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 420,
-    "nama": "Feri",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 421,
-    "nama": "Taufik Firdaus Nurhidayat",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 422,
-    "nama": "Aura Audya Salsabilla",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 423,
-    "nama": "Robijul Yahdi Saputra, SP.",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 424,
-    "nama": "FAZRY, S. Pd.",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 425,
-    "nama": "SAIDI RIDHO RIZKY",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 426,
-    "nama": "Orang",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 427,
-    "nama": "MUHAMMAD ARFAHRIZAL, S.I.KOM.",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 428,
-    "nama": "IBRAHIM CAHAYA SUKMA, S.AP.",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 429,
-    "nama": "IIN SYARASWATI, SE.",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 430,
-    "nama": "FATMA AMELIA, SKM.",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 431,
-    "nama": "Akhmad Noorahman",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 432,
-    "nama": "MUHAMMAD RIZKY PURNAMA (PETUGAS)",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 433,
-    "nama": "MUHAMMAD SARKANI (PETUGAS)",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 434,
+    "id": 294,
     "nama": "JESRIKA ZACHAWERUS",
     "nip": "",
     "jabatan": "cpns",
@@ -4260,57 +2940,7 @@
     "password": ""
   },
   {
-    "id": 435,
-    "nama": "DENI SUPRIYANTO (PETUGAS)",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 436,
-    "nama": "AHMAD SAMIAL (PETUGAS)",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 437,
-    "nama": "AHMAD JORDIANSYAH (PENGAWAS)",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 438,
-    "nama": "WAHYU AJI PURNOMO (PENGAWAS)",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 439,
-    "nama": "ERIC SAMOLLA (PENGAWAS)",
-    "nip": "",
-    "jabatan": "",
-    "bidang": "Tata Kota",
-    "unit": "TATA_KOTA",
-    "role": "EMPLOYEE",
-    "password": ""
-  },
-  {
-    "id": 440,
+    "id": 295,
     "nama": "BENY PRATAMA. S,Sos",
     "nip": "",
     "jabatan": "",
@@ -4320,7 +2950,7 @@
     "password": ""
   },
   {
-    "id": 441,
+    "id": 296,
     "nama": "RAHMA NAULI HUTABARAT",
     "nip": "",
     "jabatan": "",
@@ -4330,7 +2960,7 @@
     "password": ""
   },
   {
-    "id": 442,
+    "id": 297,
     "nama": "BRAINYMAN, S.Pd.",
     "nip": "",
     "jabatan": "",
@@ -4340,7 +2970,7 @@
     "password": ""
   },
   {
-    "id": 443,
+    "id": 298,
     "nama": "FAKHRI ABDURRAHMAN A. S.Kom",
     "nip": "",
     "jabatan": "",
@@ -4350,7 +2980,7 @@
     "password": ""
   },
   {
-    "id": 444,
+    "id": 299,
     "nama": "JEFRI SIANTONI, ST",
     "nip": "",
     "jabatan": "",
@@ -4360,7 +2990,7 @@
     "password": ""
   },
   {
-    "id": 445,
+    "id": 300,
     "nama": "AULIA RIDHA ANISYAH PUTRI",
     "nip": "",
     "jabatan": "",
@@ -4370,7 +3000,7 @@
     "password": ""
   },
   {
-    "id": 446,
+    "id": 301,
     "nama": "EKO ANIS SETYORINI",
     "nip": "",
     "jabatan": "",
@@ -4380,7 +3010,7 @@
     "password": ""
   },
   {
-    "id": 447,
+    "id": 302,
     "nama": "",
     "nip": "",
     "jabatan": "Sekretaris Dinas",

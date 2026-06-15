@@ -1,0 +1,89 @@
+{
+  "rules": {
+    "attendance": {
+      ".indexOn": ["status"],
+      "today": {
+        ".read": true,
+        ".write": true,
+        "$pegawaiId": {
+          ".validate": "newData.hasChildren(['status']) && newData.child('status').isString()",
+          "status": {
+            ".validate": "newData.isString() && (newData.val() === 'Hadir' || newData.val() === 'Dinas Dalam' || newData.val() === 'Dinas Luar' || newData.val() === 'Izin' || newData.val() === 'Sakit' || newData.val() === 'Tanpa Keterangan')"
+          },
+          "jamHadir": {
+            ".validate": "newData.isString() && newData.val().matches(/^[0-9]{2}:[0-9]{2}$/)"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+      "$other": {
+        ".write": false,
+        ".read": false
+      }
+    },
+    "apel": {
+      "session": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.isString() && (newData.val() === 'before' || newData.val() === 'ongoing' || newData.val() === 'ended' || newData.val() === 'ditiadakan')"
+      },
+      "reason": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.isString() || newData.hasChildren(['id', 'text'])"
+      },
+      "$other": {
+        ".write": false,
+        ".read": false
+      }
+    },
+    "qr": {
+      "current": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChildren(['token', 'issuedAt', 'expiresAt'])",
+        "token": {
+          ".validate": "newData.isString() && newData.val().length === 6"
+        },
+        "issuedAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "expiresAt": {
+          ".validate": "newData.isNumber() && newData.val() > data.val()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      },
+      "$other": {
+        ".write": false,
+        ".read": false
+      }
+    },
+    "pengajuan": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["pegawaiId", "statusVerifikasi", "createdAt"],
+      "$pengajuanId": {
+        ".validate": "newData.hasChildren(['pegawaiId', 'nama', 'statusBaru', 'keterangan', 'statusVerifikasi', 'createdAt'])",
+        "pegawaiId": { ".validate": "newData.isString()" },
+        "nama": { ".validate": "newData.isString()" },
+        "nip": { ".validate": "newData.isString()" },
+        "statusLama": { ".validate": "newData.isString()" },
+        "statusBaru": {
+          ".validate": "newData.isString() && (newData.val() === 'Hadir' || newData.val() === 'Dinas Dalam' || newData.val() === 'Dinas Luar' || newData.val() === 'Izin' || newData.val() === 'Sakit')"
+        },
+        "keterangan": { ".validate": "newData.isString() && newData.val().length >= 1" },
+        "dokumen": { ".validate": "newData.isString()" },
+        "waktu": { ".validate": "newData.isString()" },
+        "statusVerifikasi": {
+          ".validate": "newData.isString() && (newData.val() === 'menunggu' || newData.val() === 'disetujui' || newData.val() === 'ditolak')"
+        },
+        "createdAt": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
+      }
+    }
+  }
+}
