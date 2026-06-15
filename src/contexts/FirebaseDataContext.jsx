@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import { ref, onValue, set, update, push } from "firebase/database";
-import { database } from "../firebase";
+import { ref as storageRef, deleteObject } from "firebase/storage";
+import { database, storage } from "../firebase";
 import { useSession } from "./SessionContext";
 import {
   ATTENDANCE_PATH,
@@ -101,6 +102,42 @@ export function FirebaseDataProvider({ children }) {
     return () => unsub();
   }, []);
 
+  // ── Auto-cleanup: hapus file storage >24j setelah disetujui ──
+  useEffect(() => {
+    const FILE_TTL_MS = 24 * 60 * 60 * 1000;
+    const now = Date.now();
+
+    for (const item of pengajuan) {
+      if (
+        item.statusVerifikasi === "disetujui" &&
+        item.dokumenPath &&
+        item.approvedAt &&
+        now - item.approvedAt >= FILE_TTL_MS
+      ) {
+        const fileRef = storageRef(storage, item.dokumenPath);
+        deleteObject(fileRef)
+          .then(() => {
+            // Hapus referensi file di database
+            update(ref(database, `${PENGAJUAN_PATH}/${item.id}`), {
+              dokumenPath: "",
+              dokumen: "",
+            }).catch(() => {});
+          })
+          .catch((err) => {
+            if (err.code === "storage/object-not-found") {
+              // File sudah tidak ada — tetap bersihkan referensi
+              update(ref(database, `${PENGAJUAN_PATH}/${item.id}`), {
+                dokumenPath: "",
+                dokumen: "",
+              }).catch(() => {});
+            } else {
+              console.error("Gagal hapus file storage:", item.dokumenPath, err);
+            }
+          });
+      }
+    }
+  }, [pengajuan]);
+
   // ── Derived state ──
   const apelStatus = useMemo(() => getApelStatus(new Date(), apelSession), [apelSession]);
 
@@ -188,6 +225,7 @@ export function FirebaseDataProvider({ children }) {
       statusBaru: data.statusBaru || "",
       keterangan: data.keterangan || "",
       dokumen: data.dokumen || "",
+      dokumenPath: data.dokumenPath || "",
       waktu: new Date().toLocaleTimeString("id-ID", {
         hour: "2-digit",
         minute: "2-digit",
@@ -200,10 +238,11 @@ export function FirebaseDataProvider({ children }) {
 
   const handlePengajuanVerifikasi = useCallback(
     (submissionId, newStatus) => {
-      set(
-        ref(database, `${PENGAJUAN_PATH}/${submissionId}/statusVerifikasi`),
-        newStatus
-      );
+      // Update status + timestamp approval (untuk scheduling hapus file)
+      update(ref(database, `${PENGAJUAN_PATH}/${submissionId}`), {
+        statusVerifikasi: newStatus,
+        ...(newStatus === "disetujui" ? { approvedAt: Date.now() } : {}),
+      });
 
       if (newStatus === "disetujui") {
         const submission = pengajuan.find((s) => s.id === submissionId);

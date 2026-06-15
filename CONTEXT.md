@@ -6,10 +6,10 @@ Status proyek terkini. Update tiap selesai sesi.
 
 ## Status Terkini
 - **Branch:** `refactor-phase-1`
-- **Sesi terakhir:** 2026-06-15 — Fix akar masalah data placeholder: hapus mergeAttendanceWithPeople, stat 0 saat data kosong, tombol Reset Attendance di DeveloperConsole, hapus state_absensi.js (dead code)
+- **Sesi terakhir:** 2026-06-15 — Hapus Preview Data, pindah pencarian ke atas View As, dropdown overlay, sorting prefix, fix SearchInput remount bug
 - **Firebase:** Live — Realtime Database + Storage (upload file pengajuan)
 - **Build:** `npm run build` ✅
-- **Developer Console:** View As (4 role) + Summary Cards + Preview Data — tanpa placeholder/dead items
+- **Developer Console:** Search + dropdown hasil (prefix-first sort) — cari pegawai → langsung View As; View As (4 role) + Summary Cards — tanpa Preview Data/placeholder
 - **Legacy:** pegawai_legacy.json & Data Source Toggle dihapus
 
 ## Riwayat Sesi
@@ -21,6 +21,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `refactor-phase-1` | Final: CONTEXT.md sebagai status dinamis, CLAUDE.md fokus aturan, settings.json auto-baca CONTEXT tiap sesi |
 | 2026-06-15 | `refactor-phase-1` | Feature audit: hapus 9 placeholder DeveloperConsole + Data Source Toggle + legacy JSON, implementasi Firebase Storage upload file, hapus DEMO_LAST_MONTH_DISCIPLINE |
 | 2026-06-15 | `refactor-phase-1` | **Fix akar data placeholder:** hapus mergeAttendanceWithPeople (biarkan Firebase mentah), cabang data kosong di calcAttendanceStats return 0, guard PerhatianList, tombol Reset Attendance di DeveloperConsole, hapus state_absensi.js |
+| 2026-06-15 | `refactor-phase-1` | **DeveloperConsole cleanup:** hapus Preview Data section, pindah search ke atas View As, dropdown overlay hasil pencarian, sorting prefix-first, fix SearchInput remount bug (pindah luar komponen biar tidak kehilangan fokus tiap render) |
 
 ## Prioritas
 

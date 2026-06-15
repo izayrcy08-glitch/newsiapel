@@ -38,14 +38,16 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
 
     try {
       let dokumenUrl = "";
+      let dokumenPath = "";
 
       // Upload file ke Firebase Storage jika ada
       if (file) {
         const timestamp = Date.now();
         const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-        const storageRef = ref(storage, `pengajuan/${pegawai.id}/${timestamp}_${safeName}`);
-        const snapshot = await uploadBytes(storageRef, file);
+        const fileRef = ref(storage, `pengajuan/${pegawai.id}/${timestamp}_${safeName}`);
+        const snapshot = await uploadBytes(fileRef, file);
         dokumenUrl = await getDownloadURL(snapshot.ref);
+        dokumenPath = fileRef.fullPath;
       }
 
       // Kirim pengajuan ke Firebase via callback
@@ -56,6 +58,7 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
         statusBaru: selectedStatus,
         keterangan: keterangan.trim(),
         dokumen: dokumenUrl,
+        dokumenPath: dokumenPath,
       });
 
       showToast("Pengajuan berhasil dikirim");
