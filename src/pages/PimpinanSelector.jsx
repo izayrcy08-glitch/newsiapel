@@ -32,8 +32,14 @@ const PimpinanSelector = ({ pimpinanAccessRoles = [], masterPegawaiData = [], on
     return match ? (match.password || "") : "";
   };
 
-  // ── Dapatkan "username" (NIP prioritas, fallback Nama) ──
-  const getUsername = (item) => item.nip || item.name || "(tanpa identitas)";
+  // ── Dapatkan "username" (NIP prioritas → NIK → Nama) ──
+  const getUsername = (item) => {
+    if (item.nip) return item.nip;
+    // Cek NIK dari master data jika tidak ada NIP
+    const fromMaster = masterPegawaiData.find((p) => p.nama === item.name);
+    if (fromMaster && fromMaster.nik) return fromMaster.nik;
+    return item.name || "(tanpa identitas)";
+  };
 
   // ── Handler: pilih pimpinan → step password ──
   const handleSelectPimpinan = (item) => {
