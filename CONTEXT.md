@@ -9,7 +9,8 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
 - **Sesi terakhir:** 2026-06-15 — 🔒 Firebase Anonymous Auth + rules diperketat (`auth !== null`), bersihkan `.catch(() => {})`
-- **Firebase:** Live — Realtime Database + Storage lazy load + Rules terpasang
+- **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth) ✅
+- **⚠️ Firebase Console:** Rules sudah di-update di repo, **masih perlu di-copy manual ke Firebase Console** (Realtime Database → Rules → Publish)
 - **Build:** `npm run build` ✅
 - **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase overrides password (path `pegawai_passwords`) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
 - **Catatan:** Data pegawai masih di localStorage tiap browser — belum sync ke Firebase Realtime Database (kecuali password override)

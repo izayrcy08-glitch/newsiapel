@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { LoadingSpinner } from "./LoadingSpinner";
 
@@ -8,29 +8,24 @@ import { LoadingSpinner } from "./LoadingSpinner";
  * Diam-diam login anonim ke Firebase agar Realtime Database tidak dalam
  * Test Mode (yang expire 30 hari). Rules menggunakan `auth !== null`.
  *
- * Dampak ke user: NOL. Tidak ada UI login tambahan, tidak ada email.
- * Hanya loading ~0.5-1 detik saat pertama buka app.
+ * Dampak ke user: NOL. Loading ~0.5-1 detik saat pertama buka app (sesi
+ * baru). Kunjungan berikutnya langsung karena Firebase cache session.
  *
- * Jika gagal (Firebase outage), app tetap render — data akan error alami.
+ * Jika gagal (Firebase outage), muncul layar error + tombol reload.
  */
 export function AuthInit({ children }) {
   const [state, setState] = useState("loading"); // loading | ready | error
   const [errorMsg, setErrorMsg] = useState("");
-  const initiatedRef = useRef(false);
 
   useEffect(() => {
-    if (initiatedRef.current) return;
-    initiatedRef.current = true;
-
     const auth = getAuth();
 
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Sudah login (dari session sebelumnya atau baru selesai sign-in)
+        // Sudah login (cache session atau baru selesai sign-in)
         setState("ready");
-      } else if (!initiatedRef.current) {
-        // Belum login — sign in anonymously (sekali saja)
-        initiatedRef.current = true;
+      } else {
+        // Belum login — sign in anonymously
         signInAnonymously(auth).catch((err) => {
           console.error("Firebase anonymous auth gagal:", err);
           setErrorMsg(
