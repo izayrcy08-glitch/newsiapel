@@ -8,8 +8,8 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production) | `refactor-phase-1` (dev)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
-- **Sesi terakhir:** 2026-06-15 — Fix password persistence lintas domain (Firebase sync)
-- **Firebase:** Live — Realtime Database + Storage lazy load + Rules terpasang
+- **Sesi terakhir:** 2026-06-15 — Active Session: cegah login tabrakan (last-login-wins via Firebase)
+- **Firebase:** Live — Realtime Database + Storage lazy load + Rules terpasang (+activeSessions, +fingerprints, +pegawai_passwords)
 - **Build:** `npm run build` ✅
 - **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase overrides password (path `pegawai_passwords`) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
 - **Catatan:** Data pegawai masih di localStorage tiap browser — belum sync ke Firebase Realtime Database (kecuali password override)
@@ -37,14 +37,15 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `refactor-phase-1` | **Dead code cleanup** — hapus PanelPengajuan.jsx (97 baris, 0 imports), update SIAPEL_README.md. Semua fungsi pengajuan sudah di PanelKoreksi. Build ✅ |
 | 2026-06-15 | `main` | **Deploy Production** — merge refactor-phase-1 → main (--no-ff), push GitHub, deploy Vercel (https://siapel.vercel.app), Firebase Rules terpasang, siap pilot |
 | 2026-06-15 | `main` | **Fix password sync lintas domain** — 3 fix inkonsistensi password (admin fallback 355454→123456, H.Rody 811800→123321, Sekretaris Dinas nama kosong). Fitur ganti password kini simpan ke Firebase RTDB (`pegawai_passwords/{key}`) agar berlaku di semua domain (localhost + production). LoginPage cek Firebase overrides dulu, lalu localStorage, lalu fallback. DeveloperConsole + PanelKelolaPegawai bridge via `handleSavePasswordOverride`. Build ✅ |
+| 2026-06-15 | `main` | **Active Session — Last-Login-Wins** — cegah 1 akun login di 2 device. `sessionId` unik tiap browser, tulis ke `/activeSessions/{userId}` di Firebase. Listener realtime detect conflict (loginAt > listenerStartTime). Force logout + banner "Sesi Berkonflik" di LoginPage. Fix race condition: navigation sebelum write selesai, data stale dari sesi sebelumnya. Update firebase-rules.json: tambah path activeSessions, fingerprints, pegawai_passwords. Session protection best-effort (fire-and-forget, tidak blocking login). 5 file berubah, build ✅ |
 
 ## Prioritas
 
 1. 🔴 **Dashboard Pegawai — Ganti Password** — form ganti password 6 digit di dashboard pegawai (backend Firebase sync ✅ — tinggal bikin UI)
 2. 🔴 **Reset Device Binding (DeveloperConsole)** — tombol reset device fingerprint pegawai di panel/developer
 3. 🔴 **DashboardAdmin panel lazy loading** — PanelAbsensi dkk masih eager-loaded
-4. 🟡 **Paket 5 — Device Binding** — Firebase `/config/deviceBindingEnabled` toggle, kode siap tapi OFF sampai produksi masal
-5. 🟡 **Autentikasi Firebase** — Firebase Auth + role-based access (setelah login pilot stabil)
+4. 🟡 **Autentikasi Firebase** — Firebase Auth + role-based access (setelah login pilot stabil)
+5. 🟢 **Active Session (last-login-wins)** ✅ — /activeSessions di Firebase, listener realtime, conflict detection. Best-effort (client-side, tanpa Firebase Auth)
 6. 🟢 **DeveloperConsole fitur** ✅ — Menu Kelola Pegawai, Koreksi Absensi, Ganti Password admin/dev
 7. 🟢 **Ganti Password admin/dev (DeveloperConsole)** ✅ — Sekarang sync ke Firebase, berlaku lintas domain
 8. 🟢 **Unified Login Page** ✅ — 1 form untuk semua role, auto-detect, info kontak admin di bawah form
@@ -72,6 +73,7 @@ Firebase /apel/reason     → FirebaseDataContext → apelReason + apelReasonTex
 Firebase /pengajuan       → FirebaseDataContext → pengajuan[]
 Firebase /fingerprints/{id} → handleSaveFingerprint (device fingerprint saat login)
 Firebase /pegawai_passwords/{key} → handleSavePasswordOverride (ganti password admin/dev/pegawai — lintas domain)
+Firebase /activeSessions/{userId} → sessionId + loginAt (last-login-wins, deteksi login tabrakan)
 Firebase Cloud Storage    → Upload file dokumen pengajuan (via PengajuanStatusForm)
 QR /qr/current            → useQrGenerator (Admin) → Pegawai scan (TTL 10 detik)
 ```
