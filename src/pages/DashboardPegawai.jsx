@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import { Card } from "../components/Card";
-import { BackButton } from "../components/BackButton";
+import { LogoutConfirm } from "../components/LogoutConfirm";
 import { Countdown } from "../components/Countdown";
 import { ProgressRing } from "../components/ProgressRing";
 import { TokenFeedback } from "../components/TokenFeedback";
@@ -113,7 +113,7 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatu
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-600/5 rounded-full blur-3xl" />
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
-        <BackButton onClick={onBack} />
+        <LogoutConfirm onConfirm={onBack} />
 
         {/* Header */}
         <div className="mb-6">

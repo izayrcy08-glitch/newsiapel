@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import orgData from "../data/organization.json";
 import { Card } from "../components/Card";
-import { BackButton } from "../components/BackButton";
+import { LogoutConfirm } from "../components/LogoutConfirm";
 import { getAttendanceStatItems, calcAttendanceStats } from "../fitur/absensi/logika_absensi";
 import { REASON_OPTIONS, APEL_SESSIONS } from "../bersama/konstanta_aplikasi";
 import { formatTime } from "../bersama/util_waktu_dan_apel";
@@ -71,7 +71,7 @@ const DashboardAdmin = ({
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-3xl" />
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
-        <BackButton onClick={onBack} />
+        <LogoutConfirm onConfirm={onBack} />
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl font-black text-white">Admin Panel</h1>

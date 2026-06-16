@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import { Card } from "../components/Card";
+import { LogoutConfirm } from "../components/LogoutConfirm";
 import { BackButton } from "../components/BackButton";
 import { Eye, EyeOff } from "lucide-react";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
@@ -482,7 +483,7 @@ const DeveloperConsole = ({
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-6">
       <div className="relative z-10 max-w-sm mx-auto">
-        <BackButton onClick={onBack} />
+        <LogoutConfirm onConfirm={onBack} />
         <div className="mb-5">
           <h2 className="text-xl font-black text-white">Developer Console</h2>
           <p className="mt-1 text-slate-500 text-xs">Akun teknis internal untuk simulasi, audit, dan recovery.</p>

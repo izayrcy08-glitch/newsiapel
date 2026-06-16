@@ -13,7 +13,7 @@ const DeveloperConsole = lazy(() => import("./pages/DeveloperConsole"));
 function AppRouter() {
   const {
     page, activePegawai, selectedPimpinan,
-    masterPegawaiData, handleRoleSelect,
+    masterPegawaiData, goBack,
     handleAddPegawai, handleUpdatePegawai, handleDeletePegawai,
   } = useSession();
 
@@ -57,7 +57,7 @@ function AppRouter() {
               apelReasonText={apelReasonText}
               onScan={handleScan}
               onPengajuanSubmit={handlePengajuanSubmit}
-              onBack={() => handleRoleSelect()}
+              onBack={() => goBack()}
             />
           )
         : null;
@@ -73,7 +73,7 @@ function AppRouter() {
           apelReason={apelReason}
           apelReasonText={apelReasonText}
           selectedPimpinan={selectedPimpinan}
-          onBack={() => handleRoleSelect()}
+          onBack={() => goBack()}
         />
       );
 
@@ -91,7 +91,7 @@ function AppRouter() {
           onApelReasonChange={handleApelReasonChange}
           onScanSimulate={handleScanSimulate}
           onReset={handleReset}
-          onBack={() => handleRoleSelect()}
+          onBack={() => goBack()}
           onKoreksi={handleKoreksi}
           onPengajuanVerifikasi={handlePengajuanVerifikasi}
           onAddPegawai={handleAddPegawai}
@@ -122,7 +122,7 @@ function AppRouter() {
           onUpdatePegawai={handleUpdatePegawaiWithFirebase}
           onDeletePegawai={handleDeletePegawai}
           onSavePasswordOverride={handleSavePasswordOverride}
-          onBack={() => handleRoleSelect()}
+          onBack={() => goBack()}
         />
       );
 
