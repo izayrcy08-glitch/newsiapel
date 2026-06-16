@@ -53,7 +53,7 @@ const loadMasterPegawaiData = () => {
 
 const restoreSession = (masterData) => {
   try {
-    const raw = window.sessionStorage.getItem(SESSION_KEY);
+    const raw = window.localStorage.getItem(SESSION_KEY);
     if (!raw) return {};
     const saved = JSON.parse(raw);
     const p = saved.activePegawaiId
@@ -108,7 +108,7 @@ export function SessionProvider({ children }) {
   // Persist session
   useEffect(() => {
     try {
-      window.sessionStorage.setItem(
+      window.localStorage.setItem(
         SESSION_KEY,
         JSON.stringify({
           page,

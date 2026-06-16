@@ -145,15 +145,33 @@ export function FirebaseDataProvider({ children }) {
     return null;
   }, [page, role, activePegawai, selectedPimpinan]);
 
+  // ── Ref: apakah ini callback pertama setelah subscribe (sync awal) ──
+  const initialSyncRef = useRef(true);
+
   // ── Subscription: Active Session (deteksi login dari device lain) ──
-  // Sederhana: jika data di Firebase berubah dan sessionId berbeda → force logout
+  // Saat restart PWA, sessionIdRef baru → sync sessionId ke Firebase dulu
+  // Baru setelah itu pantau perubahan untuk deteksi login ganda
   useEffect(() => {
     if (!activeUserId) return;
+
+    // Reset untuk setiap subscription baru
+    initialSyncRef.current = true;
 
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
     const unsub = onValue(sessionRef, (snapshot) => {
       const val = snapshot.val();
-      // Tidak ada data session, atau sessionId berbeda → ada login dari device lain
+
+      // Callback pertama = initial sync: overwrite dengan sessionId kita
+      if (initialSyncRef.current) {
+        initialSyncRef.current = false;
+        set(ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`), {
+          sessionId: sessionIdRef.current,
+          loginAt: Date.now(),
+        }).catch(err => console.error("Gagal sync sessionId:", err));
+        return;
+      }
+
+      // Callback selanjutnya: sessionId berubah → ada login dari device lain
       if (val && val.sessionId !== sessionIdRef.current) {
         goBack();
       }
