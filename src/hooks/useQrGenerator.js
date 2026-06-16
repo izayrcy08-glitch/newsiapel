@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ref, onValue, set } from "firebase/database";
 import { database } from "../firebase";
 import { createQrToken } from "../utils/qr-token";
@@ -7,16 +7,21 @@ import { QR_PATH, QR_TOKEN_TTL_MS } from "../bersama/konstanta_aplikasi";
 /**
  * QR token generation lifecycle untuk Admin.
  *
- * Semua device membaca token dari Firebase (QR_PATH) via onValue.
- * Hanya device yang melihat token expired/tidak ada yang menulis ulang.
- * Dengan demikian semua device menampilkan token yang SAMA.
+ * Semua device membaca token yang SAMA dari Firebase via onValue.
+ * Regenerasi via timer tiap 1 detik (bukan via onValue) — timer update ref
+ * LANGSUNG supaya tidak ada race antara ref dan React render cycle.
  *
- * @param {{ active: boolean }} params — aktifkan generator (biasanya saat apel ongoing)
+ * onValue hanya untuk BACA dari device lain — tidak pernah nulis.
+ * Dengan begitu tidak ada feedback loop antara 2 device.
+ *
+ * @param {{ active: boolean }} params
  * @returns {{ currentQr: object|null, secsLeft: number, qrActive: boolean }}
  */
 export function useQrGenerator({ active = false } = {}) {
   const [currentQr, setCurrentQr] = useState(null);
   const [now, setNow] = useState(Date.now);
+  const currentQrRef = useRef(currentQr);
+  currentQrRef.current = currentQr;
 
   useEffect(() => {
     if (!active) {
@@ -33,41 +38,43 @@ export function useQrGenerator({ active = false } = {}) {
         issuedAt,
         expiresAt: issuedAt + QR_TOKEN_TTL_MS,
       };
+      // Update ref LANGSUNG supaya timer lihat data baru tanpa nunggu render
+      currentQrRef.current = qrData;
       setCurrentQr(qrData);
       set(ref(database, QR_PATH), qrData).catch((error) => {
         console.error("Gagal menyimpan QR token:", error);
       });
     };
 
-    // Subscribe ke perubahan QR_PATH
+    // ── onValue BACA SAJA — tidak pernah nulis ──
     const unsub = onValue(
       qrRef,
       (snapshot) => {
         const val = snapshot.val();
-        if (!val) {
-          // Tidak ada token sama sekali → generate
-          generateAndStoreToken();
-        } else if (val.expiresAt <= Date.now()) {
-          // Token expired → generate baru
-          generateAndStoreToken();
-        } else {
-          // Token masih valid — pakai dari Firebase (sama untuk semua device)
+        if (val && val.expiresAt > Date.now()) {
           setCurrentQr(val);
         }
       },
       (error) => {
-        console.error("Gagal baca QR token dari Firebase:", error);
-        // Fallback: pakai token lokal kalau Firebase error
-        if (!currentQr) generateAndStoreToken();
+        console.error("Gagal baca QR token:", error);
       }
     );
 
-    // Clock untuk hitung mundur
-    const clockTimer = setInterval(() => setNow(Date.now()), 500);
+    // ── Timer: update jam + regenerasi token expired ──
+    const timer = setInterval(() => {
+      const t = Date.now();
+      setNow(t);
+      const qr = currentQrRef.current;
+      if (!qr) {
+        generateAndStoreToken();
+      } else if (qr.expiresAt <= t) {
+        generateAndStoreToken();
+      }
+    }, 1000);
 
     return () => {
       unsub();
-      clearInterval(clockTimer);
+      clearInterval(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);

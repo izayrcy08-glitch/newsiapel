@@ -17,7 +17,7 @@ import { useShowMore } from "../hooks/useShowMore";
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PIMPINAN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], apelStatus, apelSession, apelReason, apelReasonText, selectedPimpinan, onBack }) => {
+const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], apelStatus, apelSession, apelReason, apelReasonText, selectedPimpinan, onLogout }) => {
   const { now, greeting, dateStr, timeWIB } = useClock();
   const [showDetailPengajuan, setShowDetailPengajuan] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
@@ -538,7 +538,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                   className="flex-1 py-2.5 rounded-xl bg-blue-900/30 backdrop-blur-md hover:bg-blue-800/40 text-slate-300 text-sm font-semibold transition-all border border-blue-700/30 active:scale-[0.97]">
                   Batal
                 </button>
-                <button onClick={() => { setShowLogoutConfirm(false); onBack(); }}
+                <button onClick={() => { setShowLogoutConfirm(false); onLogout(); }}
                   className="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 text-sm font-semibold transition-all border border-red-500/30 active:scale-[0.97]">
                   Keluar
                 </button>

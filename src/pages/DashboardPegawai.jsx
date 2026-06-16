@@ -18,7 +18,7 @@ import { useQrScanner } from "../hooks/useQrScanner";
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PEGAWAI
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatus, apelReason, apelReasonText, onScan, onBack, onPengajuanSubmit }) => {
+const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatus, apelReason, apelReasonText, onScan, onLogout, onPengajuanSubmit }) => {
   const { now, greeting } = useClock();
   const [showScanner, setShowScanner] = useState(false);
   const [showManualCode, setShowManualCode] = useState(false);
@@ -113,7 +113,7 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatu
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-600/5 rounded-full blur-3xl" />
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
-        <LogoutConfirm onConfirm={onBack} />
+        <LogoutConfirm onConfirm={onLogout} />
 
         {/* Header */}
         <div className="mb-6">

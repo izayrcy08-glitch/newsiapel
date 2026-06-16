@@ -217,7 +217,7 @@ const PasswordChangeForm = ({ onBack, onSavePasswordOverride }) => {
 // PAGE: DEVELOPER CONSOLE
 // ══════════════════════════════════════════════════════════════════════════════
 const DeveloperConsole = ({
-  onBack,
+  onLogout,
   masterPegawaiData,
   attendance,
   pengajuan = [],
@@ -483,7 +483,7 @@ const DeveloperConsole = ({
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-6">
       <div className="relative z-10 max-w-sm mx-auto">
-        <LogoutConfirm onConfirm={onBack} />
+        <LogoutConfirm onConfirm={onLogout} />
         <div className="mb-5">
           <h2 className="text-xl font-black text-white">Developer Console</h2>
           <p className="mt-1 text-slate-500 text-xs">Akun teknis internal untuk simulasi, audit, dan recovery.</p>

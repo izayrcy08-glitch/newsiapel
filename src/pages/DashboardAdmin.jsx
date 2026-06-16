@@ -19,7 +19,7 @@ import PanelQR from "../panels/PanelQR";
 const DashboardAdmin = ({
   people = pegawaiData, attendance, pengajuan = [], apelStatus, apelSession,
   apelReason, apelReasonText, onAppealPhaseChange, onApelReasonChange,
-  onScanSimulate, onReset, onBack, onKoreksi, onPengajuanVerifikasi,
+  onScanSimulate, onReset, onLogout, onKoreksi, onPengajuanVerifikasi,
   onAddPegawai, onUpdatePegawai, onDeletePegawai, readOnly = false,
 }) => {
   const { now } = useClock();
@@ -71,7 +71,7 @@ const DashboardAdmin = ({
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-3xl" />
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
-        <LogoutConfirm onConfirm={onBack} />
+        <LogoutConfirm onConfirm={onLogout} />
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl font-black text-white">Admin Panel</h1>

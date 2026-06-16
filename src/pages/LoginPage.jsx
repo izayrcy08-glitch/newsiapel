@@ -10,13 +10,6 @@ import { getDeviceFingerprint } from "../utils/device-fingerprint";
 // CREDENTIAL HELPERS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-/** Helper: race antara promise dan timeout */
-const withTimeout = (promise, ms) =>
-  Promise.race([
-    promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms)),
-  ]);
-
 const getAdminCred = (overrides = {}) => {
   try {
     const stored = window.localStorage.getItem("siapel.adminPassword");
@@ -165,7 +158,7 @@ const LoginPage = () => {
     handleUpdatePegawai,
     handlePimpinanSelect,
   } = useSession();
-  const { handleSaveFingerprint, passwordOverrides, passwordOverridesLoaded, handleSaveActiveSession } = useFirebaseData();
+  const { handleSaveFingerprint, passwordOverrides, passwordOverridesLoaded } = useFirebaseData();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -210,8 +203,6 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
-        // Simpan session ke Firebase — await with timeout 3 detik
-        await withTimeout(handleSaveActiveSession("admin"), 3000).catch(err => console.error("Session admin gagal:", err));
         setRole("admin");
         setPage("admin");
         return;
@@ -224,7 +215,6 @@ const LoginPage = () => {
           setLoading(false);
           return;
         }
-        await withTimeout(handleSaveActiveSession("developer"), 3000).catch(err => console.error("Session developer gagal:", err));
         setRole("developer");
         setPage("developer");
         return;
@@ -249,9 +239,6 @@ const LoginPage = () => {
         setLoading(false);
         return;
       }
-
-      const userId = `pegawai_${pegawai.id}`;
-      await withTimeout(handleSaveActiveSession(userId), 3000).catch(err => console.error("Session pegawai gagal:", err));
 
       const fp = getDeviceFingerprint();
       handleSaveFingerprint(pegawai.id, fp);

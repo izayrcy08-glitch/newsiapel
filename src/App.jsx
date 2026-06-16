@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useCallback } from "react";
 import { SessionProvider, useSession } from "./contexts/SessionContext";
 import { FirebaseDataProvider, useFirebaseData } from "./contexts/FirebaseDataContext";
 import { LoginPage } from "./pages/LoginPage";
@@ -12,19 +12,28 @@ const DeveloperConsole = lazy(() => import("./pages/DeveloperConsole"));
 
 function AppRouter() {
   const {
-    page, activePegawai, selectedPimpinan,
+    page, role, activePegawai, selectedPimpinan,
     masterPegawaiData, goBack,
     handleAddPegawai, handleUpdatePegawai, handleDeletePegawai,
   } = useSession();
 
   const {
     attendance, apelStatus, apelSession, apelReason, apelReasonText,
-    pengajuan,
+    pengajuan, activeUserId,
+    handleClearActiveSession,
     handleScan, handleScanSimulate, handleReset, handleKoreksi,
     handleApelSessionChange, handleApelReasonChange,
     handlePengajuanSubmit, handlePengajuanVerifikasi,
     handleSavePasswordOverride,
   } = useFirebaseData();
+
+  // ── Logout handler: bersihkan session Firebase + navigasi ke login ──
+  const handleLogout = useCallback(() => {
+    if (activeUserId) {
+      handleClearActiveSession(activeUserId);
+    }
+    goBack();
+  }, [activeUserId, handleClearActiveSession, goBack]);
 
   // Bridge: saat password pegawai diubah, simpan juga ke Firebase
   const handleUpdatePegawaiWithFirebase = (pegawaiId, updates) => {
@@ -57,7 +66,7 @@ function AppRouter() {
               apelReasonText={apelReasonText}
               onScan={handleScan}
               onPengajuanSubmit={handlePengajuanSubmit}
-              onBack={() => goBack()}
+              onLogout={handleLogout}
             />
           )
         : null;
@@ -73,7 +82,7 @@ function AppRouter() {
           apelReason={apelReason}
           apelReasonText={apelReasonText}
           selectedPimpinan={selectedPimpinan}
-          onBack={() => goBack()}
+          onLogout={handleLogout}
         />
       );
 
@@ -91,7 +100,7 @@ function AppRouter() {
           onApelReasonChange={handleApelReasonChange}
           onScanSimulate={handleScanSimulate}
           onReset={handleReset}
-          onBack={() => goBack()}
+          onLogout={handleLogout}
           onKoreksi={handleKoreksi}
           onPengajuanVerifikasi={handlePengajuanVerifikasi}
           onAddPegawai={handleAddPegawai}
@@ -122,7 +131,7 @@ function AppRouter() {
           onUpdatePegawai={handleUpdatePegawaiWithFirebase}
           onDeletePegawai={handleDeletePegawai}
           onSavePasswordOverride={handleSavePasswordOverride}
-          onBack={() => goBack()}
+          onLogout={handleLogout}
         />
       );
 

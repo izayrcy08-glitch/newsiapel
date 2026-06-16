@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { ref, onValue, set, update, push } from "firebase/database";
+import { ref, onValue, set, update, push, get } from "firebase/database";
 import { database } from "../firebase";
 import { deleteStorageFile } from "../utils/storage-helper";
 import { useSession } from "./SessionContext";
@@ -43,13 +43,35 @@ const generateUUID = () => {
   });
 };
 
+/**
+ * getDeviceId — ID unik perangkat yang PERSISTEN di localStorage.
+ * Berbeda dari sessionId yang baru tiap halaman di-refresh.
+ * Dipakai untuk bedain "device sama setelah refresh" vs "device beda".
+ */
+const getDeviceId = () => {
+  try {
+    let id = window.localStorage.getItem("siapel_device_id");
+    if (!id) {
+      id = generateUUID();
+      window.localStorage.setItem("siapel_device_id", id);
+    }
+    return id;
+  } catch {
+    return generateUUID();
+  }
+};
+
 const FirebaseDataContext = createContext(null);
 
 export function FirebaseDataProvider({ children }) {
   const { page, role, activePegawai, selectedPimpinan, goBack, masterPegawaiData } = useSession();
 
-  // Session ID unik untuk browser ini — dipakai untuk deteksi login ganda
+  // Session ID unik tiap kali halaman di-load — dipakai untuk deteksi login ganda
   const sessionIdRef = useRef(generateUUID());
+
+  // Device ID persisten (localStorage) — tetap sama walau halaman di-refresh
+  // Dipakai untuk bedain "device yang sama setelah F5" vs "device berbeda"
+  const deviceIdRef = useRef(getDeviceId());
 
   const [attendance, setAttendance] = useState({});
   const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING);
@@ -177,8 +199,10 @@ export function FirebaseDataProvider({ children }) {
   const initialSyncRef = useRef(true);
 
   // ── Subscription: Active Session (deteksi login dari device lain) ──
-  // Saat restart PWA, sessionIdRef baru → sync sessionId ke Firebase dulu
-  // Baru setelah itu pantau perubahan untuk deteksi login ganda
+  // Strategi:
+  //   - Callback pertama (initialSync): tulis sessionId + deviceId ke Firebase
+  //   - Callback selanjutnya: jika sessionId berubah → ada login device lain → goBack()
+  //   - Tambahan: periodic get() tiap 15 detik sebagai fallback kalau onValue lambat
   useEffect(() => {
     if (!activeUserId) return;
 
@@ -189,24 +213,56 @@ export function FirebaseDataProvider({ children }) {
     const unsub = onValue(sessionRef, (snapshot) => {
       const val = snapshot.val();
 
-      // Callback pertama = initial sync: overwrite dengan sessionId kita
+      // Callback pertama = initial sync: tulis sessionId + deviceId kita
       if (initialSyncRef.current) {
         initialSyncRef.current = false;
         set(ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`), {
           sessionId: sessionIdRef.current,
+          deviceId: deviceIdRef.current,
           loginAt: Date.now(),
         }).catch(err => console.error("Gagal sync sessionId:", err));
         return;
       }
 
-      // Callback selanjutnya: sessionId berubah → ada login dari device lain
-      if (val && val.sessionId !== sessionIdRef.current) {
+      // Callback selanjutnya: sessionId berubah atau deviceId beda → konflik
+      if (val && (val.sessionId !== sessionIdRef.current || val.deviceId !== deviceIdRef.current)) {
         goBack();
       }
     });
 
-    return () => unsub();
+    // Periodic conflict check tiap 15 detik
+    // Fallback untuk kasus onValue lambat (PWA di background, koneksi lemot)
+    const conflictTimer = setInterval(async () => {
+      try {
+        const snap = await get(ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`));
+        const val = snap.val();
+        if (val && val.sessionId !== sessionIdRef.current) {
+          goBack();
+        }
+      } catch (_) {
+        // Silent — onValue tetap jalan sebagai primary
+      }
+    }, 15000);
+
+    return () => {
+      unsub();
+      clearInterval(conflictTimer);
+    };
   }, [activeUserId, goBack]);
+
+  // ── Bersihkan session saat logout (activeUserId berubah dari X → null) ──
+  // Dipisah dari subscription biar nge-clear sesi bahkan saat onValue sedang delay
+  const prevActiveUserIdRef = useRef(activeUserId);
+  useEffect(() => {
+    const prev = prevActiveUserIdRef.current;
+    prevActiveUserIdRef.current = activeUserId;
+
+    if (prev && prev !== activeUserId) {
+      // User logout: hapus session dari Firebase
+      set(ref(database, `${ACTIVE_SESSION_PATH}/${prev}`), null)
+        .catch(err => console.error("Gagal bersihkan session:", err));
+    }
+  }, [activeUserId]);
 
   // ── Auto-cleanup: hapus file storage >24j setelah disetujui ──
   useEffect(() => {
@@ -378,13 +434,6 @@ export function FirebaseDataProvider({ children }) {
     set(ref(database, `${PEGAWAI_PASSWORDS_PATH}/${key}`), password);
   }, []);
 
-  const handleSaveActiveSession = useCallback((userId) => {
-    return set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), {
-      sessionId: sessionIdRef.current,
-      loginAt: Date.now(),
-    });
-  }, []);
-
   const handleClearActiveSession = useCallback((userId) => {
     if (!userId) return;
     set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), null);
@@ -402,6 +451,7 @@ export function FirebaseDataProvider({ children }) {
       passwordOverridesLoaded,
       firebaseReady,
       firebaseError,
+      activeUserId,
       handleScan,
       handleScanSimulate,
       handleReset,
@@ -412,18 +462,17 @@ export function FirebaseDataProvider({ children }) {
       handlePengajuanVerifikasi,
       handleSaveFingerprint,
       handleSavePasswordOverride,
-      handleSaveActiveSession,
       handleClearActiveSession,
     }),
     [
       attendance, apelSession, apelReason, apelReasonText, apelStatus, pengajuan, passwordOverrides,
-      passwordOverridesLoaded,
+      passwordOverridesLoaded, activeUserId,
       firebaseReady, firebaseError,
       handleScan, handleScanSimulate, handleReset, handleKoreksi,
       handleApelSessionChange, handleApelReasonChange,
       handlePengajuanSubmit, handlePengajuanVerifikasi,
       handleSaveFingerprint, handleSavePasswordOverride,
-      handleSaveActiveSession, handleClearActiveSession,
+      handleClearActiveSession,
     ]
   );
 
