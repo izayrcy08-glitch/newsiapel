@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { LogOut } from "lucide-react";
 import pegawaiData from "../data/pegawai_master.json";
 import orgData from "../data/organization.json";
 import { Card } from "../components/Card";
-import { BackButton } from "../components/BackButton";
 import { ProgressRing } from "../components/ProgressRing";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { REASON_OPTIONS } from "../bersama/konstanta_aplikasi";
@@ -21,6 +21,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
   const { now, greeting, dateStr, timeWIB } = useClock();
   const [showDetailPengajuan, setShowDetailPengajuan] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const isDitiadakan = apelStatus === "ditiadakan";
   const displayPimpinan = selectedPimpinan || {
@@ -90,10 +91,21 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
       { label: "Sakit", value: bStats.sakit, color: "text-orange-400" },
     ];
     return (
-      <div className="min-h-screen bg-[#070b13] px-4 py-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-slate-950 px-4 py-6">
+        {/* Bidang detail — background decoration */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-20 -left-20 w-[400px] h-[400px] bg-blue-600/8 rounded-full blur-3xl" />
+          <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-3xl" />
+        </div>
         <div className="relative z-10 max-w-sm mx-auto">
-          <BackButton onClick={() => setSelectedBidang(null)} />
-          <Card className="p-5 mb-4 border-slate-600/40 bg-slate-950/70 shadow-[0_18px_60px_rgba(0,0,0,0.32)]">
+          <button onClick={() => setSelectedBidang(null)}
+            className="flex items-center gap-2 text-slate-400 hover:text-white text-sm font-medium transition-colors mb-4">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Kembali
+          </button>
+          <Card className="p-5 mb-4 border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_18px_60px_rgba(0,0,0,0.32)]">
             <div className="flex items-start justify-between gap-3 mb-5">
               <div>
                 <h2 className="text-xl font-black text-slate-50 uppercase leading-tight">{b.nama}</h2>
@@ -129,17 +141,26 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
   }
 
   return (
-    <div className="min-h-screen bg-[#070b13] px-4 py-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-slate-950 px-4 py-6">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.08),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(148,163,184,0.08),transparent_32%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.08),transparent_32%)]" />
+        <div className="absolute -top-20 -left-20 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-3xl" />
         <div className="absolute top-0 left-0 w-80 h-80 bg-amber-500/6 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-slate-300/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-blue-700/8 rounded-full blur-3xl" />
       </div>
       <div className="relative z-10 max-w-sm mx-auto">
-        <BackButton onClick={onBack} />
+        {/* Logout — pojok kanan atas */}
+        <div className="flex justify-end mb-4">
+          <button onClick={() => setShowLogoutConfirm(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/30 backdrop-blur-md border border-blue-700/20 hover:border-red-400/50 hover:bg-red-950/20 group transition-all duration-200 active:scale-[0.95] text-xs">
+            <LogOut className="w-3.5 h-3.5 text-blue-400 group-hover:text-red-400 transition-colors" />
+            <span className="text-slate-400 group-hover:text-red-300 transition-colors">Keluar</span>
+          </button>
+        </div>
 
         {/* Header */}
-        <div className="mb-6 border-b border-amber-200/10 pb-4">
+        <div className="mb-6 backdrop-blur-xl bg-black/20 px-4 py-4 rounded-2xl border border-blue-700/15">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-amber-200/80 text-sm font-medium">{greeting},</p>
@@ -165,7 +186,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
 
         {/* Banner Apel Ditiadakan */}
         {isDitiadakan && (
-          <Card className="p-4 mb-4 border-amber-500/30 bg-amber-500/10">
+          <Card className="p-4 mb-4 border-amber-500/30 bg-black/40 backdrop-blur-xl">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-xl">⚠️</div>
               <div>
@@ -180,7 +201,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
         {/* Main Stats + Ring */}
         {!isDitiadakan && (
           <>
-            <Card className="p-5 mb-4 border-amber-200/15 bg-slate-950/70 shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
+            <Card className="p-5 mb-4 border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_18px_55px_rgba(0,0,0,0.28)]">
               <div className="flex items-center gap-5">
                 <ProgressRing pct={stats.persen} size={100} stroke={9} color="#f59e0b" label="Kehadiran" />
                 <div className="flex-1 space-y-2">
@@ -200,7 +221,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
 
             <div className="grid grid-cols-3 gap-2 mb-4">
               {statItems.map(s => (
-                <Card key={s.label} className="p-3 text-center border-slate-600/35 bg-slate-950/55 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+                <Card key={s.label} className="p-3 text-center border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
                   <div className="text-xl mb-1">{s.icon}</div>
                   <div className={`text-lg font-black ${s.color}`}>{s.value}</div>
                   <div className="text-slate-400 text-xs leading-tight">{s.label}</div>
@@ -211,13 +232,13 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
         )}
 
         {/* Perlu Perhatian */}
-        <Card className="p-4 mb-4 border-slate-600/40 bg-slate-950/65 shadow-[0_14px_42px_rgba(0,0,0,0.24)]">
+        <Card className="p-4 mb-4 border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_14px_42px_rgba(0,0,0,0.24)]">
           <div className="mb-3 border-b border-slate-700/50 pb-3">
             <div className="text-slate-50 font-bold text-sm">Pegawai Perlu Perhatian</div>
             <div className="text-slate-500 text-xs mt-0.5">Top 3 berdasarkan sanksi bulan ini</div>
           </div>
           {visiblePerhatianList.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-slate-700/60 bg-slate-900/35 px-4 py-5 text-center">
+            <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 px-4 py-5 text-center">
               <div className="text-slate-300 text-sm font-semibold">Belum ada data operasional</div>
               <div className="text-slate-500 text-xs mt-1">Daftar ini akan terisi setelah data sanksi nyata tersedia.</div>
             </div>
@@ -237,7 +258,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                         tanpaKeterangan >= 2 ? "bg-yellow-400" :
                           "bg-slate-200";
                   return (
-                    <div key={r.pegawaiId} className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                    <div key={r.pegawaiId} className="rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                       <div className="flex items-start gap-3">
                         <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full ${indicatorClass}`} />
                         <div className="min-w-0 flex-1">
@@ -259,7 +280,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
               </div>
               <button
                 onClick={togglePerhatian}
-                className="mt-3 w-full py-2.5 rounded-xl bg-slate-900/80 text-slate-300 text-xs font-bold border border-slate-700/70 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
+                className="mt-3 w-full py-2.5 rounded-xl bg-blue-900/30 backdrop-blur-md text-slate-300 text-xs font-bold border border-blue-700/30 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
               >
                 {showAllPerhatian ? "Tutup Detail" : "Lihat Semua"}
               </button>
@@ -269,13 +290,13 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
 
         {/* Kehadiran per Bidang */}
         <div className="mb-2">
-          <Card className="p-4 border-amber-200/15 bg-slate-950/65 shadow-[0_18px_55px_rgba(0,0,0,0.26)]">
+          <Card className="p-4 border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_18px_55px_rgba(0,0,0,0.26)]">
             <div className="mb-4 border-b border-amber-200/10 pb-3">
               <div className="text-amber-100/90 text-xs font-semibold uppercase tracking-[0.18em]">Kehadiran Per Bidang</div>
               <div className="text-slate-600 text-[11px] mt-0.5">Analitik performa bidang hari ini dan bulan lalu</div>
             </div>
 
-            <div className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3.5 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+            <div className="rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3.5 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <div className="text-slate-50 text-sm font-black">🏆 Peringkat Hari Ini</div>
@@ -286,7 +307,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                 <button
                   onClick={() => showOperationalStats && toggleBidangToday()}
                   disabled={!showOperationalStats || isDitiadakan}
-                  className="text-xs font-bold rounded-lg px-2.5 py-1.5 transition-all active:scale-[0.98] border border-slate-700/70 bg-slate-950/80 text-slate-300 disabled:cursor-not-allowed disabled:opacity-60 hover:border-amber-200/25 hover:text-amber-100"
+                  className="text-xs font-bold rounded-lg px-2.5 py-1.5 transition-all active:scale-[0.98] border border-blue-700/30 bg-blue-900/30 text-slate-300 disabled:cursor-not-allowed disabled:opacity-60 hover:border-amber-200/25 hover:text-amber-100"
                 >
                   {showOperationalStats ? (showAllBidangToday ? "Tutup" : "Lihat Semua") : "—"}
                 </button>
@@ -300,7 +321,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                       <button
                         key={b.id}
                         onClick={() => setSelectedBidang(b)}
-                        className="w-full rounded-xl border border-slate-700/55 bg-slate-950/55 p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-slate-900/70"
+                        className="w-full rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-black/50"
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
@@ -320,7 +341,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
               ) : (
                 <div className="space-y-2">
                   {[1, 2, 3].map((index) => (
-                    <div key={index} className="w-full rounded-xl border border-dashed border-slate-700/60 bg-slate-950/40 p-3">
+                    <div key={index} className="w-full rounded-xl border border-dashed border-blue-700/20 bg-black/20 p-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 text-xl text-center text-slate-500">—</div>
                         <div className="min-w-0 flex-1">
@@ -338,7 +359,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
               )}
             </div>
 
-            <div className="rounded-xl border border-slate-700/50 bg-slate-900/55 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+            <div className="rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <div className="text-slate-50 text-sm font-black">🏅 Kehadiran Per Bidang</div>
@@ -347,7 +368,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                 <button
                   onClick={() => showOperationalStats && toggleLastMonth()}
                   disabled={!showOperationalStats}
-                  className="text-xs font-bold rounded-lg px-2.5 py-1.5 transition-all active:scale-[0.98] border border-slate-700/70 bg-slate-950/80 text-slate-300 disabled:cursor-not-allowed disabled:opacity-60 hover:border-amber-200/25 hover:text-amber-100"
+                  className="text-xs font-bold rounded-lg px-2.5 py-1.5 transition-all active:scale-[0.98] border border-blue-700/30 bg-blue-900/30 text-slate-300 disabled:cursor-not-allowed disabled:opacity-60 hover:border-amber-200/25 hover:text-amber-100"
                 >
                   {showOperationalStats ? (showAllLastMonth ? "Tutup" : "Lihat Semua") : "—"}
                 </button>
@@ -361,7 +382,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                       <button
                         key={b.id}
                         onClick={() => setSelectedBidang(b)}
-                        className="w-full rounded-xl border border-slate-700/55 bg-slate-950/55 p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-slate-900/70"
+                        className="w-full rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-black/50"
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
@@ -376,7 +397,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                   })}
                 </div>
               ) : (
-                <div className="rounded-xl border border-dashed border-slate-700/60 bg-slate-950/35 px-4 py-5 text-center">
+                <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 px-4 py-5 text-center">
                   <div className="text-slate-300 text-sm font-semibold">Belum ada data kehadiran hari ini</div>
                   <div className="text-slate-500 text-xs mt-1">Data akan muncul setelah pegawai melakukan absensi.</div>
                 </div>
@@ -386,7 +407,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
         </div>
 
         {/* ─── PERUBAHAN STATUS HARI INI - PIMPINAN (RINGKASAN) ─── */}
-        <Card className="p-4 mb-4 border-slate-600/40 bg-slate-950/65">
+        <Card className="p-4 mb-4 border-blue-700/20 bg-black/40 backdrop-blur-xl">
           <div className="mb-3 border-b border-slate-700/50 pb-3">
             <div className="text-slate-50 font-bold text-sm">📋 Perubahan Status Hari Ini</div>
             <div className="text-slate-500 text-xs mt-0.5">Monitoring perubahan absensi pegawai</div>
@@ -427,7 +448,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                   </div>
                   <button
                     onClick={() => setShowDetailPengajuan(true)}
-                    className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors border border-slate-700/50"
+                    className="w-full py-2.5 rounded-xl bg-blue-900/30 backdrop-blur-md hover:bg-blue-800/40 text-slate-300 text-sm font-semibold transition-colors border border-blue-700/30"
                   >
                     Lihat Detail
                   </button>
@@ -436,13 +457,13 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
             })()
           ) : (
             <div className="space-y-3">
-              <div className="rounded-xl border border-dashed border-slate-700/60 bg-slate-950/40 p-4 text-center">
+              <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 p-4 text-center">
                 <div className="text-slate-300 text-sm font-semibold">Menunggu data pilot</div>
                 <div className="text-slate-500 text-xs mt-1">Panel perubahan status akan terisi saat pilot project berjalan.</div>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {["Dinas Luar", "Izin", "Sakit"].map((label) => (
-                  <div key={label} className="rounded-xl border border-dashed border-slate-700/60 bg-slate-950/40 p-3 text-center">
+                  <div key={label} className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 p-3 text-center">
                     <div className="text-lg mb-1">—</div>
                     <div className="text-slate-400 text-xs font-semibold">{label}</div>
                     <div className="text-slate-500 text-sm font-black mt-1">—</div>
@@ -456,7 +477,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
         {/* DETAIL PENGAJUAN MODAL */}
         {showDetailPengajuan && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl p-5 w-full max-w-sm max-h-[85vh] overflow-y-auto">
+            <div className="bg-black/40 backdrop-blur-xl border border-blue-700/20 rounded-2xl p-5 w-full max-w-sm max-h-[85vh] overflow-y-auto shadow-[0_18px_60px_rgba(0,0,0,0.5)]">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-white font-bold">📋 Perubahan Status Hari Ini</h3>
@@ -496,9 +517,32 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                   </div>
                 ))}
               </div>
-              <button onClick={() => setShowDetailPengajuan(false)} className="w-full mt-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition-colors border border-slate-700/50">
+              <button onClick={() => setShowDetailPengajuan(false)} className="w-full mt-4 py-3 rounded-xl bg-blue-900/30 backdrop-blur-md hover:bg-blue-800/40 text-slate-300 text-sm font-semibold transition-colors border border-blue-700/30">
                 Tutup
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* ─── KONFIRMASI LOGOUT ─── */}
+        {showLogoutConfirm && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-black/50 backdrop-blur-xl border border-blue-700/20 rounded-2xl p-6 w-full max-w-xs text-center shadow-[0_18px_60px_rgba(0,0,0,0.5)]">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+                <LogOut className="w-5 h-5 text-red-400" />
+              </div>
+              <div className="text-white font-bold text-lg mb-2">Yakin keluar?</div>
+              <div className="text-slate-400 text-xs mb-6">Anda akan kembali ke halaman login</div>
+              <div className="flex gap-3">
+                <button onClick={() => setShowLogoutConfirm(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-blue-900/30 backdrop-blur-md hover:bg-blue-800/40 text-slate-300 text-sm font-semibold transition-all border border-blue-700/30 active:scale-[0.97]">
+                  Batal
+                </button>
+                <button onClick={() => { setShowLogoutConfirm(false); onBack(); }}
+                  className="flex-1 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-300 text-sm font-semibold transition-all border border-red-500/30 active:scale-[0.97]">
+                  Keluar
+                </button>
+              </div>
             </div>
           </div>
         )}
