@@ -8,7 +8,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production) | `refactor-phase-1` (dev)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
-- **Sesi terakhir:** 2026-06-15 — Fix AuthInit fire-and-forget + anonymous auth berhasil aktif
+- **Sesi terakhir:** 2026-06-16 — Session persistence localStorage + LogoutConfirm reusable + fix blank HP + QR token sync
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth aktif ✅)
 - **Firebase Console:** Rules sudah di-publish, Anonymous Auth aktif, email Test Mode expire berhenti ✅
 - **Build:** `npm run build` ✅
@@ -45,6 +45,10 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `main` | **🔒 Firebase Anonymous Auth + Rules `auth !== null`** — Tambah AuthInit component (signInAnonymously), semua `.read`/`.write` dari `true` jadi `auth !== null` di firebase-rules.json. Hapus `.catch(() => {})` di LoginPage & FirebaseDataContext (ganti console.error). Bundle build masih sama. Fix email Firebase Test Mode expire 5 hari. |
 | 2026-06-15 | `main` | **Fix AuthInit loading forever** — Bug: `initiatedRef` di-set `true` sebelum `onAuthStateChanged` callback, jadi `signInAnonymously` tidak pernah kepanggil. Fix: hapus ref, panggil langsung dari callback saat user `null`. Loading cuma ~0.5-1 detik di kunjungan pertama. |
 | 2026-06-15 | `main` | **Fix AuthInit fire-and-forget + Anonymous Auth berhasil** — Hapus loading screen total, render langsung tanpa nunggu auth. `signInAnonymously` fire-and-forget di background. User tidak lihat loading sama sekali. Anonymous Auth berhasil aktif — Firebase Test Mode aman. Fix minor: LoginPage guard `passwordOverridesLoaded` dari blocking jadi warning, session listener tidak force logout saat session null. ✅ |
+| 2026-06-16 | `main` | **Session persistence localStorage** — 2 bug: (1) SessionContext pakai `sessionStorage` → dihapus saat PWA ditutup, ganti ke `localStorage`. (2) FirebaseDataContext active session conflict detection salah trigger restart sebagai login device lain → tambah `initialSyncRef` untuk bedakan callback pertama vs berikutnya. |
+| 2026-06-16 | `main` | **LogoutConfirm reusable di semua dashboard** — Buat komponen LogoutConfirm.jsx (trigger pojok kanan + modal konfirmasi). DashboardPegawai, DashboardAdmin, DeveloperConsole ganti BackButton → LogoutConfirm. App.jsx ganti `handleRoleSelect` → `goBack()` (bersihkan activePegawai, selectedPimpinan, role). |
+| 2026-06-16 | `main` | **Fix blank screen di browser HP** — `crypto.randomUUID()` tidak didukung Samsung Internet, Chrome < 93, Android WebView. Ganti dengan `generateUUID()` — 3 level fallback: crypto.randomUUID → crypto.getRandomValues → Math.random(). |
+| 2026-06-16 | `main` | **Fix QR token beda di tiap device** — Sebelum: tiap device generate token sendiri + tulis ke Firebase tiap 10 detik → saling timpa → token tampil beda. Sesudah: subscribe `onValue(QR_PATH)`, semua device baca token yang sama dari Firebase. Cuma device yang lihat token expired yang nulis ulang. |
 
 ## Prioritas (Sekarang)
 
@@ -56,6 +60,9 @@ Status proyek terkini. Update tiap selesai sesi.
 6. 🟢 **DeveloperConsole fitur** ✅ — Menu Kelola Pegawai, Koreksi Absensi, Ganti Password admin/dev
 7. 🟢 **Ganti Password admin/dev (DeveloperConsole)** ✅ — Sync ke Firebase, berlaku lintas domain
 8. 🟢 **Unified Login Page** ✅ — 1 form untuk semua role, auto-detect, info kontak admin di bawah form
+9. 🟢 **Session persist antar restart** ✅ — localStorage + initialSyncRef Firebase
+10. 🟢 **Tombol keluar di semua dashboard** ✅ — LogoutConfirm reusable, goBack() bersihkan state
+11. 🟢 **QR token sync lintas device** ✅ — semua baca dari Firebase onValue, bukan generate lokal
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx
@@ -67,8 +74,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Data pegawai:** `src/data/pegawai_master.json` (302 org) — jangan pakai dummy
 - **Firebase:** attendance, apel session, apel reason, pengajuan — realtime via FirebaseDataContext, data mentah (tanpa merge)
 - **Firebase /pegawai_passwords:** override password admin, developer, dan tiap pegawai — dibaca LoginPage sebagai prioritas pertama, lalu localStorage, lalu fallback JSON
-- **localStorage:** master pegawai persist + cache password admin/developer — initial load prioritas dari localStorage, fallback ke JSON jika kosong
-- **sessionStorage:** sesi user (role, halaman, pegawai terpilih)
+- **localStorage:** master pegawai persist + cache password admin/developer + session user (role, halaman, pegawai terpilih) — initial load prioritas dari localStorage, fallback ke JSON jika kosong
 
 ## Data Flow Ringkas
 ```
