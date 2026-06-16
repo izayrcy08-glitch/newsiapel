@@ -258,9 +258,22 @@ export function FirebaseDataProvider({ children }) {
     prevActiveUserIdRef.current = activeUserId;
 
     if (prev && prev !== activeUserId) {
-      // User logout: hapus session dari Firebase
-      set(ref(database, `${ACTIVE_SESSION_PATH}/${prev}`), null)
-        .catch(err => console.error("Gagal bersihkan session:", err));
+      // Cek dulu: apakah session path ini masih berisi session KITA?
+      // Jika sudah di-overwrite oleh device lain (conflict detection), biarkan saja
+      get(ref(database, `${ACTIVE_SESSION_PATH}/${prev}`))
+        .then((snap) => {
+          const val = snap.val();
+          if (val && val.sessionId === sessionIdRef.current) {
+            // Session masih milik kita → ini logout sadar → hapus
+            set(ref(database, `${ACTIVE_SESSION_PATH}/${prev}`), null);
+          }
+          // else: session sudah di-overwrite device lain → biarkan (tidak dihapus)
+        })
+        .catch((err) => {
+          console.error("Gagal cek session sebelum cleanup:", err);
+          // Fallback: tetap clear (mungkin koneksi bermasalah)
+          set(ref(database, `${ACTIVE_SESSION_PATH}/${prev}`), null);
+        });
     }
   }, [activeUserId]);
 

@@ -47,12 +47,17 @@ export function useQrGenerator({ active = false } = {}) {
     };
 
     // ── onValue BACA SAJA — tidak pernah nulis ──
+    // Guard issuedAt: hanya accept token yg LEBIH BARU dari currentQrRef.
+    // Mencegah onValue restore token basi yang udah diganti timer,
+    // yang bikin QR flicker/loop antar 2 token.
     const unsub = onValue(
       qrRef,
       (snapshot) => {
         const val = snapshot.val();
         if (val && val.expiresAt > Date.now()) {
-          setCurrentQr(val);
+          if (!currentQrRef.current || val.issuedAt > currentQrRef.current.issuedAt) {
+            setCurrentQr(val);
+          }
         }
       },
       (error) => {
