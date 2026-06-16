@@ -129,6 +129,7 @@ export function FirebaseDataProvider({ children }) {
       },
       (error) => {
         console.error("Gagal memuat password overrides:", error);
+        setPasswordOverridesLoaded(true);
       }
     );
     return () => unsub();
@@ -153,7 +154,7 @@ export function FirebaseDataProvider({ children }) {
     const unsub = onValue(sessionRef, (snapshot) => {
       const val = snapshot.val();
       // Tidak ada data session, atau sessionId berbeda → ada login dari device lain
-      if (!val || val.sessionId !== sessionIdRef.current) {
+      if (val && val.sessionId !== sessionIdRef.current) {
         goBack();
       }
     });

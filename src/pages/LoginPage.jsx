@@ -42,6 +42,17 @@ const resolvePegawai = (masterData, username) => {
   return match || null;
 };
 
+const buildPimpinanLoginId = (pegawai) => {
+  const role = String(pegawai.role || "").toLowerCase();
+  const source = pegawai.nip || pegawai.nama || pegawai.jabatan || pegawai.unit || "";
+  const normalized = String(source)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+
+  return `${role}-${normalized}`;
+};
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // PARTICLE — floating background dots
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -187,14 +198,11 @@ const LoginPage = () => {
     if (!password.trim()) { setError("Masukkan password"); return; }
     setLoading(true);
 
-    // Guard: tunggu password Firebase termuat sebelum validasi login
-    if (!passwordOverridesLoaded) {
-      setError("Memuat data... Silakan coba lagi.");
-      setLoading(false);
-      return;
-    }
-
     try {
+      if (!passwordOverridesLoaded) {
+        console.warn("Password overrides belum termuat, memakai kredensial lokal sementara.");
+      }
+
       const adminCred = getAdminCred(passwordOverrides);
       if (username.trim().toLowerCase() === adminCred.username) {
         if (password !== adminCred.password) {
@@ -251,7 +259,7 @@ const LoginPage = () => {
 
       if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
         handlePimpinanSelect({
-          id: `${pegawai.role.toLowerCase()}-${pegawai.nip || pegawai.nama}`,
+          id: buildPimpinanLoginId(pegawai),
           pegawaiId: pegawai.id,
           group: pegawai.role,
           name: pegawai.nama,
@@ -266,8 +274,9 @@ const LoginPage = () => {
       }
     } catch {
       setError("Terjadi kesalahan");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleKeyDown = (e) => {

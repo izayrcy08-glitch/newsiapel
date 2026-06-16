@@ -8,9 +8,9 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production) | `refactor-phase-1` (dev)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
-- **Sesi terakhir:** 2026-06-15 — Fix AuthInit loading forever (bug initiatedRef)
-- **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth) ✅
-- **⚠️ Firebase Console:** Rules sudah di-update di repo, **masih perlu di-copy manual ke Firebase Console** (Realtime Database → Rules → Publish)
+- **Sesi terakhir:** 2026-06-15 — Fix AuthInit fire-and-forget + anonymous auth berhasil aktif
+- **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth aktif ✅)
+- **Firebase Console:** Rules sudah di-publish, Anonymous Auth aktif, email Test Mode expire berhenti ✅
 - **Build:** `npm run build` ✅
 - **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase overrides password (path `pegawai_passwords`) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
 - **Catatan:** Data pegawai masih di localStorage tiap browser — belum sync ke Firebase Realtime Database (kecuali password override)
@@ -44,6 +44,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-15 | `main` | **Cleanup .vercel lokal** — Hapus folder `.vercel` (project duplikat "siapel" no production). Project resmi: `newsiapel` (auto-deploy dari GitHub). Domain `siapel.vercel.app` dan `newsiapel.vercel.app` serve kode sama. |
 | 2026-06-15 | `main` | **🔒 Firebase Anonymous Auth + Rules `auth !== null`** — Tambah AuthInit component (signInAnonymously), semua `.read`/`.write` dari `true` jadi `auth !== null` di firebase-rules.json. Hapus `.catch(() => {})` di LoginPage & FirebaseDataContext (ganti console.error). Bundle build masih sama. Fix email Firebase Test Mode expire 5 hari. |
 | 2026-06-15 | `main` | **Fix AuthInit loading forever** — Bug: `initiatedRef` di-set `true` sebelum `onAuthStateChanged` callback, jadi `signInAnonymously` tidak pernah kepanggil. Fix: hapus ref, panggil langsung dari callback saat user `null`. Loading cuma ~0.5-1 detik di kunjungan pertama. |
+| 2026-06-15 | `main` | **Fix AuthInit fire-and-forget + Anonymous Auth berhasil** — Hapus loading screen total, render langsung tanpa nunggu auth. `signInAnonymously` fire-and-forget di background. User tidak lihat loading sama sekali. Anonymous Auth berhasil aktif — Firebase Test Mode aman. Fix minor: LoginPage guard `passwordOverridesLoaded` dari blocking jadi warning, session listener tidak force logout saat session null. ✅ |
 
 ## Prioritas (Sekarang)
 
