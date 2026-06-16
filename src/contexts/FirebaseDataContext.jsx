@@ -15,13 +15,41 @@ import {
 } from "../bersama/konstanta_aplikasi";
 import { getApelStatus } from "../bersama/util_waktu_dan_apel";
 
+/**
+ * generateUUID — UUID v4 yang kompatibel semua browser (termasuk Chrome < 93,
+ * Samsung Internet, Android WebView).
+ *
+ * - Priority 1: crypto.randomUUID() (Chrome 93+, modern browsers)
+ * - Priority 2: crypto.getRandomValues() (semua browser modern)
+ * - Priority 3: Math.random() fallback (browser sangat tua)
+ */
+const generateUUID = () => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // Fallback pakai getRandomValues (didukung sejak Chrome 11+, Safari 6+, Firefox 21+)
+  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+    const buf = new Uint8Array(16);
+    crypto.getRandomValues(buf);
+    buf[6] = (buf[6] & 0x0f) | 0x40; // version 4
+    buf[8] = (buf[8] & 0x3f) | 0x80; // variant
+    const hex = (b) => b.toString(16).padStart(2, "0");
+    return `${hex(buf[0])}${hex(buf[1])}${hex(buf[2])}${hex(buf[3])}-${hex(buf[4])}${hex(buf[5])}-${hex(buf[6])}${hex(buf[7])}-${hex(buf[8])}${hex(buf[9])}-${hex(buf[10])}${hex(buf[11])}${hex(buf[12])}${hex(buf[13])}${hex(buf[14])}${hex(buf[15])}`;
+  }
+  // Fallback terakhir: Math.random (sangat kecil kemungkinan collision)
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+};
+
 const FirebaseDataContext = createContext(null);
 
 export function FirebaseDataProvider({ children }) {
   const { page, role, activePegawai, selectedPimpinan, goBack, masterPegawaiData } = useSession();
 
   // Session ID unik untuk browser ini — dipakai untuk deteksi login ganda
-  const sessionIdRef = useRef(crypto.randomUUID());
+  const sessionIdRef = useRef(generateUUID());
 
   const [attendance, setAttendance] = useState({});
   const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING);
