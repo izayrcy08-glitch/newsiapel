@@ -1,5 +1,5 @@
 import { database } from '../firebase';
-import { ref, set, get, child } from 'firebase/database';
+import { ref, set, get, child, update } from 'firebase/database';
 
 export const MASTER_PEGAWAI_PATH = 'master_pegawai';
 
@@ -14,7 +14,8 @@ export async function syncPegawaiToFirebase(pegawaiData) {
     
     pegawaiData.forEach((pegawai) => {
       if (pegawai && pegawai.id) {
-        updates[`${MASTER_PEGAWAI_PATH}/${pegawai.id}`] = {
+        const pegawaiId = String(pegawai.id);
+        updates[`${MASTER_PEGAWAI_PATH}/${pegawaiId}`] = {
           id: pegawai.id,
           nama: pegawai.nama || '',
           nip: pegawai.nip || '',
@@ -30,7 +31,7 @@ export async function syncPegawaiToFirebase(pegawaiData) {
       }
     });
 
-    await set(ref(database, MASTER_PEGAWAI_PATH), updates);
+    await update(ref(database), updates);
     return true;
   } catch (error) {
     console.error('Error syncing pegawai to Firebase:', error);
