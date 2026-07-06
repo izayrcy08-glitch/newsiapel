@@ -204,14 +204,28 @@ export function FirebaseDataProvider({ children }) {
   //   - Registration sudah dilakukan di LoginPage via handleRegisterSession()
   //   - Jika sessionId/deviceId berubah → ada login device lain → goBack()
   useEffect(() => {
-    if (!activeUserId) return;
+    if (!activeUserId) {
+      initialSyncRef.current = true;
+      return;
+    }
+
+    let isFirstSync = true;
 
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
     const unsub = onValue(sessionRef, (snapshot) => {
       const val = snapshot.val();
 
+      if (isFirstSync) {
+        console.log(`[SESSION] Initial sync for ${activeUserId}:`, val);
+        isFirstSync = false;
+        return;
+      }
+
       if (val && (val.sessionId !== sessionIdRef.current || val.deviceId !== deviceIdRef.current)) {
-        console.warn(`[SESSION] Device conflict detected: sessionId=${val.sessionId} vs ${sessionIdRef.current}`);
+        console.warn(`[SESSION] 🔴 Device conflict detected:`, {
+          stored: { sessionId: val.sessionId, deviceId: val.deviceId },
+          current: { sessionId: sessionIdRef.current, deviceId: deviceIdRef.current },
+        });
         goBack();
       }
     });
@@ -447,22 +461,25 @@ export function FirebaseDataProvider({ children }) {
       loginAt: Date.now(),
     };
     try {
+      console.log(`[LOGIN] Writing new session for ${userId}`, {
+        sessionId: sessionIdRef.current,
+        deviceId: deviceIdRef.current,
+      });
+      await set(sessionRef, newSessionData);
+      
       const snap = await get(sessionRef);
-      const existing = snap.val();
+      const written = snap.val();
+      console.log(`[LOGIN] Verified session written:`, written);
       
-      console.log(`[LOGIN] Checking existing session for ${userId}:`, existing);
-      
-      if (existing && existing.sessionId && existing.sessionId !== sessionIdRef.current) {
-        console.warn(`Device conflict detected for ${userId}: existing sessionId=${existing.sessionId}, current=${sessionIdRef.current}`);
+      if (written && written.sessionId === sessionIdRef.current) {
+        console.log(`[LOGIN] ✅ Session registered successfully for ${userId}`);
+        return true;
+      } else {
+        console.error(`[LOGIN] ❌ Session verification failed - data mismatch`);
         return false;
       }
-      
-      console.log(`[LOGIN] Writing session for ${userId}: sessionId=${sessionIdRef.current}, deviceId=${deviceIdRef.current}`);
-      await set(sessionRef, newSessionData);
-      console.log(`[LOGIN] Session registered successfully for ${userId}`);
-      return true;
     } catch (error) {
-      console.error("Gagal register session:", error);
+      console.error("[LOGIN] ❌ Gagal register session:", error);
       return false;
     }
   }, []);

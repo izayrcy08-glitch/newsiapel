@@ -87,10 +87,10 @@
       }
     },
     "activeSessions": {
-      ".read": "auth !== null",
-      ".write": "auth !== null",
+      ".read": true,
+      ".write": true,
       "$userId": {
-        ".write": "auth !== null",
+        ".write": true,
         ".validate": "newData.hasChildren(['sessionId', 'deviceId', 'loginAt'])",
         "sessionId": { ".validate": "newData.isString() && newData.val().length > 0" },
         "deviceId": { ".validate": "newData.isString() && newData.val().length > 0" },
