@@ -232,7 +232,7 @@ const LoginPage = () => {
 
         if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
           setActivePegawai(pegawai);
-          setPage("pimpinan_selector");
+          handlePimpinanSelect(pegawai);
         } else {
           setActivePegawai(pegawai);
           setPage("pegawai_dashboard");
