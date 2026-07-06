@@ -14,7 +14,7 @@ const DeveloperConsole = lazy(() => import("./pages/DeveloperConsole"));
 function AppRouter() {
   const {
     page, role, activePegawai, selectedPimpinan,
-    masterPegawaiData, goBack, pimpinanAccessRoles,
+    masterPegawaiData, goBack, pimpinanAccessRoles, syncStatus,
     handleAddPegawai, handleUpdatePegawai, handleDeletePegawai, handlePimpinanSelect,
   } = useSession();
 
@@ -143,6 +143,7 @@ function AppRouter() {
           onDeletePegawai={handleDeletePegawai}
           onSavePasswordOverride={handleSavePasswordOverride}
           onLogout={handleLogout}
+          syncStatus={syncStatus}
         />
       );
 

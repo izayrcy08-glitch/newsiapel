@@ -14,6 +14,7 @@ import {
   ACTIVE_SESSION_PATH,
 } from "../bersama/konstanta_aplikasi";
 import { getApelStatus } from "../bersama/util_waktu_dan_apel";
+import { loadPegawaiFromFirebase } from "../utils/firebase-sync-pegawai";
 
 /**
  * generateUUID — UUID v4 yang kompatibel semua browser (termasuk Chrome < 93,

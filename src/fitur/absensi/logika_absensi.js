@@ -31,7 +31,12 @@ export const getAttendanceStatItems = (apelStatus) => {
 
 export const isApelDitiadakan = (apelStatus) => apelStatus === "ditiadakan";
 
-export const calcAttendanceStats = (attendance, apelStatus, people, { includeMissingAsUnrecorded = true } = {}) => {
+export const calcAttendanceStats = (attendance, apelStatus, people = [], { includeMissingAsUnrecorded = true } = {}) => {
+  // Guard: pastikan people array valid
+  if (!people || people.length === 0) {
+    return { total: 0, recorded: 0, hadir: 0, unaccounted: 0, tanpaKet: 0, belumAbsen: 0, dinasD: 0, dinasL: 0, izin: 0, sakit: 0, persen: 0 };
+  }
+
   // Pilot belum dimulai — data absensi masih kosong
   if (!attendance || Object.keys(attendance).length === 0) {
     const total = people.length;

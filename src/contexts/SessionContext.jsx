@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import { buildPimpinanAccessRoles } from "../bersama/util_unit_dan_scope";
+import { syncPegawaiToFirebase } from "../utils/firebase-sync-pegawai";
 
 const SessionContext = createContext(null);
 
@@ -90,6 +91,7 @@ export function SessionProvider({ children }) {
   const [activePegawai, setActivePegawai] = useState(initialSession.activePegawai || null);
   const [selectedPimpinan, setSelectedPimpinan] = useState(initialSession.selectedPimpinan || null);
   const [masterPegawaiData, setMasterPegawaiData] = useState(initialMaster);
+  const [syncStatus, setSyncStatus] = useState('idle');
 
   const pimpinanAccessRoles = useMemo(
     () => buildPimpinanAccessRoles(masterPegawaiData),
@@ -102,6 +104,23 @@ export function SessionProvider({ children }) {
       window.localStorage.setItem(MASTER_PEGAWAI_STORAGE_KEY, JSON.stringify(masterPegawaiData));
     } catch (error) {
       console.error("Gagal persist master pegawai:", error);
+    }
+  }, [masterPegawaiData]);
+
+  // Sync master data ke Firebase (async, non-blocking)
+  useEffect(() => {
+    if (masterPegawaiData && masterPegawaiData.length > 0) {
+      setSyncStatus('syncing');
+      syncPegawaiToFirebase(masterPegawaiData)
+        .then(() => {
+          setSyncStatus('synced');
+          setTimeout(() => setSyncStatus('idle'), 2000);
+        })
+        .catch((error) => {
+          console.error("Gagal sync pegawai ke Firebase:", error);
+          setSyncStatus('failed');
+          setTimeout(() => setSyncStatus('idle'), 5000);
+        });
     }
   }, [masterPegawaiData]);
 
@@ -204,6 +223,7 @@ export function SessionProvider({ children }) {
       selectedPimpinan,
       masterPegawaiData,
       pimpinanAccessRoles,
+      syncStatus,
       setPage,
       setRole,
       setActivePegawai,
@@ -217,7 +237,7 @@ export function SessionProvider({ children }) {
       handleDeletePegawai,
     }),
     [
-      page, role, activePegawai, selectedPimpinan, masterPegawaiData, pimpinanAccessRoles,
+      page, role, activePegawai, selectedPimpinan, masterPegawaiData, pimpinanAccessRoles, syncStatus,
       handleRoleSelect, handlePegawaiLogin, handlePimpinanSelect, goBack,
       handleAddPegawai, handleUpdatePegawai, handleDeletePegawai,
     ]

@@ -1,7 +1,9 @@
 {
   "rules": {
     "attendance": {
-      ".indexOn": ["status"],
+      ".indexOn": [
+        "status"
+      ],
       "today": {
         ".read": "auth !== null",
         ".write": "auth !== null",
@@ -65,25 +67,47 @@
     "pengajuan": {
       ".read": "auth !== null",
       ".write": "auth !== null",
-      ".indexOn": ["pegawaiId", "statusVerifikasi", "createdAt"],
+      ".indexOn": [
+        "pegawaiId",
+        "statusVerifikasi",
+        "createdAt"
+      ],
       "$pengajuanId": {
         ".validate": "newData.hasChildren(['pegawaiId', 'nama', 'statusBaru', 'keterangan', 'statusVerifikasi', 'createdAt'])",
         ".write": "newData.child('pegawaiId').val() === root.child('activeSessions').child('pegawai_' + newData.child('pegawaiId').val()).child('sessionId').val() || auth !== null",
-        "pegawaiId": { ".validate": "newData.isString()" },
-        "nama": { ".validate": "newData.isString()" },
-        "nip": { ".validate": "newData.isString()" },
-        "statusLama": { ".validate": "newData.isString()" },
+        "pegawaiId": {
+          ".validate": "newData.isString()"
+        },
+        "nama": {
+          ".validate": "newData.isString()"
+        },
+        "nip": {
+          ".validate": "newData.isString()"
+        },
+        "statusLama": {
+          ".validate": "newData.isString()"
+        },
         "statusBaru": {
           ".validate": "newData.isString() && (newData.val() === 'Hadir' || newData.val() === 'Dinas Dalam' || newData.val() === 'Dinas Luar' || newData.val() === 'Izin' || newData.val() === 'Sakit')"
         },
-        "keterangan": { ".validate": "newData.isString() && newData.val().length >= 1" },
-        "dokumen": { ".validate": "newData.isString()" },
-        "waktu": { ".validate": "newData.isString()" },
+        "keterangan": {
+          ".validate": "newData.isString() && newData.val().length >= 1"
+        },
+        "dokumen": {
+          ".validate": "newData.isString()"
+        },
+        "waktu": {
+          ".validate": "newData.isString()"
+        },
         "statusVerifikasi": {
           ".validate": "newData.isString() && (newData.val() === 'menunggu' || newData.val() === 'disetujui' || newData.val() === 'ditolak')"
         },
-        "createdAt": { ".validate": "newData.isNumber()" },
-        "$other": { ".validate": false }
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     },
     "activeSessions": {
@@ -92,20 +116,36 @@
       "$userId": {
         ".write": true,
         ".validate": "newData.hasChildren(['sessionId', 'deviceId', 'loginAt'])",
-        "sessionId": { ".validate": "newData.isString() && newData.val().length > 0" },
-        "deviceId": { ".validate": "newData.isString() && newData.val().length > 0" },
-        "loginAt": { ".validate": "newData.isNumber() && newData.val() > 0" },
-        "$other": { ".validate": false }
+        "sessionId": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "deviceId": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "loginAt": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     },
     "fingerprints": {
       ".read": "auth !== null",
       ".write": "auth !== null",
       "$pegawaiId": {
-        "deviceId": { ".validate": "newData.isString()" },
-        "lastLogin": { ".validate": "newData.isNumber()" },
-        "deviceInfo": { ".validate": "newData.isString()" },
-        "$other": { ".validate": false }
+        "deviceId": {
+          ".validate": "newData.isString()"
+        },
+        "lastLogin": {
+          ".validate": "newData.isNumber()"
+        },
+        "deviceInfo": {
+          ".validate": "newData.isString()"
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     },
     "pegawai_passwords": {
@@ -113,6 +153,55 @@
       ".write": "auth !== null",
       "$key": {
         ".validate": "newData.isString() && newData.val().length >= 4"
+      }
+    },
+    "master_pegawai": {
+      ".read": "auth !== null",
+      ".write": "auth !== null",
+      ".indexOn": [
+        "id",
+        "nip",
+        "nama",
+        "unit"
+      ],
+      "$pegawaiId": {
+        ".validate": "newData.hasChildren(['id', 'nama', 'nip', 'nik', 'jabatan', 'bidang', 'unit', 'role', 'password', 'isActive'])",
+        "id": {
+          ".validate": "newData.isNumber()"
+        },
+        "nama": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "nip": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "nik": {
+          ".validate": "newData.isString()"
+        },
+        "jabatan": {
+          ".validate": "newData.isString()"
+        },
+        "bidang": {
+          ".validate": "newData.isString()"
+        },
+        "unit": {
+          ".validate": "newData.isString()"
+        },
+        "role": {
+          ".validate": "newData.isString() && (newData.val() === 'EMPLOYEE' || newData.val() === 'UNIT_LEADER' || newData.val() === 'EXECUTIVE' || newData.val() === 'ADMIN' || newData.val() === 'DEVELOPER')"
+        },
+        "password": {
+          ".validate": "newData.isString() && newData.val().length >= 4"
+        },
+        "phoneFingerprint": {
+          ".validate": "newData.isString() || newData.val() === null"
+        },
+        "isActive": {
+          ".validate": "newData.isBoolean()"
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     }
   }

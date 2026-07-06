@@ -237,6 +237,7 @@ const DeveloperConsole = ({
   onUpdatePegawai,
   onDeletePegawai,
   onSavePasswordOverride,
+  syncStatus = 'idle',
 }) => {
   const [search, setSearch] = useState("");
   const [viewAsRole, setViewAsRole] = useState(null);
@@ -485,7 +486,27 @@ const DeveloperConsole = ({
       <div className="relative z-10 max-w-sm mx-auto">
         <LogoutConfirm onConfirm={onLogout} />
         <div className="mb-5">
-          <h2 className="text-xl font-black text-white">Developer Console</h2>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-xl font-black text-white">Developer Console</h2>
+            {syncStatus === 'syncing' && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-[10px] font-semibold uppercase tracking-wider animate-pulse">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                Syncing
+              </span>
+            )}
+            {syncStatus === 'synced' && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-semibold uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Synced
+              </span>
+            )}
+            {syncStatus === 'failed' && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 text-[10px] font-semibold uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                Failed
+              </span>
+            )}
+          </div>
           <p className="mt-1 text-slate-500 text-xs">Akun teknis internal untuk simulasi, audit, dan recovery.</p>
         </div>
 
