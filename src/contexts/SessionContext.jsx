@@ -107,9 +107,10 @@ export function SessionProvider({ children }) {
     }
   }, [masterPegawaiData]);
 
-  // Sync master data ke Firebase (async, non-blocking)
+  // Sync master data ke Firebase (async, non-blocking) - HANYA untuk ADMIN & DEVELOPER
+  // Pegawai/Unit Leader hanya membaca data, tidak modifikasi, jadi tidak perlu sync
   useEffect(() => {
-    if (masterPegawaiData && masterPegawaiData.length > 0) {
+    if (masterPegawaiData && masterPegawaiData.length > 0 && (role === 'admin' || role === 'developer')) {
       setSyncStatus('syncing');
       syncPegawaiToFirebase(masterPegawaiData)
         .then(() => {
@@ -122,7 +123,7 @@ export function SessionProvider({ children }) {
           setTimeout(() => setSyncStatus('idle'), 5000);
         });
     }
-  }, [masterPegawaiData]);
+  }, [masterPegawaiData, role]);
 
   // Persist session
   useEffect(() => {
