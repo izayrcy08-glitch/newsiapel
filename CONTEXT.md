@@ -50,6 +50,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-16 | `main` | **Fix blank screen di browser HP** — `crypto.randomUUID()` tidak didukung Samsung Internet, Chrome < 93, Android WebView. Ganti dengan `generateUUID()` — 3 level fallback: crypto.randomUUID → crypto.getRandomValues → Math.random(). |
 | 2026-06-16 | `main` | **Fix QR token beda di tiap device** — Sebelum: tiap device generate token sendiri + tulis ke Firebase tiap 10 detik → saling timpa → token tampil beda. Sesudah: subscribe `onValue(QR_PATH)`, semua device baca token yang sama dari Firebase. Cuma device yang lihat token expired yang nulis ulang. |
 | 2026-07-06 | `main` | **🔐 P1+P2 COMPLETE + CLEANUP** — P1: Guard passwordOverridesLoaded (3s fallback), .gitignore pegawai_master.json, Firebase Rules granular access, SECURE_DATA_SOURCING.md docs. P2: Delete PegawaiLogin.jsx + RoleSelector.jsx (dead code), redirect pimpinan ke PimpinanSelector selector. Cleanup: Fix App.jsx missing destructuring (pimpinanAccessRoles, handlePimpinanSelect). 8 files changed, 1 created, 2 deleted. Build ✅ |
+| 2026-07-06 | `main` | **🎯 CREDENTIALS.md = Single Source of Truth** — 1. Add admin (id 303) + developer (id 304) users ke pegawai_master.json dengan role ADMIN/DEVELOPER. 2. LoginPage refactor: remove getAdminCred/getDeveloperCred, remove Firebase overrides logic, remove passwordOverridesLoaded guard. 3. HANYA read credential dari pegawai_master.json (CREDENTIALS.md source) — eliminasi conflicts. Developer login fix ✅. Build ✅ |
 
 ## Prioritas (Sekarang)
 

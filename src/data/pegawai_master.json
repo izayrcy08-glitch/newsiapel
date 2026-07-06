@@ -3622,5 +3622,29 @@
     "role": "EXECUTIVE",
     "password": "335114",
     "phoneFingerprint": ""
+  },
+  {
+    "id": 303,
+    "nama": "admin",
+    "nip": "admin",
+    "nik": "",
+    "jabatan": "Administrator",
+    "bidang": "Sistem",
+    "unit": "SISTEM",
+    "role": "ADMIN",
+    "password": "123455",
+    "phoneFingerprint": ""
+  },
+  {
+    "id": 304,
+    "nama": "developer",
+    "nip": "developer",
+    "nik": "",
+    "jabatan": "Developer",
+    "bidang": "Sistem",
+    "unit": "SISTEM",
+    "role": "DEVELOPER",
+    "password": "723254",
+    "phoneFingerprint": ""
   }
 ]
