@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import { SessionProvider, useSession } from "./contexts/SessionContext";
 import { FirebaseDataProvider, useFirebaseData } from "./contexts/FirebaseDataContext";
 import { LoginPage } from "./pages/LoginPage";
@@ -163,6 +164,7 @@ export default function App() {
         <FirebaseDataProvider>
           <div style={{ fontFamily: "'DM Sans', 'Inter', system-ui, sans-serif" }}>
             <AppRouter />
+            <Analytics />
           </div>
         </FirebaseDataProvider>
       </SessionProvider>
