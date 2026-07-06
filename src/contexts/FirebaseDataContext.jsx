@@ -452,6 +452,28 @@ export function FirebaseDataProvider({ children }) {
     set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), null);
   }, []);
 
+  const handleRegisterSession = useCallback(async (userId) => {
+    if (!userId) return true;
+    const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${userId}`);
+    const newSessionData = {
+      sessionId: sessionIdRef.current,
+      deviceId: deviceIdRef.current,
+      loginAt: Date.now(),
+    };
+    try {
+      const snap = await get(sessionRef);
+      const existing = snap.val();
+      if (existing && existing.sessionId !== sessionIdRef.current) {
+        return false;
+      }
+      await set(sessionRef, newSessionData);
+      return true;
+    } catch (error) {
+      console.error("Gagal register session:", error);
+      return false;
+    }
+  }, []);
+
   const value = useMemo(
     () => ({
       attendance,
@@ -476,6 +498,7 @@ export function FirebaseDataProvider({ children }) {
       handleSaveFingerprint,
       handleSavePasswordOverride,
       handleClearActiveSession,
+      handleRegisterSession,
     }),
     [
       attendance, apelSession, apelReason, apelReasonText, apelStatus, pengajuan, passwordOverrides,
@@ -485,7 +508,7 @@ export function FirebaseDataProvider({ children }) {
       handleApelSessionChange, handleApelReasonChange,
       handlePengajuanSubmit, handlePengajuanVerifikasi,
       handleSaveFingerprint, handleSavePasswordOverride,
-      handleClearActiveSession,
+      handleClearActiveSession, handleRegisterSession,
     ]
   );
 

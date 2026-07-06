@@ -10,7 +10,9 @@
       "Bash(npm run build *)",
       "Bash(npm run build *)",
       "Bash(npm run build *)",
-      "Bash(powershell *)"
+      "Bash(powershell *)",
+      "Bash(npm run build *)",
+      "Bash(npm run dev *)"
     ]
   }
 }

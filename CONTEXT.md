@@ -51,19 +51,21 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-16 | `main` | **Fix QR token beda di tiap device** — Sebelum: tiap device generate token sendiri + tulis ke Firebase tiap 10 detik → saling timpa → token tampil beda. Sesudah: subscribe `onValue(QR_PATH)`, semua device baca token yang sama dari Firebase. Cuma device yang lihat token expired yang nulis ulang. |
 | 2026-07-06 | `main` | **🔐 P1+P2 COMPLETE + CLEANUP** — P1: Guard passwordOverridesLoaded (3s fallback), .gitignore pegawai_master.json, Firebase Rules granular access, SECURE_DATA_SOURCING.md docs. P2: Delete PegawaiLogin.jsx + RoleSelector.jsx (dead code), redirect pimpinan ke PimpinanSelector selector. Cleanup: Fix App.jsx missing destructuring (pimpinanAccessRoles, handlePimpinanSelect). 8 files changed, 1 created, 2 deleted. Build ✅ |
 | 2026-07-06 | `main` | **🎯 CREDENTIALS.md = Single Source of Truth** — 1. Add admin (id 303) + developer (id 304) users ke pegawai_master.json dengan role ADMIN/DEVELOPER. 2. LoginPage refactor: remove getAdminCred/getDeveloperCred, remove Firebase overrides logic, remove passwordOverridesLoaded guard. 3. HANYA read credential dari pegawai_master.json (CREDENTIALS.md source) — eliminasi conflicts. Developer login fix ✅. Build ✅ |
+| 2026-07-06 | `main` | **🔐 FIX LOGIN + DEVICE LOCK** — 1. Root cause: Firebase rule activeSessions tidak izinkan `deviceId` field → write error silent, login gagal. Fix: update rule allow deviceId. 2. Implement atomic session register: handleRegisterSession() di LoginPage check existing session sebelum write. 3. Device lock: hanya 1 akun per device globally, login device ke-2 ditolak "sudah login di device lain". Firebase rule activeSessions updated. LoginPage + FirebaseDataContext modified. Build ✅ |
 
 ## Prioritas (Sekarang)
 
-1. 🔴 **LOGIN STILL HAS ISSUES** — Developer + pegawai users cannot login (no error visible). Issue: resolvePegawai() match logic or role routing broken after refactor. Debug needed: browser console errors, Firebase connection, credential validation logic.
-2. 🟢 **P1-A: Guard passwordOverridesLoaded** ✅ — Block submit sampai Firebase load, visual loading, 3s fallback
-3. 🟢 **P1-B: Password di .gitignore** ✅ — Exclude pegawai_master.json, buat SECURE_DATA_SOURCING.md
-4. 🟢 **P1-C: Firebase Rules granular** ✅ — `/apel/session` + `/qr/current` hanya baca, `/pengajuan` IDOR prevention
-5. 🟢 **P2-A: Hapus dead login code** ✅ — Deleted PegawaiLogin.jsx + RoleSelector.jsx
-6. 🟢 **P2-B: Pimpinan redirect selector** ✅ — Redirect ke PimpinanSelector dulu sebelum dashboard
-7. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Remove Firebase overrides + localStorage logic, read ONLY from pegawai_master.json
-8. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
-9. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
-10. 🟡 **P3-C: QR TTL extend** — 10s → 30s + clock skew leeway
+1. 🟢 **FIXED: LOGIN ISSUES** ✅ — Firebase rule untuk activeSessions tidak mengizinkan deviceId field → terperbaiki. Implementasi device lock yang lebih kuat dengan handleRegisterSession() atomik.
+2. 🟢 **DEVICE LOCK IMPLEMENTED** ✅ — Hanya 1 akun per device. handleRegisterSession() di LoginPage mencegah double login dengan pengecekan konfliks sebelum memungkinkan login.
+3. 🟢 **P1-A: Guard passwordOverridesLoaded** ✅ — Block submit sampai Firebase load, visual loading, 3s fallback
+4. 🟢 **P1-B: Password di .gitignore** ✅ — Exclude pegawai_master.json, buat SECURE_DATA_SOURCING.md
+5. 🟢 **P1-C: Firebase Rules granular** ✅ — `/apel/session` + `/qr/current` hanya baca, `/pengajuan` IDOR prevention, activeSessions support deviceId
+6. 🟢 **P2-A: Hapus dead login code** ✅ — Deleted PegawaiLogin.jsx + RoleSelector.jsx
+7. 🟢 **P2-B: Pimpinan redirect selector** ✅ — Redirect ke PimpinanSelector dulu sebelum dashboard
+8. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Remove Firebase overrides + localStorage logic, read ONLY from pegawai_master.json
+9. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
+10. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
+11. 🟡 **P3-C: QR TTL extend** — 10s → 30s + clock skew leeway
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx

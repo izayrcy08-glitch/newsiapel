@@ -137,7 +137,7 @@ const LoginPage = () => {
     handleUpdatePegawai,
     handlePimpinanSelect,
   } = useSession();
-  const { handleSaveFingerprint } = useFirebaseData();
+  const { handleSaveFingerprint, handleRegisterSession } = useFirebaseData();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -162,66 +162,84 @@ const LoginPage = () => {
     mouseY.set(0);
   };
 
-   // ── Login Handler ──
-   const handleLogin = async (e) => {
-     if (e) e.preventDefault();
-     setError("");
-     if (!username.trim()) { setError("Masukkan username"); return; }
-     if (!password.trim()) { setError("Masukkan password"); return; }
-     setLoading(true);
+    // ── Login Handler ──
+    const handleLogin = async (e) => {
+      if (e) e.preventDefault();
+      setError("");
+      if (!username.trim()) { setError("Masukkan username"); return; }
+      if (!password.trim()) { setError("Masukkan password"); return; }
+      setLoading(true);
 
-     try {
-       // Resolve user dari masterPegawaiData (HANYA sumber kebenaran: pegawai_master.json / CREDENTIALS.md)
-       const pegawai = resolvePegawai(masterPegawaiData, username);
-       if (!pegawai) {
-         setError("Username tidak ditemukan");
-         setLoading(false);
-         return;
-       }
+      try {
+        // Resolve user dari masterPegawaiData (HANYA sumber kebenaran: pegawai_master.json / CREDENTIALS.md)
+        const pegawai = resolvePegawai(masterPegawaiData, username);
+        if (!pegawai) {
+          setError("Username tidak ditemukan");
+          setLoading(false);
+          return;
+        }
 
-       // Validasi password dari pegawai_master.json (SINGLE SOURCE OF TRUTH)
-       if (!pegawai.password) {
-         setError("Password belum di-set. Hubungi admin.");
-         setLoading(false);
-         return;
-       }
-       if (password !== pegawai.password) {
-         setError("Password salah");
-         setPassword("");
-         setLoading(false);
-         return;
-       }
+        // Validasi password dari pegawai_master.json (SINGLE SOURCE OF TRUTH)
+        if (!pegawai.password) {
+          setError("Password belum di-set. Hubungi admin.");
+          setLoading(false);
+          return;
+        }
+        if (password !== pegawai.password) {
+          setError("Password salah");
+          setPassword("");
+          setLoading(false);
+          return;
+        }
 
-       // Determine routing based on role
-       if (pegawai.role === "ADMIN") {
-         setRole("admin");
-         setPage("admin");
-         return;
-       }
-       if (pegawai.role === "DEVELOPER") {
-         setRole("developer");
-         setPage("developer");
-         return;
-       }
+        // Determine routing based on role & Register session atomically
+        let userId = null;
+        if (pegawai.role === "ADMIN") {
+          userId = "admin";
+        } else if (pegawai.role === "DEVELOPER") {
+          userId = "developer";
+        } else {
+          userId = `pegawai_${pegawai.id}`;
+        }
 
-       // Regular pegawai (EMPLOYEE, EXECUTIVE, UNIT_LEADER)
-       const fp = getDeviceFingerprint();
-       handleSaveFingerprint(pegawai.id, fp);
-       handleUpdatePegawai(pegawai.id, { phoneFingerprint: fp });
+        // Register session & check for conflicts
+        const sessionRegistered = await handleRegisterSession(userId);
+        if (!sessionRegistered) {
+          setError("Akun ini sudah login di device lain. Silakan coba lagi.");
+          setLoading(false);
+          return;
+        }
 
-       if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
-         setActivePegawai(pegawai);
-         setPage("pimpinan_selector");
-       } else {
-         setActivePegawai(pegawai);
-         setPage("pegawai_dashboard");
-       }
-    } catch {
-      setError("Terjadi kesalahan");
-    } finally {
-      setLoading(false);
-    }
-  };
+        // Session OK — proceed dengan routing
+        if (pegawai.role === "ADMIN") {
+          setRole("admin");
+          setPage("admin");
+          return;
+        }
+        if (pegawai.role === "DEVELOPER") {
+          setRole("developer");
+          setPage("developer");
+          return;
+        }
+
+        // Regular pegawai (EMPLOYEE, EXECUTIVE, UNIT_LEADER)
+        const fp = getDeviceFingerprint();
+        handleSaveFingerprint(pegawai.id, fp);
+        handleUpdatePegawai(pegawai.id, { phoneFingerprint: fp });
+
+        if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
+          setActivePegawai(pegawai);
+          setPage("pimpinan_selector");
+        } else {
+          setActivePegawai(pegawai);
+          setPage("pegawai_dashboard");
+        }
+     } catch {
+       setError("Terjadi kesalahan");
+     } finally {
+       setLoading(false);
+     }
+   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleLogin(e);

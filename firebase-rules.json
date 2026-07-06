@@ -91,6 +91,7 @@
       ".write": "auth !== null",
       "$userId": {
         "sessionId": { ".validate": "newData.isString()" },
+        "deviceId": { ".validate": "newData.isString()" },
         "loginAt": { ".validate": "newData.isNumber()" },
         "$other": { ".validate": false }
       }
