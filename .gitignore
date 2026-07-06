@@ -5,4 +5,5 @@ dist
 
 # Password / data sensitif
 daftar_password_siapel.csv
+src/data/pegawai_master.json
 .vercel

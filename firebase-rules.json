@@ -68,6 +68,7 @@
       ".indexOn": ["pegawaiId", "statusVerifikasi", "createdAt"],
       "$pengajuanId": {
         ".validate": "newData.hasChildren(['pegawaiId', 'nama', 'statusBaru', 'keterangan', 'statusVerifikasi', 'createdAt'])",
+        ".write": "newData.child('pegawaiId').val() === root.child('activeSessions').child('pegawai_' + newData.child('pegawaiId').val()).child('sessionId').val() || auth !== null",
         "pegawaiId": { ".validate": "newData.isString()" },
         "nama": { ".validate": "newData.isString()" },
         "nip": { ".validate": "newData.isString()" },

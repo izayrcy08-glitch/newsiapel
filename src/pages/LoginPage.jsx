@@ -35,17 +35,6 @@ const resolvePegawai = (masterData, username) => {
   return match || null;
 };
 
-const buildPimpinanLoginId = (pegawai) => {
-  const role = String(pegawai.role || "").toLowerCase();
-  const source = pegawai.nip || pegawai.nama || pegawai.jabatan || pegawai.unit || "";
-  const normalized = String(source)
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "");
-
-  return `${role}-${normalized}`;
-};
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // PARTICLE — floating background dots
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -165,11 +154,23 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [allowSubmit, setAllowSubmit] = useState(false);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const rotateX = useTransform(mouseY, [-300, 300], [8, -8]);
   const rotateY = useTransform(mouseX, [-300, 300], [-8, 8]);
+
+  useEffect(() => {
+    if (passwordOverridesLoaded) {
+      setAllowSubmit(true);
+    } else {
+      const timer = setTimeout(() => {
+        setAllowSubmit(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [passwordOverridesLoaded]);
 
   // ── 3D Tilt Handlers ──
   const handleMouseMove = (e) => {
@@ -186,16 +187,16 @@ const LoginPage = () => {
   // ── Login Handler ──
   const handleLogin = async (e) => {
     if (e) e.preventDefault();
+    if (!allowSubmit) {
+      setError("Menunggu sinkronisasi password... coba lagi sebentar");
+      return;
+    }
     setError("");
     if (!username.trim()) { setError("Masukkan username"); return; }
     if (!password.trim()) { setError("Masukkan password"); return; }
     setLoading(true);
 
     try {
-      if (!passwordOverridesLoaded) {
-        console.warn("Password overrides belum termuat, memakai kredensial lokal sementara.");
-      }
-
       const adminCred = getAdminCred(passwordOverrides);
       if (username.trim().toLowerCase() === adminCred.username) {
         if (password !== adminCred.password) {
@@ -245,16 +246,8 @@ const LoginPage = () => {
       handleUpdatePegawai(pegawai.id, { phoneFingerprint: fp });
 
       if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
-        handlePimpinanSelect({
-          id: buildPimpinanLoginId(pegawai),
-          pegawaiId: pegawai.id,
-          group: pegawai.role,
-          name: pegawai.nama,
-          nip: pegawai.nip || "",
-          jabatan: pegawai.jabatan || "",
-          unit: pegawai.unit || "",
-          scope: pegawai.role === "EXECUTIVE" ? "ALL" : "UNIT",
-        });
+        setActivePegawai(pegawai);
+        setPage("pimpinan_selector");
       } else {
         setActivePegawai(pegawai);
         setPage("pegawai_dashboard");
@@ -583,20 +576,35 @@ const LoginPage = () => {
                   )}
                 </AnimatePresence>
 
+                {/* ── Loading sync password ── */}
+                {!allowSubmit && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-blue-500/10 border border-blue-500/20"
+                  >
+                    <div className="w-4 h-4 border-2 border-blue-400/70 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-blue-400 text-xs">Menunggu sinkronisasi password...</p>
+                  </motion.div>
+                )}
+
                 {/* ── Submit button ── */}
                 <motion.button
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: !allowSubmit || loading ? 1 : 1.02 }}
+                  whileTap={{ scale: !allowSubmit || loading ? 1 : 0.98 }}
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !allowSubmit}
                   className="w-full relative group/button mt-2"
                 >
                   <div className="absolute inset-0 bg-blue-600/20 rounded-lg blur-lg opacity-0 group-hover/button:opacity-100 transition-opacity duration-300" />
 
-                  <div className="relative overflow-hidden bg-gradient-to-r from-blue-700 to-blue-600 text-white font-semibold h-12 rounded-lg transition-all duration-300 flex items-center justify-center shadow-lg shadow-blue-700/20">
+                  <div className="relative overflow-hidden bg-gradient-to-r from-blue-700 to-blue-600 text-white font-semibold h-12 rounded-lg transition-all duration-300 flex items-center justify-center shadow-lg shadow-blue-700/20" style={{
+                    opacity: (loading || !allowSubmit) ? 0.6 : 1,
+                  }}>
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                       animate={{

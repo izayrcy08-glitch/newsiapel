@@ -7,14 +7,15 @@ import { AuthInit } from "./components/AuthInit";
 
 const DashboardPegawai = lazy(() => import("./pages/DashboardPegawai"));
 const DashboardPimpinan = lazy(() => import("./pages/DashboardPimpinan"));
+const PimpinanSelector = lazy(() => import("./pages/PimpinanSelector"));
 const DashboardAdmin = lazy(() => import("./pages/DashboardAdmin"));
 const DeveloperConsole = lazy(() => import("./pages/DeveloperConsole"));
 
 function AppRouter() {
   const {
     page, role, activePegawai, selectedPimpinan,
-    masterPegawaiData, goBack,
-    handleAddPegawai, handleUpdatePegawai, handleDeletePegawai,
+    masterPegawaiData, goBack, pimpinanAccessRoles,
+    handleAddPegawai, handleUpdatePegawai, handleDeletePegawai, handlePimpinanSelect,
   } = useSession();
 
   const {
@@ -53,25 +54,35 @@ function AppRouter() {
     case "login":
       return <LoginPage />;
 
-    case "pegawai_dashboard":
-      return activePegawai
-        ? wrap(
-            <DashboardPegawai
-              pegawai={activePegawai}
-              people={masterPegawaiData}
-              attendance={attendance}
-              apelStatus={apelStatus}
-              apelSession={apelSession}
-              apelReason={apelReason}
-              apelReasonText={apelReasonText}
-              onScan={handleScan}
-              onPengajuanSubmit={handlePengajuanSubmit}
-              onLogout={handleLogout}
-            />
-          )
-        : null;
+     case "pegawai_dashboard":
+       return activePegawai
+         ? wrap(
+             <DashboardPegawai
+               pegawai={activePegawai}
+               people={masterPegawaiData}
+               attendance={attendance}
+               apelStatus={apelStatus}
+               apelSession={apelSession}
+               apelReason={apelReason}
+               apelReasonText={apelReasonText}
+               onScan={handleScan}
+               onPengajuanSubmit={handlePengajuanSubmit}
+               onLogout={handleLogout}
+             />
+           )
+         : null;
 
-    case "pimpinan_dashboard":
+    case "pimpinan_selector":
+      return wrap(
+        <PimpinanSelector
+          pimpinanAccessRoles={pimpinanAccessRoles}
+          masterPegawaiData={masterPegawaiData}
+          onBack={goBack}
+          onSelect={handlePimpinanSelect}
+        />
+      );
+
+     case "pimpinan_dashboard":
       return wrap(
         <DashboardPimpinan
           people={masterPegawaiData}
