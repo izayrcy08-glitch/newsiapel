@@ -54,15 +54,16 @@ Status proyek terkini. Update tiap selesai sesi.
 
 ## Prioritas (Sekarang)
 
-1. 🟢 **P1-A: Guard passwordOverridesLoaded** ✅ — Block submit sampai Firebase load, visual loading, 3s fallback
-2. 🟢 **P1-B: Password di .gitignore** ✅ — Exclude pegawai_master.json, buat SECURE_DATA_SOURCING.md
-3. 🟢 **P1-C: Firebase Rules granular** ✅ — `/apel/session` + `/qr/current` hanya baca, `/pengajuan` IDOR prevention
-4. 🟢 **P2-A: Hapus dead login code** ✅ — Deleted PegawaiLogin.jsx + RoleSelector.jsx
-5. 🟢 **P2-B: Pimpinan redirect selector** ✅ — Redirect ke PimpinanSelector dulu sebelum dashboard
-6. 🟡 **P2-C: App.jsx cleanup** ✅ — Fix missing destructuring (pimpinanAccessRoles, handlePimpinanSelect)
-7. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
-8. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
-9. 🟡 **P3-C: QR TTL extend** — 10s → 30s + clock skew leeway
+1. 🔴 **LOGIN STILL HAS ISSUES** — Developer + pegawai users cannot login (no error visible). Issue: resolvePegawai() match logic or role routing broken after refactor. Debug needed: browser console errors, Firebase connection, credential validation logic.
+2. 🟢 **P1-A: Guard passwordOverridesLoaded** ✅ — Block submit sampai Firebase load, visual loading, 3s fallback
+3. 🟢 **P1-B: Password di .gitignore** ✅ — Exclude pegawai_master.json, buat SECURE_DATA_SOURCING.md
+4. 🟢 **P1-C: Firebase Rules granular** ✅ — `/apel/session` + `/qr/current` hanya baca, `/pengajuan` IDOR prevention
+5. 🟢 **P2-A: Hapus dead login code** ✅ — Deleted PegawaiLogin.jsx + RoleSelector.jsx
+6. 🟢 **P2-B: Pimpinan redirect selector** ✅ — Redirect ke PimpinanSelector dulu sebelum dashboard
+7. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Remove Firebase overrides + localStorage logic, read ONLY from pegawai_master.json
+8. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
+9. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
+10. 🟡 **P3-C: QR TTL extend** — 10s → 30s + clock skew leeway
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx
@@ -71,21 +72,27 @@ Status proyek terkini. Update tiap selesai sesi.
 - **ErrorBoundary:** Ada di App.jsx
 
 ## Source of Truth
-- **Data pegawai:** `src/data/pegawai_master.json` (302 org) — jangan pakai dummy
+
+- **CREDENTIALS.md** — Master credential reference untuk semua users (admin, developer, pegawai, pimpinan)
+- **Data pegawai:** `src/data/pegawai_master.json` (304 org including admin + developer) — SINGLE source untuk login
+- **LoginPage credential validation:** ONLY read dari pegawai_master.json (role: ADMIN, DEVELOPER, EXECUTIVE, UNIT_LEADER, EMPLOYEE)
 - **Firebase:** attendance, apel session, apel reason, pengajuan — realtime via FirebaseDataContext, data mentah (tanpa merge)
-- **Firebase /pegawai_passwords:** override password admin, developer, dan tiap pegawai — dibaca LoginPage sebagai prioritas pertama, lalu localStorage, lalu fallback JSON
-- **localStorage:** master pegawai persist + cache password admin/developer + session user (role, halaman, pegawai terpilih) — initial load prioritas dari localStorage, fallback ke JSON jika kosong
+- **localStorage:** master pegawai persist + session user (role, halaman, pegawai terpilih) — initial load dari localStorage, fallback ke JSON jika kosong
 
 ## Data Flow Ringkas
+
 ```
-pegawai_master.json → SessionContext → semua page
-  (field: id, nama, nip, nik, jabatan, bidang, unit, role, password, phoneFingerprint, isActive)
+pegawai_master.json (CREDENTIALS.md source) → LoginPage resolvePegawai() → 
+  ↓ (username match: admin, developer, NIP, NIK, Nama)
+  Validate password dari pegawai.password
+  ↓ (check role: ADMIN/DEVELOPER/EXECUTIVE/UNIT_LEADER/EMPLOYEE)
+  Route to appropriate page (admin/developer/pimpinan_selector/pegawai_dashboard)
+  
 Firebase /attendance/today → FirebaseDataContext → attendance{}
 Firebase /apel/session    → FirebaseDataContext → apelSession
 Firebase /apel/reason     → FirebaseDataContext → apelReason + apelReasonText
 Firebase /pengajuan       → FirebaseDataContext → pengajuan[]
 Firebase /fingerprints/{id} → handleSaveFingerprint (device fingerprint saat login)
-Firebase /pegawai_passwords/{key} → handleSavePasswordOverride (ganti password admin/dev/pegawai — lintas domain)
 Firebase /activeSessions/{userId} → sessionId + loginAt (last-login-wins, deteksi login tabrakan)
 Firebase Cloud Storage    → Upload file dokumen pengajuan (via PengajuanStatusForm)
 QR /qr/current            → useQrGenerator (Admin) → Pegawai scan (TTL 10 detik)
@@ -102,6 +109,8 @@ QR /qr/current            → useQrGenerator (Admin) → Pegawai scan (TTL 10 de
 Aturan: `set(null)` untuk reset. QR TTL 10 detik. Admin atur manual via panel "Pengaturan Apel". Default jam: before < 07:00, ongoing 07:00–08:00, ended > 08:00. Data Firebase mentah (tanpa mergeAttendanceWithPeople) — stat 0 saat kosong.
 
 ## Catatan
+
+- **⚠️ LOGIN ISSUE (2026-07-06):** Developer + pegawai login tidak bekerja setelah refactor ke single-source (pegawai_master.json only). Admin login mungkin OK. Root cause unknown — kemungkinan: resolvePegawai() match failure, role validation, atau redirect logic. Butuh debug: console errors, Firebase connection, credential validation step-by-step.
 - Hard refresh jika angka pegawai masih 439 (localStorage cache lama)
 - Detail teknis (struktur folder, Firebase docs, env, alur pilot) → baca `SIAPEL_README.md`
 - **Vercel:** Project resmi = `newsiapel` (auto-deploy dari GitHub). Domain `siapel.vercel.app` dan `newsiapel.vercel.app` — identik.
