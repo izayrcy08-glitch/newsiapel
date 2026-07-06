@@ -49,20 +49,19 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-06-16 | `main` | **LogoutConfirm reusable di semua dashboard** — Buat komponen LogoutConfirm.jsx (trigger pojok kanan + modal konfirmasi). DashboardPegawai, DashboardAdmin, DeveloperConsole ganti BackButton → LogoutConfirm. App.jsx ganti `handleRoleSelect` → `goBack()` (bersihkan activePegawai, selectedPimpinan, role). |
 | 2026-06-16 | `main` | **Fix blank screen di browser HP** — `crypto.randomUUID()` tidak didukung Samsung Internet, Chrome < 93, Android WebView. Ganti dengan `generateUUID()` — 3 level fallback: crypto.randomUUID → crypto.getRandomValues → Math.random(). |
 | 2026-06-16 | `main` | **Fix QR token beda di tiap device** — Sebelum: tiap device generate token sendiri + tulis ke Firebase tiap 10 detik → saling timpa → token tampil beda. Sesudah: subscribe `onValue(QR_PATH)`, semua device baca token yang sama dari Firebase. Cuma device yang lihat token expired yang nulis ulang. |
+| 2026-07-06 | `main` | **🔐 P1+P2 COMPLETE + CLEANUP** — P1: Guard passwordOverridesLoaded (3s fallback), .gitignore pegawai_master.json, Firebase Rules granular access, SECURE_DATA_SOURCING.md docs. P2: Delete PegawaiLogin.jsx + RoleSelector.jsx (dead code), redirect pimpinan ke PimpinanSelector selector. Cleanup: Fix App.jsx missing destructuring (pimpinanAccessRoles, handlePimpinanSelect). 8 files changed, 1 created, 2 deleted. Build ✅ |
 
 ## Prioritas (Sekarang)
 
-1. 🔴 **Dashboard Pegawai — Ganti Password** — form ganti password 6 digit di dashboard pegawai (backend Firebase sync ✅ — tinggal bikin UI)
-2. 🔴 **Reset Device Binding (DeveloperConsole)** — tombol reset device fingerprint pegawai di panel/developer
-3. 🔴 **DashboardAdmin panel lazy loading** — PanelAbsensi dkk masih eager-loaded
-4. 🟢 **Password admin seragam** ✅ — `123455` di semua file + Firebase override + guard overrides loading
-5. 🟢 **Active Session (last-login-wins)** ✅ — /activeSessions Firebase, listener realtime. Desain: client-side detection (bukan server-enforcement).
-6. 🟢 **DeveloperConsole fitur** ✅ — Menu Kelola Pegawai, Koreksi Absensi, Ganti Password admin/dev
-7. 🟢 **Ganti Password admin/dev (DeveloperConsole)** ✅ — Sync ke Firebase, berlaku lintas domain
-8. 🟢 **Unified Login Page** ✅ — 1 form untuk semua role, auto-detect, info kontak admin di bawah form
-9. 🟢 **Session persist antar restart** ✅ — localStorage + initialSyncRef Firebase
-10. 🟢 **Tombol keluar di semua dashboard** ✅ — LogoutConfirm reusable, goBack() bersihkan state
-11. 🟢 **QR token sync lintas device** ✅ — semua baca dari Firebase onValue, bukan generate lokal
+1. 🟢 **P1-A: Guard passwordOverridesLoaded** ✅ — Block submit sampai Firebase load, visual loading, 3s fallback
+2. 🟢 **P1-B: Password di .gitignore** ✅ — Exclude pegawai_master.json, buat SECURE_DATA_SOURCING.md
+3. 🟢 **P1-C: Firebase Rules granular** ✅ — `/apel/session` + `/qr/current` hanya baca, `/pengajuan` IDOR prevention
+4. 🟢 **P2-A: Hapus dead login code** ✅ — Deleted PegawaiLogin.jsx + RoleSelector.jsx
+5. 🟢 **P2-B: Pimpinan redirect selector** ✅ — Redirect ke PimpinanSelector dulu sebelum dashboard
+6. 🟡 **P2-C: App.jsx cleanup** ✅ — Fix missing destructuring (pimpinanAccessRoles, handlePimpinanSelect)
+7. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
+8. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
+9. 🟡 **P3-C: QR TTL extend** — 10s → 30s + clock skew leeway
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx
