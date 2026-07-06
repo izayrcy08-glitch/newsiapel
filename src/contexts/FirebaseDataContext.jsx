@@ -200,47 +200,33 @@ export function FirebaseDataProvider({ children }) {
 
   // ── Subscription: Active Session (deteksi login dari device lain) ──
   // Strategi:
-  //   - Callback pertama (initialSync): tulis sessionId + deviceId ke Firebase
-  //   - Callback selanjutnya: jika sessionId berubah → ada login device lain → goBack()
-  //   - Tambahan: periodic get() tiap 15 detik sebagai fallback kalau onValue lambat
+  //   - Subscription listen untuk session changes (conflict detection)
+  //   - Registration sudah dilakukan di LoginPage via handleRegisterSession()
+  //   - Jika sessionId/deviceId berubah → ada login device lain → goBack()
   useEffect(() => {
     if (!activeUserId) return;
-
-    // Reset untuk setiap subscription baru
-    initialSyncRef.current = true;
 
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
     const unsub = onValue(sessionRef, (snapshot) => {
       const val = snapshot.val();
 
-      // Callback pertama = initial sync: tulis sessionId + deviceId kita
-      if (initialSyncRef.current) {
-        initialSyncRef.current = false;
-        set(ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`), {
-          sessionId: sessionIdRef.current,
-          deviceId: deviceIdRef.current,
-          loginAt: Date.now(),
-        }).catch(err => console.error("Gagal sync sessionId:", err));
-        return;
-      }
-
-      // Callback selanjutnya: sessionId berubah atau deviceId beda → konflik
       if (val && (val.sessionId !== sessionIdRef.current || val.deviceId !== deviceIdRef.current)) {
+        console.warn(`[SESSION] Device conflict detected: sessionId=${val.sessionId} vs ${sessionIdRef.current}`);
         goBack();
       }
     });
 
-    // Periodic conflict check tiap 15 detik
-    // Fallback untuk kasus onValue lambat (PWA di background, koneksi lemot)
+    // Periodic conflict check tiap 15 detik sebagai fallback
     const conflictTimer = setInterval(async () => {
       try {
         const snap = await get(ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`));
         const val = snap.val();
         if (val && val.sessionId !== sessionIdRef.current) {
+          console.warn(`[SESSION] Conflict detected on periodic check`);
           goBack();
         }
       } catch (_) {
-        // Silent — onValue tetap jalan sebagai primary
+        // Silent
       }
     }, 15000);
 
@@ -463,10 +449,17 @@ export function FirebaseDataProvider({ children }) {
     try {
       const snap = await get(sessionRef);
       const existing = snap.val();
-      if (existing && existing.sessionId !== sessionIdRef.current) {
+      
+      console.log(`[LOGIN] Checking existing session for ${userId}:`, existing);
+      
+      if (existing && existing.sessionId && existing.sessionId !== sessionIdRef.current) {
+        console.warn(`Device conflict detected for ${userId}: existing sessionId=${existing.sessionId}, current=${sessionIdRef.current}`);
         return false;
       }
+      
+      console.log(`[LOGIN] Writing session for ${userId}: sessionId=${sessionIdRef.current}, deviceId=${deviceIdRef.current}`);
       await set(sessionRef, newSessionData);
+      console.log(`[LOGIN] Session registered successfully for ${userId}`);
       return true;
     } catch (error) {
       console.error("Gagal register session:", error);

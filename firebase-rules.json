@@ -90,9 +90,11 @@
       ".read": "auth !== null",
       ".write": "auth !== null",
       "$userId": {
-        "sessionId": { ".validate": "newData.isString()" },
-        "deviceId": { ".validate": "newData.isString()" },
-        "loginAt": { ".validate": "newData.isNumber()" },
+        ".write": "auth !== null",
+        ".validate": "newData.hasChildren(['sessionId', 'deviceId', 'loginAt'])",
+        "sessionId": { ".validate": "newData.isString() && newData.val().length > 0" },
+        "deviceId": { ".validate": "newData.isString() && newData.val().length > 0" },
+        "loginAt": { ".validate": "newData.isNumber() && newData.val() > 0" },
         "$other": { ".validate": false }
       }
     },

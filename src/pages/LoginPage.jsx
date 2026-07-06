@@ -203,7 +203,10 @@ const LoginPage = () => {
         }
 
         // Register session & check for conflicts
+        console.log(`[LOGIN] Attempting to register session for userId: ${userId}`);
         const sessionRegistered = await handleRegisterSession(userId);
+        console.log(`[LOGIN] Session registered result: ${sessionRegistered}`);
+        
         if (!sessionRegistered) {
           setError("Akun ini sudah login di device lain. Silakan coba lagi.");
           setLoading(false);
