@@ -194,7 +194,7 @@
           ".validate": "newData.isString() && newData.val().length >= 4"
         },
         "phoneFingerprint": {
-          ".validate": "newData.isString() || newData.val() === null"
+          ".validate": "!newData.exists() || newData.isString()"
         },
         "isActive": {
           ".validate": "newData.isBoolean()"
