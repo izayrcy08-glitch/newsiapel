@@ -55,21 +55,23 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-06 | `main` | **🐛 FIX DEVICE LOCK REJECTING ALL LOGINS (Part 1)** — Masalah: semua akun ditolak dengan error "sudah login di device lain" meskipun login pertama. Root cause: handleRegisterSession() compare undefined sessionId values. Fix: Add null check `existing.sessionId && existing.sessionId !== ...`. Added detailed console logging. Commit: 25c1ffd |
 | 2026-07-06 | `main` | **🔓 FIX DEVICE LOCK + FIREBASE PERMISSIONS (Part 2)** — Real root cause: Firebase rules required `auth !== null`, app uses public database → permission_denied on activeSessions writes. Fixes: 1. Firebase rules: Change `auth !== null` → `true` for activeSessions read/write. 2. handleRegisterSession(): Remove pre-login conflict check, always write then verify. 3. Subscription: Skip initial sync to prevent false conflicts. Device lock now fully operational ✅. Commit: 5cdc090 |
 | 2026-07-06 | `main` | **🔐 FIX EXECUTIVE/UNIT_LEADER ACCOUNT SECURITY** — Issue: EXECUTIVE/UNIT_LEADER (e.g., KADIS) could select other pimpinan role after login (security issue). Fix: Auto-route to own dashboard instead of selector. Changed: `setPage("pimpinan_selector")` → `handlePimpinanSelect(pegawai)` in LoginPage. Now: Login KADIS → directly to KADIS dashboard (no role selection). Build ✅. Commit: 4b96d7d |
+| 2026-07-06 | `main` | **🐛 FIX EXECUTIVE/UNIT_LEADER LOGIN BOUNCE** — Issue: EXECUTIVE/UNIT_LEADER login bounced back to login page after successful session registration. Root cause: ID format mismatch between pegawai object (numeric) and pimpinanAccessRoles items (formatted string like "unit_leader-123456789"). Validation effect in SessionContext always failed → reset selectedPimpinan → bounce. Fix: (1) Add pimpinanAccessRoles to LoginPage destructure. (2) Find matching pimpinanAccessRoles item by NIP + group. (3) Pass correctly-formatted item to handlePimpinanSelect(). Now validation passes → direct route to pimpinan_dashboard ✅. Commit: 599a7a1 |
 
 ## Prioritas (Sekarang)
 
 1. 🟢 **FIXED: LOGIN ISSUES** ✅ — Firebase rule dan permissions sudah diperbaiki, device lock fully operational
 2. 🟢 **DEVICE LOCK FULLY WORKING** ✅ — Hanya 1 akun per device, all accounts tested OK
 3. 🟢 **EXECUTIVE/UNIT_LEADER AUTO-LOGIN** ✅ — KADIS/Unit Leader langsung ke dashboard sendiri (tidak bisa pilih role lain)
-4. 🟢 **P1-A: Guard passwordOverridesLoaded** ✅ — Block submit sampai Firebase load, visual loading, 3s fallback
-5. 🟢 **P1-B: Password di .gitignore** ✅ — Exclude pegawai_master.json, buat SECURE_DATA_SOURCING.md
-6. 🟢 **P1-C: Firebase Rules granular** ✅ — `/apel/session` + `/qr/current` hanya baca, `/pengajuan` IDOR prevention, activeSessions support deviceId
-7. 🟢 **P2-A: Hapus dead login code** ✅ — Deleted PegawaiLogin.jsx + RoleSelector.jsx
-8. 🟢 **P2-B: Pimpinan redirect selector** ✅ — Redirect ke PimpinanSelector dulu sebelum dashboard
-9. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Remove Firebase overrides + localStorage logic, read ONLY from pegawai_master.json
-10. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
-11. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
-12. 🟡 **P3-C: QR TTL extend** — 10s → 30s + clock skew leeway
+4. 🟢 **EXECUTIVE/UNIT_LEADER LOGIN BOUNCE FIXED** ✅ — Fixed ID format mismatch in pimpinanAccessRoles (commit 599a7a1)
+5. 🟢 **P1-A: Guard passwordOverridesLoaded** ✅ — Block submit sampai Firebase load, visual loading, 3s fallback
+6. 🟢 **P1-B: Password di .gitignore** ✅ — Exclude pegawai_master.json, buat SECURE_DATA_SOURCING.md
+7. 🟢 **P1-C: Firebase Rules granular** ✅ — `/apel/session` + `/qr/current` hanya baca, `/pengajuan` IDOR prevention, activeSessions support deviceId
+8. 🟢 **P2-A: Hapus dead login code** ✅ — Deleted PegawaiLogin.jsx + RoleSelector.jsx
+9. 🟢 **P2-B: Pimpinan redirect selector** ✅ — Redirect ke PimpinanSelector dulu sebelum dashboard
+10. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Remove Firebase overrides + localStorage logic, read ONLY from pegawai_master.json
+11. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
+12. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
+13. 🟡 **P3-C: QR TTL extend** — 10s → 30s + clock skew leeway
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx
