@@ -5,15 +5,15 @@ Status proyek terkini. Update tiap selesai sesi.
 ---
 
 ## Status Terkini
-- **Branch:** `main` (production) | `refactor-phase-1` (dev)
+- **Branch:** `main` (production)
 - **Deploy:** https://siapel.vercel.app ✅
-- **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main + refactor-phase-1)
-- **Sesi terakhir:** 2026-06-16 — Session persistence localStorage + LogoutConfirm reusable + fix blank HP + QR token sync
-- **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth aktif ✅)
-- **Firebase Console:** Rules sudah di-publish, Anonymous Auth aktif, email Test Mode expire berhenti ✅
+- **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main)
+- **Sesi terakhir:** 2026-07-06 — Debug PERMISSION_DENIED + Login admin/developer issue
+- **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth perlu verify ⚠️)
+- **Firebase Console:** Rules diperbaiki (isNull() → !newData.exists()), Anonymous Auth status: **perlu di-enable** ⚠️
 - **Build:** `npm run build` ✅
-- **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase overrides password (path `pegawai_passwords`) — init load validasi integritas field (password, nik, phoneFingerprint), fallback ke JSON jika tidak lolos
-- **Catatan:** Data pegawai masih di localStorage tiap browser — belum sync ke Firebase Realtime Database (kecuali password override)
+- **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase sync master_pegawai (conditional: hanya admin/developer)
+- **MASALAH AKTIF:** ❌ Admin/Developer tidak bisa login — "Username tidak ditemukan". Pegawai/Unit Leader bisa login normal. Console F12 kosong. Commit c2f3f03 sudah applied (conditional sync)
 
 ## Riwayat Sesi
 
@@ -56,18 +56,14 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-06 | `main` | **🔓 FIX DEVICE LOCK + FIREBASE PERMISSIONS (Part 2)** — Real root cause: Firebase rules required `auth !== null`, app uses public database → permission_denied on activeSessions writes. Fixes: 1. Firebase rules: Change `auth !== null` → `true` for activeSessions read/write. 2. handleRegisterSession(): Remove pre-login conflict check, always write then verify. 3. Subscription: Skip initial sync to prevent false conflicts. Device lock now fully operational ✅. Commit: 5cdc090 |
 | 2026-07-06 | `main` | **🔐 FIX EXECUTIVE/UNIT_LEADER ACCOUNT SECURITY** — Issue: EXECUTIVE/UNIT_LEADER (e.g., KADIS) could select other pimpinan role after login (security issue). Fix: Auto-route to own dashboard instead of selector. Changed: `setPage("pimpinan_selector")` → `handlePimpinanSelect(pegawai)` in LoginPage. Now: Login KADIS → directly to KADIS dashboard (no role selection). Build ✅. Commit: 4b96d7d |
 | 2026-07-06 | `main` | **🐛 FIX EXECUTIVE/UNIT_LEADER LOGIN BOUNCE** — Issue: EXECUTIVE/UNIT_LEADER login bounced back to login page after successful session registration. Root cause: ID format mismatch between pegawai object (numeric) and pimpinanAccessRoles items (formatted string like "unit_leader-123456789"). Validation effect in SessionContext always failed → reset selectedPimpinan → bounce. Fix: (1) Add pimpinanAccessRoles to LoginPage destructure. (2) Find matching pimpinanAccessRoles item by NIP + group. (3) Pass correctly-formatted item to handlePimpinanSelect(). Now validation passes → direct route to pimpinan_dashboard ✅. Commit: 599a7a1 |
+| 2026-07-06 (Sesi 2) | `main` | **🔥 DEBUG PERMISSION_DENIED + CONDITIONAL SYNC** — Issue: masterPegawaiData sync dipanggil untuk SEMUA role → PERMISSION_DENIED saat master_pegawai write. Admin/Developer login blocked, pegawai bisa login (async error tidak blocking). Fix: (1) firebase-rules.json: Replace invalid `isNull()` → `!newData.exists()` (commit d2a748a). (2) SessionContext: Conditional sync hanya untuk admin/developer role (commit c2f3f03). Semua committed dan pushed ✅. **❌ NEW ISSUE: Admin/Developer login gagal dengan "Username tidak ditemukan", console F12 kosong. Perlu investigate resolvePegawai() + masterPegawaiData loading.**
 
 ## Prioritas (Sekarang)
 
-1. 🟢 **FIXED: LOGIN ISSUES** ✅ — Firebase rule dan permissions sudah diperbaiki, device lock fully operational
-2. 🟢 **DEVICE LOCK FULLY WORKING** ✅ — Hanya 1 akun per device, all accounts tested OK
-3. 🟢 **EXECUTIVE/UNIT_LEADER AUTO-LOGIN** ✅ — KADIS/Unit Leader langsung ke dashboard sendiri (tidak bisa pilih role lain)
-4. 🟢 **EXECUTIVE/UNIT_LEADER LOGIN BOUNCE FIXED** ✅ — Fixed ID format mismatch in pimpinanAccessRoles (commit 599a7a1)
-5. 🟢 **P1-A: Guard passwordOverridesLoaded** ✅ — Block submit sampai Firebase load, visual loading, 3s fallback
-6. 🟢 **P1-B: Password di .gitignore** ✅ — Exclude pegawai_master.json, buat SECURE_DATA_SOURCING.md
-7. 🟢 **P1-C: Firebase Rules granular** ✅ — `/apel/session` + `/qr/current` hanya baca, `/pengajuan` IDOR prevention, activeSessions support deviceId
-8. 🟢 **P2-A: Hapus dead login code** ✅ — Deleted PegawaiLogin.jsx + RoleSelector.jsx
-9. 🟢 **P2-B: Pimpinan redirect selector** ✅ — Redirect ke PimpinanSelector dulu sebelum dashboard
+1. 🔴 **BLOCKING: Admin/Developer Login Issue** — Username tidak ditemukan, console F12 kosong. Perlu debug resolvePegawai() + masterPegawaiData apakah ada admin/developer entries.
+2. 🟡 **Firebase Anonymous Auth Status** — Anonymous Auth perlu di-verify enable di Firebase Console (perlu test)
+3. 🟡 **Master Pegawai Sync Error** — Conditional sync sudah applied, tapi perlu verify PERMISSION_DENIED cleared setelah login block difix
+4. 🟢 **FIXED: LOGIN ISSUES (pegawai/unit leader)** ✅ — Firebase rule dan permissions sudah diperbaiki
 10. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Remove Firebase overrides + localStorage logic, read ONLY from pegawai_master.json
 11. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
 12. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
