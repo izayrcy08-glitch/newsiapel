@@ -130,6 +130,7 @@ const GlassInput = ({ className, icon, ...props }) => {
 const LoginPage = () => {
   const {
     masterPegawaiData,
+    pimpinanAccessRoles,
     setPage,
     setRole,
     setActivePegawai,
@@ -232,7 +233,16 @@ const LoginPage = () => {
 
         if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
           setActivePegawai(pegawai);
-          handlePimpinanSelect(pegawai);
+          const matchingPimpinan = pimpinanAccessRoles.find(
+            (p) => p.nip === pegawai.nip && p.group === pegawai.role
+          );
+          if (matchingPimpinan) {
+            handlePimpinanSelect(matchingPimpinan);
+          } else {
+            setError("Data pimpinan tidak ditemukan. Hubungi admin.");
+            setLoading(false);
+            return;
+          }
         } else {
           setActivePegawai(pegawai);
           setPage("pegawai_dashboard");
