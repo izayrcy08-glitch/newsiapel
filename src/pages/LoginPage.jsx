@@ -219,17 +219,21 @@ const LoginPage = () => {
            userId = `pegawai_${pegawai.id}`;
          }
 
-         console.log(`[LOGIN] Attempting to register session for userId: ${userId}`);
-         const sessionRegistered = await handleRegisterSession(userId);
-         console.log(`[LOGIN] Session registered result: ${sessionRegistered}`);
-         
-         if (!sessionRegistered) {
-           console.error(`[LOGIN] ❌ Session registration failed — device already logged in`);
-           setError("Akun ini sudah login di device lain. Silakan coba lagi.");
-           setLoading(false);
-           return;
-         }
-         console.log(`[LOGIN] ✅ Session registered successfully`);
+        console.log(`[LOGIN] Attempting to register session for userId: ${userId}`);
+        const sessionResult = await handleRegisterSession(userId);
+        console.log(`[LOGIN] Session registered result:`, sessionResult);
+
+        if (!sessionResult.ok) {
+          const pesan =
+            sessionResult.reason === "device_lain"
+              ? "Akun ini sedang aktif di perangkat lain. Logout dulu di perangkat tersebut, atau tunggu ±1 menit lalu coba lagi."
+              : "Gagal memulai sesi. Periksa koneksi internet lalu coba lagi.";
+          console.error(`[LOGIN] ❌ Session registration failed:`, sessionResult.reason);
+          setError(pesan);
+          setLoading(false);
+          return;
+        }
+        console.log(`[LOGIN] ✅ Session registered successfully`);
 
          if (pegawai.role === "ADMIN") {
            console.log(`[LOGIN] ✅ Routing to admin dashboard`);

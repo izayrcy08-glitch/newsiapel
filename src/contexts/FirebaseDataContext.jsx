@@ -71,6 +71,12 @@ const getDeviceId = () => {
 const formatJamHadir = (date = new Date()) =>
   `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 
+// Ambang sesi "basi": jika perangkat aktif tidak mengirim heartbeat selama ini,
+// sesinya dianggap ditinggalkan sehingga perangkat lain boleh login.
+const SESSION_STALE_MS = 90 * 1000; // 90 detik
+// Interval pengiriman heartbeat oleh perangkat yang sedang aktif.
+const HEARTBEAT_INTERVAL_MS = 30 * 1000; // 30 detik
+
 const FirebaseDataContext = createContext(null);
 
 export function FirebaseDataProvider({ children }) {
@@ -313,6 +319,21 @@ export function FirebaseDataProvider({ children }) {
     }
   }, [activeUserId]);
 
+  // ── Heartbeat: perbarui lastSeen supaya sesi tidak dianggap basi ──
+  // Selama user login, kirim "tanda hidup" tiap HEARTBEAT_INTERVAL_MS.
+  // Jika perangkat ditutup, heartbeat berhenti → sesi jadi basi setelah
+  // SESSION_STALE_MS → perangkat lain boleh login.
+  useEffect(() => {
+    if (!activeUserId) return;
+    const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
+    const beat = () => {
+      update(sessionRef, { lastSeen: Date.now() }).catch(() => {});
+    };
+    beat();
+    const id = setInterval(beat, HEARTBEAT_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [activeUserId]);
+
   // ── Auto-cleanup: hapus file storage >24j setelah disetujui ──
   useEffect(() => {
     const FILE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -485,35 +506,54 @@ export function FirebaseDataProvider({ children }) {
     set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), null);
   }, []);
 
+  // First-login-wins: tolak login jika akun sedang aktif di PERANGKAT LAIN.
+  // Return object { ok, reason } supaya LoginPage bisa kasih pesan tepat.
   const handleRegisterSession = useCallback(async (userId) => {
-    if (!userId) return true;
+    if (!userId) return { ok: true };
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${userId}`);
-    const newSessionData = {
-      sessionId: sessionIdRef.current,
-      deviceId: deviceIdRef.current,
-      loginAt: Date.now(),
-    };
     try {
-      console.log(`[LOGIN] Writing new session for ${userId}`, {
+      const now = Date.now();
+      const existingSnap = await get(sessionRef);
+      const existing = existingSnap.val();
+
+      // Ada sesi milik perangkat lain yang MASIH aktif (heartbeat belum basi) → tolak.
+      // Perangkat sama (refresh/buka ulang) selalu diizinkan lanjut.
+      const sesiPerangkatLain =
+        existing &&
+        existing.deviceId &&
+        existing.deviceId !== deviceIdRef.current;
+      const heartbeatMasihHidup =
+        typeof existing?.lastSeen === "number" &&
+        now - existing.lastSeen < SESSION_STALE_MS;
+
+      if (sesiPerangkatLain && heartbeatMasihHidup) {
+        console.warn(`[LOGIN] ❌ Ditolak — akun aktif di perangkat lain`, {
+          existingDevice: existing.deviceId,
+          lastSeenAgoMs: now - existing.lastSeen,
+        });
+        return { ok: false, reason: "device_lain" };
+      }
+
+      const newSessionData = {
         sessionId: sessionIdRef.current,
         deviceId: deviceIdRef.current,
-      });
+        loginAt: now,
+        lastSeen: now,
+      };
+      console.log(`[LOGIN] Writing new session for ${userId}`, newSessionData);
       await set(sessionRef, newSessionData);
-      
-      const snap = await get(sessionRef);
-      const written = snap.val();
-      console.log(`[LOGIN] Verified session written:`, written);
-      
+
+      const verifySnap = await get(sessionRef);
+      const written = verifySnap.val();
       if (written && written.sessionId === sessionIdRef.current) {
         console.log(`[LOGIN] ✅ Session registered successfully for ${userId}`);
-        return true;
-      } else {
-        console.error(`[LOGIN] ❌ Session verification failed - data mismatch`);
-        return false;
+        return { ok: true };
       }
+      console.error(`[LOGIN] ❌ Session verification failed - data mismatch`);
+      return { ok: false, reason: "verify_gagal" };
     } catch (error) {
       console.error("[LOGIN] ❌ Gagal register session:", error);
-      return false;
+      return { ok: false, reason: "error" };
     }
   }, []);
 

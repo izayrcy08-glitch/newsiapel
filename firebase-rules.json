@@ -128,6 +128,9 @@
         "loginAt": {
           ".validate": "newData.isNumber() && newData.val() > 0"
         },
+        "lastSeen": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
+        },
         "$other": {
           ".validate": false
         }
