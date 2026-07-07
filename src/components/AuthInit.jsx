@@ -2,17 +2,25 @@ import { useEffect } from "react";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
 /**
- * AuthInit — Anonymous Firebase Auth (fire-and-forget)
+ * AuthInit — Anonymous Firebase Auth with await
  *
- * Langsung render children, auth jalan di background tanpa loading.
- * Firebase SDK otomatis reconnect subscriptions saat auth siap.
+ * Menunggu anonymous auth selesai SEBELUM render children.
+ * Ini memastikan saat FirebaseDataContext baca data, auth sudah siap.
+ * Mencegah permission_denied errors karena timing race condition.
  */
 export function AuthInit({ children }) {
   useEffect(() => {
-    const auth = getAuth();
-    signInAnonymously(auth).catch((err) => {
-      console.error("Firebase anonymous auth gagal:", err);
-    });
+    const initAuth = async () => {
+      try {
+        const auth = getAuth();
+        await signInAnonymously(auth);
+        console.log("✅ [AuthInit] Anonymous auth initialized successfully");
+      } catch (err) {
+        console.error("❌ [AuthInit] Firebase anonymous auth failed:", err);
+      }
+    };
+
+    initAuth();
   }, []);
 
   return children;
