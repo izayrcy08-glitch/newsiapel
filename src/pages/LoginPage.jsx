@@ -17,12 +17,23 @@ const resolvePegawai = (masterData, username) => {
   if (!username.trim()) return null;
   const input = username.trim();
   let match = masterData.find((p) => p.nip === input);
-  if (match) return match;
+  if (match) {
+    console.log(`✅ Match by NIP: ${match.nama} (role: ${match.role})`);
+    return match;
+  }
   match = masterData.find((p) => p.nik && p.nik === input);
-  if (match) return match;
+  if (match) {
+    console.log(`✅ Match by NIK: ${match.nama} (role: ${match.role})`);
+    return match;
+  }
   const lower = input.toLowerCase();
   match = masterData.find((p) => p.nama.toLowerCase() === lower);
-  return match || null;
+  if (match) {
+    console.log(`✅ Match by Nama: ${match.nama} (role: ${match.role})`);
+    return match;
+  }
+  console.warn(`❌ Username '${input}' tidak ditemukan di ${masterData.length} data`);
+  return null;
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -165,94 +176,104 @@ const LoginPage = () => {
 
     // ── Login Handler ──
     const handleLogin = async (e) => {
-      if (e) e.preventDefault();
-      setError("");
-      if (!username.trim()) { setError("Masukkan username"); return; }
-      if (!password.trim()) { setError("Masukkan password"); return; }
-      setLoading(true);
+       if (e) e.preventDefault();
+       setError("");
+       if (!username.trim()) { setError("Masukkan username"); return; }
+       if (!password.trim()) { setError("Masukkan password"); return; }
+       setLoading(true);
+       console.log(`[LOGIN] Attempting login with username: ${username}`);
 
-      try {
-        // Resolve user dari masterPegawaiData (HANYA sumber kebenaran: pegawai_master.json / CREDENTIALS.md)
-        const pegawai = resolvePegawai(masterPegawaiData, username);
-        if (!pegawai) {
-          setError("Username tidak ditemukan");
-          setLoading(false);
-          return;
-        }
+       try {
+         console.log(`[LOGIN] masterPegawaiData loaded: ${masterPegawaiData?.length || 0} entries`);
+         const pegawai = resolvePegawai(masterPegawaiData, username);
+         if (!pegawai) {
+           console.error(`[LOGIN] ❌ Username '${username}' tidak ditemukan`);
+           setError("Username tidak ditemukan");
+           setLoading(false);
+           return;
+         }
+         console.log(`[LOGIN] ✅ User found: ${pegawai.nama} (role: ${pegawai.role})`);
 
-        // Validasi password dari pegawai_master.json (SINGLE SOURCE OF TRUTH)
-        if (!pegawai.password) {
-          setError("Password belum di-set. Hubungi admin.");
-          setLoading(false);
-          return;
-        }
-        if (password !== pegawai.password) {
-          setError("Password salah");
-          setPassword("");
-          setLoading(false);
-          return;
-        }
+         if (!pegawai.password) {
+           console.error(`[LOGIN] ❌ Password belum di-set untuk ${pegawai.nama}`);
+           setError("Password belum di-set. Hubungi admin.");
+           setLoading(false);
+           return;
+         }
+         
+         if (password !== pegawai.password) {
+           console.error(`[LOGIN] ❌ Password salah untuk ${pegawai.nama}`);
+           setError("Password salah");
+           setPassword("");
+           setLoading(false);
+           return;
+         }
+         console.log(`[LOGIN] ✅ Password valid`);
 
-        // Determine routing based on role & Register session atomically
-        let userId = null;
-        if (pegawai.role === "ADMIN") {
-          userId = "admin";
-        } else if (pegawai.role === "DEVELOPER") {
-          userId = "developer";
-        } else {
-          userId = `pegawai_${pegawai.id}`;
-        }
+         let userId = null;
+         if (pegawai.role === "ADMIN") {
+           userId = "admin";
+         } else if (pegawai.role === "DEVELOPER") {
+           userId = "developer";
+         } else {
+           userId = `pegawai_${pegawai.id}`;
+         }
 
-        // Register session & check for conflicts
-        console.log(`[LOGIN] Attempting to register session for userId: ${userId}`);
-        const sessionRegistered = await handleRegisterSession(userId);
-        console.log(`[LOGIN] Session registered result: ${sessionRegistered}`);
-        
-        if (!sessionRegistered) {
-          setError("Akun ini sudah login di device lain. Silakan coba lagi.");
-          setLoading(false);
-          return;
-        }
+         console.log(`[LOGIN] Attempting to register session for userId: ${userId}`);
+         const sessionRegistered = await handleRegisterSession(userId);
+         console.log(`[LOGIN] Session registered result: ${sessionRegistered}`);
+         
+         if (!sessionRegistered) {
+           console.error(`[LOGIN] ❌ Session registration failed — device already logged in`);
+           setError("Akun ini sudah login di device lain. Silakan coba lagi.");
+           setLoading(false);
+           return;
+         }
+         console.log(`[LOGIN] ✅ Session registered successfully`);
 
-        // Session OK — proceed dengan routing
-        if (pegawai.role === "ADMIN") {
-          setRole("admin");
-          setPage("admin");
-          return;
-        }
-        if (pegawai.role === "DEVELOPER") {
-          setRole("developer");
-          setPage("developer");
-          return;
-        }
+         if (pegawai.role === "ADMIN") {
+           console.log(`[LOGIN] ✅ Routing to admin dashboard`);
+           setRole("admin");
+           setPage("admin");
+           return;
+         }
+         if (pegawai.role === "DEVELOPER") {
+           console.log(`[LOGIN] ✅ Routing to developer console`);
+           setRole("developer");
+           setPage("developer");
+           return;
+         }
 
-        // Regular pegawai (EMPLOYEE, EXECUTIVE, UNIT_LEADER)
-        const fp = getDeviceFingerprint();
-        handleSaveFingerprint(pegawai.id, fp);
-        handleUpdatePegawai(pegawai.id, { phoneFingerprint: fp });
+         const fp = getDeviceFingerprint();
+         handleSaveFingerprint(pegawai.id, fp);
+         handleUpdatePegawai(pegawai.id, { phoneFingerprint: fp });
 
-        if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
-          setActivePegawai(pegawai);
-          const matchingPimpinan = pimpinanAccessRoles.find(
-            (p) => p.nip === pegawai.nip && p.group === pegawai.role
-          );
-          if (matchingPimpinan) {
-            handlePimpinanSelect(matchingPimpinan);
-          } else {
-            setError("Data pimpinan tidak ditemukan. Hubungi admin.");
-            setLoading(false);
-            return;
-          }
-        } else {
-          setActivePegawai(pegawai);
-          setPage("pegawai_dashboard");
-        }
-     } catch {
-       setError("Terjadi kesalahan");
-     } finally {
-       setLoading(false);
-     }
-   };
+         if (pegawai.role === "EXECUTIVE" || pegawai.role === "UNIT_LEADER") {
+           setActivePegawai(pegawai);
+           const matchingPimpinan = pimpinanAccessRoles.find(
+             (p) => p.nip === pegawai.nip && p.group === pegawai.role
+           );
+           if (matchingPimpinan) {
+             console.log(`[LOGIN] ✅ Routing to pimpinan dashboard`);
+             handlePimpinanSelect(matchingPimpinan);
+           } else {
+             console.error(`[LOGIN] ❌ Pimpinan data not found for ${pegawai.nama}`);
+             setError("Data pimpinan tidak ditemukan. Hubungi admin.");
+             setLoading(false);
+             return;
+           }
+         } else {
+           console.log(`[LOGIN] ✅ Routing to pegawai dashboard`);
+           setActivePegawai(pegawai);
+           setPage("pegawai_dashboard");
+         }
+      } catch (err) {
+        console.error(`[LOGIN] ❌ Unexpected error:`, err);
+        setError("Terjadi kesalahan");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleLogin(e);

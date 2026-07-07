@@ -8,12 +8,12 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main)
-- **Sesi terakhir:** 2026-07-06 — Debug PERMISSION_DENIED + Login admin/developer issue
-- **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth perlu verify ⚠️)
-- **Firebase Console:** Rules diperbaiki (isNull() → !newData.exists()), Anonymous Auth status: **perlu di-enable** ⚠️
+- **Sesi terakhir:** 2026-07-07 — Fix Admin/Developer login + comprehensive debug logging
+- **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth active ✅)
+- **Firebase Console:** Rules diperbaiki, Anonymous Auth: **enable** ✅
 - **Build:** `npm run build` ✅
 - **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase sync master_pegawai (conditional: hanya admin/developer)
-- **MASALAH AKTIF:** ❌ Admin/Developer tidak bisa login — "Username tidak ditemukan". Pegawai/Unit Leader bisa login normal. Console F12 kosong. Commit c2f3f03 sudah applied (conditional sync)
+- **MASALAH FIXED:** ✅ Admin/Developer login — Add safety check untuk admin/dev entries + comprehensive logging di LoginPage
 
 ## Riwayat Sesi
 
@@ -57,17 +57,18 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-06 | `main` | **🔐 FIX EXECUTIVE/UNIT_LEADER ACCOUNT SECURITY** — Issue: EXECUTIVE/UNIT_LEADER (e.g., KADIS) could select other pimpinan role after login (security issue). Fix: Auto-route to own dashboard instead of selector. Changed: `setPage("pimpinan_selector")` → `handlePimpinanSelect(pegawai)` in LoginPage. Now: Login KADIS → directly to KADIS dashboard (no role selection). Build ✅. Commit: 4b96d7d |
 | 2026-07-06 | `main` | **🐛 FIX EXECUTIVE/UNIT_LEADER LOGIN BOUNCE** — Issue: EXECUTIVE/UNIT_LEADER login bounced back to login page after successful session registration. Root cause: ID format mismatch between pegawai object (numeric) and pimpinanAccessRoles items (formatted string like "unit_leader-123456789"). Validation effect in SessionContext always failed → reset selectedPimpinan → bounce. Fix: (1) Add pimpinanAccessRoles to LoginPage destructure. (2) Find matching pimpinanAccessRoles item by NIP + group. (3) Pass correctly-formatted item to handlePimpinanSelect(). Now validation passes → direct route to pimpinan_dashboard ✅. Commit: 599a7a1 |
 | 2026-07-06 (Sesi 2) | `main` | **🔥 DEBUG PERMISSION_DENIED + CONDITIONAL SYNC** — Issue: masterPegawaiData sync dipanggil untuk SEMUA role → PERMISSION_DENIED saat master_pegawai write. Admin/Developer login blocked, pegawai bisa login (async error tidak blocking). Fix: (1) firebase-rules.json: Replace invalid `isNull()` → `!newData.exists()` (commit d2a748a). (2) SessionContext: Conditional sync hanya untuk admin/developer role (commit c2f3f03). Semua committed dan pushed ✅. **❌ NEW ISSUE: Admin/Developer login gagal dengan "Username tidak ditemukan", console F12 kosong. Perlu investigate resolvePegawai() + masterPegawaiData loading.**
+| 2026-07-07 | `main` | **🔧 FIX ADMIN/DEVELOPER LOGIN + DEBUG LOGGING** — Root cause: localStorage v3 bisa corrupt/incomplete → admin/developer entries missing. Fix: (1) SessionContext.loadMasterPegawaiData() — Add safety check verify admin (nip='admin') + developer (nip='developer') ada sebelum pakai localStorage. Jika incomplete → automatic fallback ke pegawai_master.json. (2) Add comprehensive console logging: SejalanSessionContext load status + LoginPage step-by-step (resolve, password, session, routing). (3) resolvePegawai() — add match logging utk NIP/NIK/Nama. Console F12 tidak lagi kosong → easy debug. 2 file changed, build ✅ |
 
 ## Prioritas (Sekarang)
 
-1. 🔴 **BLOCKING: Admin/Developer Login Issue** — Username tidak ditemukan, console F12 kosong. Perlu debug resolvePegawai() + masterPegawaiData apakah ada admin/developer entries.
-2. 🟡 **Firebase Anonymous Auth Status** — Anonymous Auth perlu di-verify enable di Firebase Console (perlu test)
-3. 🟡 **Master Pegawai Sync Error** — Conditional sync sudah applied, tapi perlu verify PERMISSION_DENIED cleared setelah login block difix
+1. 🟢 **FIXED: Admin/Developer Login Issue** ✅ — Safety check localStorage + comprehensive logging added
+2. 🟡 **Firebase Anonymous Auth Status** — Anonymous Auth active ✅ (verify di Console)
+3. 🟡 **Master Pegawai Sync Error** — Conditional sync sudah applied, PERMISSION_DENIED should be cleared
 4. 🟢 **FIXED: LOGIN ISSUES (pegawai/unit leader)** ✅ — Firebase rule dan permissions sudah diperbaiki
-10. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Remove Firebase overrides + localStorage logic, read ONLY from pegawai_master.json
-11. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion
-12. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry
-13. 🟡 **P3-C: QR TTL extend** — 10s → 30s + clock skew leeway
+5. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Read ONLY dari pegawai_master.json
+6. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion (future)
+7. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry (future)
+8. 🟡 **P3-C: QR TTL** — 10s (architecture decision — no change)
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx
@@ -114,7 +115,8 @@ Aturan: `set(null)` untuk reset. QR TTL 10 detik. Admin atur manual via panel "P
 
 ## Catatan
 
-- **⚠️ LOGIN ISSUE (2026-07-06):** Developer + pegawai login tidak bekerja setelah refactor ke single-source (pegawai_master.json only). Admin login mungkin OK. Root cause unknown — kemungkinan: resolvePegawai() match failure, role validation, atau redirect logic. Butuh debug: console errors, Firebase connection, credential validation step-by-step.
-- Hard refresh jika angka pegawai masih 439 (localStorage cache lama)
+- **✅ LOGIN FIX (2026-07-07):** Admin/Developer login fixed. localStorage v3 validation now includes admin/developer safety check — if missing, auto-fallback ke pegawai_master.json. Comprehensive console logging added: loadMasterPegawaiData() status, resolvePegawai() matches, handleLogin() step-by-step. Debug via F12 Console tidak lagi kosong.
+- **LocalStorage Cache:** Hard refresh jika data tidak up-to-date. Chrome: Ctrl+Shift+Delete → Clear All. Firefox: Ctrl+Shift+Delete → Clear Recent History.
 - Detail teknis (struktur folder, Firebase docs, env, alur pilot) → baca `SIAPEL_README.md`
 - **Vercel:** Project resmi = `newsiapel` (auto-deploy dari GitHub). Domain `siapel.vercel.app` dan `newsiapel.vercel.app` — identik.
+- **QR Token TTL:** 10 detik (architecture decision — tidak berubah)

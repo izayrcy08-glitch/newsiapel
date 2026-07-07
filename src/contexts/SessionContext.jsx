@@ -31,24 +31,31 @@ const normalizePegawaiData = (people = []) =>
   people.map((pegawai, index) => normalizePegawaiRecord(pegawai, index + 1));
 
 const loadMasterPegawaiData = () => {
-  // Prioritas 1: Baca dari localStorage (data hasil edit/admin sebelumnya)
   try {
     const saved = window.localStorage.getItem(MASTER_PEGAWAI_STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Validasi integritas: pastikan record pertama punya field penting
-        // (password, nik, phoneFingerprint). Jika tidak ada, anggap basi.
         const first = parsed[0];
-        if (first && "password" in first && "nik" in first && "phoneFingerprint" in first) {
-          return normalizePegawaiData(parsed);
+        if (first && "password" in first && "nip" in first && "phoneFingerprint" in first) {
+          const hasAdmin = parsed.find(p => p.nip === 'admin');
+          const hasDeveloper = parsed.find(p => p.nip === 'developer');
+          
+          if (hasAdmin && hasDeveloper) {
+            console.log(`✅ localStorage v3 valid — loaded ${parsed.length} entries`);
+            return normalizePegawaiData(parsed);
+          } else {
+            console.warn('⚠️ localStorage v3 missing admin/developer — fallback ke JSON');
+          }
+        } else {
+          console.warn('⚠️ localStorage v3 invalid structure — fallback ke JSON');
         }
       }
     }
-  } catch (_) {
-    // Abaikan error baca localStorage — fallback ke JSON
+  } catch (err) {
+    console.error('❌ Gagal baca localStorage v3:', err.message, '— fallback ke JSON');
   }
-  // Prioritas 2: Fallback ke file statis (first run / cache kosong)
+  console.log(`✅ Loaded ${pegawaiData.length} entries dari pegawai_master.json`);
   return normalizePegawaiData(pegawaiData);
 };
 
