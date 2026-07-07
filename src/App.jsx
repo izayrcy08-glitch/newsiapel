@@ -19,7 +19,8 @@ function AppRouter() {
   } = useSession();
 
   const {
-    attendance, apelStatus, apelSession, apelReason, apelReasonText,
+    attendance, monthlyAttendance, apelMeta, monthKey, dayKey,
+    apelStatus, apelSession, apelReason, apelReasonText,
     pengajuan, activeUserId,
     handleClearActiveSession,
     handleScan, handleScanSimulate, handleReset, handleKoreksi,
@@ -61,6 +62,10 @@ function AppRouter() {
                pegawai={activePegawai}
                people={masterPegawaiData}
                attendance={attendance}
+               monthlyAttendance={monthlyAttendance}
+               apelMeta={apelMeta}
+               monthKey={monthKey}
+               dayKey={dayKey}
                apelStatus={apelStatus}
                apelSession={apelSession}
                apelReason={apelReason}
@@ -87,6 +92,10 @@ function AppRouter() {
         <DashboardPimpinan
           people={masterPegawaiData}
           attendance={attendance}
+          monthlyAttendance={monthlyAttendance}
+          apelMeta={apelMeta}
+          monthKey={monthKey}
+          dayKey={dayKey}
           pengajuan={pengajuan}
           apelStatus={apelStatus}
           apelSession={apelSession}

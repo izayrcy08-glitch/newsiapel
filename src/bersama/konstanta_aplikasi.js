@@ -1,6 +1,7 @@
 export const STATUS_OPTIONS = ["Dinas Dalam", "Dinas Luar", "Izin", "Sakit"];
 
-export const ATTENDANCE_PATH = "attendance/today";
+export const ATTENDANCE_ROOT = "attendance";
+export const APEL_META_ROOT = "apelMeta";
 export const APEL_SESSION_PATH = "apel/session";
 export const APEL_REASON_PATH = "apel/reason";
 export const QR_PATH = "qr/current";

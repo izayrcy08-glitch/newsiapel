@@ -10,6 +10,7 @@ import { PengajuanStatusForm } from "../components/PengajuanStatusForm";
 import { REASON_OPTIONS } from "../bersama/konstanta_aplikasi";
 import { getDisciplineStatus } from "../bersama/util_status_dan_warna";
 import { getScopedPeople } from "../bersama/util_unit_dan_scope";
+import { calcMonthlyTanpaKeterangan } from "../fitur/absensi/logika_absensi";
 import { validateQrToken } from "../utils/qr-token";
 import { useClock } from "../hooks/useClock";
 import { useAttendanceStats } from "../hooks/useAttendanceStats";
@@ -18,7 +19,7 @@ import { useQrScanner } from "../hooks/useQrScanner";
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PEGAWAI
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatus, apelReason, apelReasonText, onScan, onLogout, onPengajuanSubmit }) => {
+const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAttendance, apelMeta, monthKey, dayKey, apelStatus, apelReason, apelReasonText, onScan, onLogout, onPengajuanSubmit }) => {
   const { now, greeting } = useClock();
   const [showScanner, setShowScanner] = useState(false);
   const [showManualCode, setShowManualCode] = useState(false);
@@ -78,7 +79,12 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatu
     ? (apelStatus === "ended" ? "Tanpa Keterangan" : "Belum Melakukan Absensi")
     : myAttendance.status;
   const showAttendanceTime = !isUnrecordedStatus && myAttendance.jamHadir;
-  const monthlyDisciplineCount = myAttendance.status === "Tanpa Keterangan" || (!myAttendance.status && apelStatus === "ended") ? 1 : 0;
+  const monthlyTK = calcMonthlyTanpaKeterangan(monthlyAttendance, apelMeta, [pegawai], {
+    todayMonthKey: monthKey,
+    todayDayKey: dayKey,
+    apelStatus,
+  });
+  const monthlyDisciplineCount = monthlyTK[pegawai.id] ?? 0;
   const monthlyDisciplineStatus = getDisciplineStatus(monthlyDisciplineCount);
   const statusLabel = displayStatus === "Hadir" ? "Hadir" : displayStatus;
 

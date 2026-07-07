@@ -8,7 +8,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main)
-- **Sesi terakhir:** 2026-07-07 — Fix Admin/Developer login + comprehensive debug logging
+- **Sesi terakhir:** 2026-07-08 — Absensi per-tanggal WIB + akumulasi bulanan nyata
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth active ✅)
 - **Firebase Console:** Rules diperbaiki, Anonymous Auth: **enable** ✅
 - **Build:** `npm run build` ✅
@@ -59,25 +59,25 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-06 (Sesi 2) | `main` | **🔥 DEBUG PERMISSION_DENIED + CONDITIONAL SYNC** — Issue: masterPegawaiData sync dipanggil untuk SEMUA role → PERMISSION_DENIED saat master_pegawai write. Admin/Developer login blocked, pegawai bisa login (async error tidak blocking). Fix: (1) firebase-rules.json: Replace invalid `isNull()` → `!newData.exists()` (commit d2a748a). (2) SessionContext: Conditional sync hanya untuk admin/developer role (commit c2f3f03). Semua committed dan pushed ✅. **❌ NEW ISSUE: Admin/Developer login gagal dengan "Username tidak ditemukan", console F12 kosong. Perlu investigate resolvePegawai() + masterPegawaiData loading.**
 | 2026-07-07 | `main` | **🔧 FIX ADMIN/DEVELOPER LOGIN + DEBUG LOGGING** — Root cause: localStorage v3 bisa corrupt/incomplete → admin/developer entries missing. Fix: (1) SessionContext.loadMasterPegawaiData() — Add safety check verify admin (nip='admin') + developer (nip='developer') ada sebelum pakai localStorage. Jika incomplete → automatic fallback ke pegawai_master.json. (2) Add comprehensive console logging: SejalanSessionContext load status + LoginPage step-by-step (resolve, password, session, routing). (3) resolvePegawai() — add match logging utk NIP/NIK/Nama. Console F12 tidak lagi kosong → easy debug. 2 file changed, build ✅ |
 | 2026-07-07 | `main` | **🔒 DEVICE LOCK: 1 akun = 1 perangkat (first-login-wins)** — Ubah dari last-login-wins → first-login-wins. `handleRegisterSession` kini cek sesi existing dulu: jika ada di perangkat LAIN dan heartbeat masih hidup (<90 detik) → TOLAK login (`{ok:false, reason:'device_lain'}`). Perangkat sama (refresh) selalu boleh. Tambah **heartbeat** `lastSeen` tiap 30 detik + ambang basi 90 detik (cegah akun terkunci permanen kalau app ditutup tanpa logout). LoginPage tampilkan pesan jelas. **⚠️ WAJIB update Firebase Rules** (tambah field `lastSeen` di activeSessions). 3 file changed, build ✅ |
-| 2026-07-07 | `main` | **🎯 FIX AKAR: Absensi tidak masuk DB + kamera kedip putih** — 2 root cause ditemukan & diperbaiki: (1) **Data tidak update:** `handleScan`/`handleScanSimulate` simpan `jamHadir` via `toLocaleTimeString("id-ID")` yang hasilkan titik (`07.15`), sedangkan Firebase Rule wajib titik dua (`07:15`) → write DITOLAK diam-diam (tanpa `.catch`). Fix: helper `formatJamHadir()` (selalu `HH:MM`) + tambah `.catch` logging. TIDAK perlu ubah Firebase Console. (2) **Kamera flash putih:** `useClock` render tiap 1 detik + `qrbox` objek baru tiap render → `startScanning` ganti identitas → useEffect restart kamera tiap detik. Fix: simpan config di ref (stabilkan `startScanning`) + guard anti double-start di `useQrScanner`. (3) Hapus duplikasi `useEffect` di DashboardPegawai. 3 file changed. ⚠️ Build belum dijalankan (terminal env error di sesi ini) — perlu `npm run build` manual. |
+| 2026-07-07 | `main` | **🎯 FIX AKAR: Absensi tidak masuk DB + kamera kedip putih** — 2 root cause ditemukan & diperbaiki: (1) **Data tidak update:** `handleScan`/`handleScanSimulate` simpan `jamHadir` via `toLocaleTimeString("id-ID")` yang hasilkan titik (`07.15`), sedangkan Firebase Rule wajib titik dua (`07:15`) → write DITOLAK diam-diam (tanpa `.catch`). Fix: helper `formatJamHadir()` (selalu `HH:MM`) + tambah `.catch` logging. TIDAK perlu ubah Firebase Console. (2) **Kamera flash putih:** `useClock` render tiap 1 detik + `qrbox` objek baru tiap render → `startScanning` ganti identitas → useEffect restart kamera tiap detik. Fix: simpan config di ref (stabilkan `startScanning`) + guard anti double-start di `useQrScanner`. (3) Hapus duplikasi `useEffect` di DashboardPegawai. 3 file changed. Build ✅ |
+| 2026-07-08 | `main` | **📅 ABSENSI PER-TANGGAL + AKUMULASI BULANAN** — Ganti `attendance/today` → `attendance/{YYYY-MM}/{DD}/{pegawaiId}` + `apelMeta/{YYYY-MM}/{DD}`. Reset harian otomatis 00:00 WIB (baca node tanggal baru). Akumulasi TK bulanan nyata untuk "Perlu Perhatian" + peringkat bidang bulanan (rata-rata persen harian, hanya status Hadir). Saat apel ditiadakan: wipe absensi hari itu + `held: false`. Reset Developer: hanya hapus hari ini. File baru: `util_tanggal.js`. **⚠️ WAJIB publish firebase-rules.json baru ke Console.** Data lama `attendance/today` tidak dimigrasi. Build ✅ |
 
 ## Prioritas (Sekarang)
 
-0. 🔴 **WAJIB: Update Firebase Rules** — Copy `firebase-rules.json` terbaru ke Firebase Console → Realtime Database → Rules → Publish. Tanpa ini, heartbeat `lastSeen` ditolak & device lock tidak jalan.
-0. 🟢 **FIXED: Device lock 1 akun = 1 perangkat** ✅ — first-login-wins + heartbeat 30s + basi 90s. Perangkat ke-2 ditolak selama perangkat 1 aktif.
-0. 🟢 **FIXED: Scan berhasil tapi data tidak masuk DB** ✅ — jamHadir format `HH:MM` (bukan `HH.MM`) agar lolos Firebase Rule. **Verifikasi:** jalankan `npm run build`, lalu tes scan → cek data muncul di dashboard admin.
-0. 🟢 **FIXED: Kamera QR kedip putih terus** ✅ — startScanning distabilkan + guard anti double-start di useQrScanner.
-1. 🟢 **FIXED: Admin/Developer Login Issue** ✅ — Safety check localStorage + comprehensive logging added
-2. 🟡 **Firebase Anonymous Auth Status** — Anonymous Auth active ✅ (verify di Console)
-3. 🟡 **Master Pegawai Sync Error** — Conditional sync sudah applied, PERMISSION_DENIED should be cleared
-4. 🟢 **FIXED: LOGIN ISSUES (pegawai/unit leader)** ✅ — Firebase rule dan permissions sudah diperbaiki
-5. 🟢 **P2-C: CREDENTIALS.md = Single Source** ✅ — Read ONLY dari pegawai_master.json
-6. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion (future)
-7. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry (future)
-8. 🟡 **P3-C: QR TTL** — 10s (architecture decision — no change)
+0. 🔴 **WAJIB: Publish Firebase Rules baru** — Copy `firebase-rules.json` ke Firebase Console → Realtime Database → Rules → Publish. Struktur baru: `attendance/$month/$day` + `apelMeta/$month/$day`. Tanpa ini, scan QR ke path baru ditolak.
+1. 🟢 **Absensi per-tanggal WIB** ✅ — Reset harian otomatis, riwayat tersimpan per tanggal.
+2. 🟢 **Akumulasi bulanan nyata** ✅ — TK per pegawai + peringkat bidang bulan ini (rata-rata persen harian, hanya Hadir).
+3. 🟢 **FIXED: Device lock 1 akun = 1 perangkat** ✅ — first-login-wins + heartbeat 30s + basi 90s.
+4. 🟢 **FIXED: Scan berhasil + kamera QR** ✅ — jamHadir `HH:MM`, startScanning distabilkan.
+5. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion (future)
+6. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry (future)
+7. 🟡 **Peringkat bulan lalu** — Butuh baca node bulan sebelumnya (belum termasuk)
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx
+- **Absensi:** Path per tanggal WIB `attendance/{YYYY-MM}/{DD}/{pegawaiId}` — reset harian otomatis tanpa hapus riwayat
+- **ApelMeta:** `apelMeta/{YYYY-MM}/{DD}` = `{ held: boolean, reason?: string }` — catat hari apel diadakan/ditiadakan
+- **Akumulasi bulanan:** Baca `attendance/{YYYY-MM}` + `apelMeta/{YYYY-MM}` — TK per pegawai, peringkat bidang (rata-rata persen harian)
 - **Hooks:** useClock, usePegawaiSearch, useShowMore, useAttendanceStats, useQrGenerator, useQrScanner
 - **Panels:** PanelAbsensi, PanelKoreksi, PanelLaporan, PanelKelolaPegawai, PanelApel, PanelQR
 - **ErrorBoundary:** Ada di App.jsx
@@ -99,7 +99,9 @@ pegawai_master.json (CREDENTIALS.md source) → LoginPage resolvePegawai() →
   ↓ (check role: ADMIN/DEVELOPER/EXECUTIVE/UNIT_LEADER/EMPLOYEE)
   Route to appropriate page (admin/developer/pimpinan_selector/pegawai_dashboard)
   
-Firebase /attendance/today → FirebaseDataContext → attendance{}
+Firebase /attendance/{YYYY-MM}/{DD} → FirebaseDataContext → attendance{} (hari ini)
+Firebase /attendance/{YYYY-MM}     → FirebaseDataContext → monthlyAttendance{} (bulan ini)
+Firebase /apelMeta/{YYYY-MM}       → FirebaseDataContext → apelMeta{} (penanda apel per hari)
 Firebase /apel/session    → FirebaseDataContext → apelSession
 Firebase /apel/reason     → FirebaseDataContext → apelReason + apelReasonText
 Firebase /pengajuan       → FirebaseDataContext → pengajuan[]
@@ -117,7 +119,14 @@ QR /qr/current            → useQrGenerator (Admin) → Pegawai scan (TTL 10 de
 | ended | "Tanpa Keterangan" 🚫 | "Tanpa Keterangan" |
 | ditiadakan | Stat tidak tampil | Banner info |
 
-Aturan: `set(null)` untuk reset. QR TTL 10 detik. Admin atur manual via panel "Pengaturan Apel". Default jam: before < 07:00, ongoing 07:00–08:00, ended > 08:00. Data Firebase mentah (tanpa mergeAttendanceWithPeople) — stat 0 saat kosong.
+Aturan: `set(null)` untuk reset hari ini saja (Developer). QR TTL 10 detik. Admin atur manual via panel "Pengaturan Apel". Default jam: before < 07:00, ongoing 07:00–08:00, ended > 08:00.
+
+### Aturan Perhitungan Bulanan (keputusan 2026-07-08)
+Hari dihitung hanya jika: (1) bukan Sabtu/Minggu, (2) `apelMeta.held === true`, (3) hari sudah selesai (tanggal lampau atau hari ini fase `ended`).
+- **Tanpa Keterangan:** tidak punya status valid (bukan Hadir/Dinas/Izin/Sakit)
+- **Peringkat bidang bulanan:** rata-rata persentase kehadiran harian — "hadir" = HANYA status `Hadir` (scan QR)
+- **Apel ditiadakan:** wipe absensi hari itu + `held: false` → hari di-skip dari akumulasi
+- **Reset Developer:** hanya hapus data hari ini + apelMeta hari ini
 
 ## Catatan
 

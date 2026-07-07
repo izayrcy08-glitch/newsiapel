@@ -83,9 +83,12 @@ Lihat `firebase-rules.json` — copy paste ke Firebase Console → Realtime Data
 
 ### Struktur Database
 ```
-/attendance/today/{pegawaiId}
+/attendance/{YYYY-MM}/{DD}/{pegawaiId}
   → { status: "Hadir"|"Dinas Dalam"|"Dinas Luar"|"Izin"|"Sakit"|"Tanpa Keterangan",
        jamHadir: "07:15" }
+
+/apelMeta/{YYYY-MM}/{DD}
+  → { held: true|false, reason?: "hujan"|"libur_nasional"|... }
 
 /apel/session
   → "before" | "ongoing" | "ended" | "ditiadakan"
@@ -104,10 +107,12 @@ Lihat `firebase-rules.json` — copy paste ke Firebase Console → Realtime Data
 
 ### ⚠️ Aturan Penting
 
-1. **Jangan tulis data ke Firebase kalau path null.** `handleReset` pakai `set(null)`.
-2. **QR token TTL** 10 detik — regenerasi otomatis via `setInterval`.
-3. **Session apel** dikendalikan manual oleh Admin. Default jam: `before` < 07:00, `ongoing` 07:00–08:00, `ended` > 08:00, `ditiadakan` via panel admin.
-4. **Pengajuan** flow: Pegawai submit → Firebase → Admin lihat + Setujui/Tolak → Jika disetujui, attendance auto-update.
+1. **Jangan tulis data ke Firebase kalau path null.** `handleReset` hanya hapus node hari ini (`attendance/{month}/{day}` + `apelMeta/{month}/{day}`).
+2. **Reset harian otomatis:** Dashboard baca node tanggal WIB hari ini. Lewat 00:00 WIB, tanggal berganti → tampilan bersih, riwayat kemarin tetap utuh.
+3. **QR token TTL** 10 detik — regenerasi otomatis via `setInterval`.
+4. **Session apel** dikendalikan manual oleh Admin. Saat `ditiadakan`: absensi hari ini dihapus + `apelMeta.held = false`.
+5. **Pengajuan** flow: Pegawai submit → Firebase → Admin lihat + Setujui/Tolak → Jika disetujui, attendance auto-update ke path tanggal hari ini.
+6. **Data lama** di `attendance/today` tidak dimigrasi otomatis — mulai bersih dari struktur baru.
 
 ---
 
@@ -121,12 +126,15 @@ State global tidak lagi di App.jsx — dipisah ke dua Context:
 - Persistence: sessionStorage untuk session, localStorage untuk master data
 
 **FirebaseDataContext** — realtime data + mutations:
-- `attendance`, `apelSession`, `apelReason`, `apelReasonText`, `apelStatus`, `pengajuan`, `firebaseReady`, `firebaseError`
+- `attendance` (hari ini), `monthlyAttendance` (bulan ini), `apelMeta`, `monthKey`, `dayKey`
+- `apelSession`, `apelReason`, `apelReasonText`, `apelStatus`, `pengajuan`, `firebaseReady`, `firebaseError`
 - Actions: `handleScan`, `handleKoreksi`, `handleReset`, `handleApelSessionChange`, `handlePengajuanSubmit`, dll
 
 ### Flow Data Firebase → Dashboard
 ```
-Firebase /attendance/today → FirebaseDataContext (onValue) → attendance state → context consumer
+Firebase /attendance/{YYYY-MM}/{DD} → FirebaseDataContext (onValue) → attendance state (hari ini)
+Firebase /attendance/{YYYY-MM}      → FirebaseDataContext (onValue) → monthlyAttendance (akumulasi)
+Firebase /apelMeta/{YYYY-MM}        → FirebaseDataContext (onValue) → apelMeta (penanda apel/hari)
 Firebase /apel/session → FirebaseDataContext (onValue) → apelSession → context consumer
 Pages baca dari context (useFirebaseData()) — tidak ada props drilling
 ```

@@ -4,7 +4,8 @@ import { database } from "../firebase";
 import { deleteStorageFile } from "../utils/storage-helper";
 import { useSession } from "./SessionContext";
 import {
-  ATTENDANCE_PATH,
+  ATTENDANCE_ROOT,
+  APEL_META_ROOT,
   APEL_SESSION_PATH,
   APEL_REASON_PATH,
   APEL_SESSIONS,
@@ -14,6 +15,14 @@ import {
   ACTIVE_SESSION_PATH,
 } from "../bersama/konstanta_aplikasi";
 import { getApelStatus } from "../bersama/util_waktu_dan_apel";
+import {
+  getWibNow,
+  getMonthKey,
+  getDayKey,
+  isWeekend,
+  buildAttendanceDayPath,
+  buildApelMetaDayPath,
+} from "../bersama/util_tanggal";
 import { loadPegawaiFromFirebase } from "../utils/firebase-sync-pegawai";
 
 /**
@@ -114,6 +123,15 @@ export function FirebaseDataProvider({ children }) {
   const deviceIdRef = useRef(getDeviceId());
 
   const [attendance, setAttendance] = useState({});
+  const [monthlyAttendance, setMonthlyAttendance] = useState({});
+  const [apelMeta, setApelMeta] = useState({});
+  const [dateKeys, setDateKeys] = useState(() => ({
+    monthKey: getMonthKey(),
+    dayKey: getDayKey(),
+  }));
+  const dateKeysRef = useRef(dateKeys);
+  dateKeysRef.current = dateKeys;
+
   const [apelSession, setApelSession] = useState(APEL_SESSIONS.ONGOING);
   const [apelReason, setApelReason] = useState(null);
   const [apelReasonText, setApelReasonText] = useState("");
@@ -123,9 +141,29 @@ export function FirebaseDataProvider({ children }) {
   const [firebaseReady, setFirebaseReady] = useState(false);
   const [firebaseError, setFirebaseError] = useState(null);
 
-  // ── Subscription: Attendance ──
+  // ── Deteksi pergantian tanggal WIB (reset harian otomatis) ──
   useEffect(() => {
-    const attendanceRef = ref(database, ATTENDANCE_PATH);
+    const check = () => {
+      const monthKey = getMonthKey();
+      const dayKey = getDayKey();
+      setDateKeys((prev) =>
+        prev.monthKey !== monthKey || prev.dayKey !== dayKey
+          ? { monthKey, dayKey }
+          : prev
+      );
+    };
+    check();
+    const id = setInterval(check, 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const { monthKey, dayKey } = dateKeys;
+  const attendanceDayPath = buildAttendanceDayPath(ATTENDANCE_ROOT, monthKey, dayKey);
+  const apelMetaDayPath = buildApelMetaDayPath(APEL_META_ROOT, monthKey, dayKey);
+
+  // ── Subscription: Attendance hari ini ──
+  useEffect(() => {
+    const attendanceRef = ref(database, attendanceDayPath);
     const unsub = onValue(
       attendanceRef,
       (snapshot) => {
@@ -145,7 +183,37 @@ export function FirebaseDataProvider({ children }) {
       }
     );
     return () => unsub();
-  }, []);
+  }, [attendanceDayPath]);
+
+  // ── Subscription: Attendance bulan ini (akumulasi bulanan) ──
+  useEffect(() => {
+    const monthlyRef = ref(database, `${ATTENDANCE_ROOT}/${monthKey}`);
+    const unsub = onValue(
+      monthlyRef,
+      (snapshot) => {
+        setMonthlyAttendance(snapshot.val() || {});
+      },
+      (error) => {
+        console.error("Gagal memuat data absensi bulanan:", error);
+      }
+    );
+    return () => unsub();
+  }, [monthKey]);
+
+  // ── Subscription: ApelMeta bulan ini ──
+  useEffect(() => {
+    const metaRef = ref(database, `${APEL_META_ROOT}/${monthKey}`);
+    const unsub = onValue(
+      metaRef,
+      (snapshot) => {
+        setApelMeta(snapshot.val() || {});
+      },
+      (error) => {
+        console.error("Gagal memuat apelMeta:", error);
+      }
+    );
+    return () => unsub();
+  }, [monthKey]);
 
   // ── Subscription: Apel session + reason ──
   useEffect(() => {
@@ -380,16 +448,40 @@ export function FirebaseDataProvider({ children }) {
   // ── Mutation handlers ──
 
   const handleApelSessionChange = useCallback((session) => {
+    const { monthKey: mk, dayKey: dk } = dateKeysRef.current;
+    const attendancePath = buildAttendanceDayPath(ATTENDANCE_ROOT, mk, dk);
+    const metaPath = buildApelMetaDayPath(APEL_META_ROOT, mk, dk);
+
     setApelSession(session);
     set(ref(database, APEL_SESSION_PATH), session);
-    if (session !== APEL_SESSIONS.DITIADAKAN) {
+
+    if (session === APEL_SESSIONS.DITIADAKAN) {
       setApelReason(null);
       setApelReasonText("");
       set(ref(database, APEL_REASON_PATH), null);
+      set(ref(database, attendancePath), null).catch((err) =>
+        console.error("Gagal hapus absensi saat ditiadakan:", err)
+      );
+      set(ref(database, metaPath), { held: false, reason: "" }).catch((err) =>
+        console.error("Gagal set apelMeta ditiadakan:", err)
+      );
+    } else {
+      setApelReason(null);
+      setApelReasonText("");
+      set(ref(database, APEL_REASON_PATH), null);
+      if (session === APEL_SESSIONS.ONGOING && !isWeekend(getWibNow())) {
+        set(ref(database, metaPath), { held: true }).catch((err) =>
+          console.error("Gagal set apelMeta held:", err)
+        );
+      }
     }
   }, []);
 
   const handleApelReasonChange = useCallback((reasonId, customText = "") => {
+    const { monthKey: mk, dayKey: dk } = dateKeysRef.current;
+    const metaPath = buildApelMetaDayPath(APEL_META_ROOT, mk, dk);
+    const reasonStr = reasonId === "lainnya" ? customText : reasonId;
+
     setApelReason(reasonId);
     if (reasonId === "lainnya") {
       setApelReasonText(customText);
@@ -398,19 +490,24 @@ export function FirebaseDataProvider({ children }) {
       setApelReasonText("");
       set(ref(database, APEL_REASON_PATH), reasonId);
     }
+
+    set(ref(database, metaPath), { held: false, reason: reasonStr }).catch((err) =>
+      console.error("Gagal update apelMeta reason:", err)
+    );
   }, []);
 
   const handleScan = useCallback(
     (pegawaiId) => {
       if (attendance[pegawaiId]?.status === "Hadir") return;
-      set(ref(database, `${ATTENDANCE_PATH}/${pegawaiId}`), {
+      const path = `${attendanceDayPath}/${pegawaiId}`;
+      set(ref(database, path), {
         status: "Hadir",
         jamHadir: formatJamHadir(),
       }).catch((err) =>
         console.error("Gagal menyimpan absensi (handleScan):", pegawaiId, err)
       );
     },
-    [attendance]
+    [attendance, attendanceDayPath]
   );
 
   const handleScanSimulate = useCallback(
@@ -423,16 +520,24 @@ export function FirebaseDataProvider({ children }) {
       if (toScan.length === 0) return;
       const jamNow = formatJamHadir();
       const updates = {};
-      for (const id of toScan) updates[id] = { status: "Hadir", jamHadir: jamNow };
-      update(ref(database, ATTENDANCE_PATH), updates).catch((err) =>
+      for (const id of toScan) updates[`${attendanceDayPath}/${id}`] = { status: "Hadir", jamHadir: jamNow };
+      update(ref(database), updates).catch((err) =>
         console.error("Gagal menyimpan absensi (handleScanSimulate):", err)
       );
     },
-    [attendance, masterPegawaiData]
+    [attendance, masterPegawaiData, attendanceDayPath]
   );
 
   const handleReset = useCallback(() => {
-    set(ref(database, ATTENDANCE_PATH), null);
+    const { monthKey: mk, dayKey: dk } = dateKeysRef.current;
+    const attendancePath = buildAttendanceDayPath(ATTENDANCE_ROOT, mk, dk);
+    const metaPath = buildApelMetaDayPath(APEL_META_ROOT, mk, dk);
+    set(ref(database, attendancePath), null).catch((err) =>
+      console.error("Gagal reset absensi hari ini:", err)
+    );
+    set(ref(database, metaPath), null).catch((err) =>
+      console.error("Gagal reset apelMeta hari ini:", err)
+    );
   }, []);
 
   const handleKoreksi = useCallback(
@@ -441,12 +546,12 @@ export function FirebaseDataProvider({ children }) {
         status: null,
         jamHadir: null,
       };
-      set(ref(database, `${ATTENDANCE_PATH}/${pegawaiId}`), {
+      set(ref(database, `${attendanceDayPath}/${pegawaiId}`), {
         ...currentAttendance,
         status: newStatus,
       });
     },
-    [attendance]
+    [attendance, attendanceDayPath]
   );
 
   const handlePengajuanSubmit = useCallback((pegawaiId, data) => {
@@ -484,14 +589,14 @@ export function FirebaseDataProvider({ children }) {
             status: null,
             jamHadir: null,
           };
-          set(ref(database, `${ATTENDANCE_PATH}/${submission.pegawaiId}`), {
+          set(ref(database, `${attendanceDayPath}/${submission.pegawaiId}`), {
             ...current,
             status: submission.statusBaru,
           });
         }
       }
     },
-    [pengajuan, attendance]
+    [pengajuan, attendance, attendanceDayPath]
   );
 
   const handleSaveFingerprint = useCallback((pegawaiId, fingerprint) => {
@@ -587,6 +692,10 @@ export function FirebaseDataProvider({ children }) {
   const value = useMemo(
     () => ({
       attendance,
+      monthlyAttendance,
+      apelMeta,
+      monthKey,
+      dayKey,
       apelSession,
       apelReason,
       apelReasonText,
@@ -611,7 +720,8 @@ export function FirebaseDataProvider({ children }) {
       handleRegisterSession,
     }),
     [
-      attendance, apelSession, apelReason, apelReasonText, apelStatus, pengajuan, passwordOverrides,
+      attendance, monthlyAttendance, apelMeta, monthKey, dayKey,
+      apelSession, apelReason, apelReasonText, apelStatus, pengajuan, passwordOverrides,
       passwordOverridesLoaded, activeUserId,
       firebaseReady, firebaseError,
       handleScan, handleScanSimulate, handleReset, handleKoreksi,

@@ -1,28 +1,41 @@
 {
   "rules": {
     "attendance": {
-      ".indexOn": [
-        "status"
-      ],
-      "today": {
-        ".read": "auth !== null",
-        ".write": "auth !== null",
-        "$pegawaiId": {
-          ".validate": "newData.hasChildren(['status'])",
-          "status": {
-            ".validate": "newData.isString() && (newData.val() === 'Hadir' || newData.val() === 'Dinas Dalam' || newData.val() === 'Dinas Luar' || newData.val() === 'Izin' || newData.val() === 'Sakit' || newData.val() === 'Tanpa Keterangan')"
+      "$month": {
+        "$day": {
+          ".read": "auth !== null",
+          ".write": "auth !== null",
+          "$pegawaiId": {
+            ".validate": "newData.hasChildren(['status'])",
+            "status": {
+              ".validate": "newData.isString() && (newData.val() === 'Hadir' || newData.val() === 'Dinas Dalam' || newData.val() === 'Dinas Luar' || newData.val() === 'Izin' || newData.val() === 'Sakit' || newData.val() === 'Tanpa Keterangan')"
+            },
+            "jamHadir": {
+              ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^[0-9]{2}:[0-9]{2}$/))"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    },
+    "apelMeta": {
+      "$month": {
+        "$day": {
+          ".read": "auth !== null",
+          ".write": "auth !== null",
+          ".validate": "newData.hasChildren(['held'])",
+          "held": {
+            ".validate": "newData.isBoolean()"
           },
-          "jamHadir": {
-            ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^[0-9]{2}:[0-9]{2}$/))"
+          "reason": {
+            ".validate": "!newData.exists() || newData.isString()"
           },
           "$other": {
             ".validate": false
           }
         }
-      },
-      "$other": {
-        ".write": false,
-        ".read": false
       }
     },
     "apel": {

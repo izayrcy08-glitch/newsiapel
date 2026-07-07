@@ -31,6 +31,103 @@ export const getAttendanceStatItems = (apelStatus) => {
 
 export const isApelDitiadakan = (apelStatus) => apelStatus === "ditiadakan";
 
+const ACCOUNTED_STATUSES = new Set([
+  "Hadir",
+  "Dinas Dalam",
+  "Dinas Luar",
+  "Izin",
+  "Sakit",
+]);
+
+/** Hari dihitung jika: bukan akhir pekan, apel diadakan (held=true), hari sudah selesai. */
+export const isDayCountable = (dayKey, monthKey, apelMeta, { todayMonthKey, todayDayKey, apelStatus }) => {
+  const [year, month] = monthKey.split("-").map(Number);
+  const date = new Date(year, month - 1, Number(dayKey));
+  const dayOfWeek = date.getDay();
+  if (dayOfWeek === 0 || dayOfWeek === 6) return false;
+
+  const meta = apelMeta?.[dayKey];
+  if (!meta || meta.held !== true) return false;
+
+  if (monthKey < todayMonthKey) return true;
+  if (monthKey === todayMonthKey && dayKey < todayDayKey) return true;
+  if (monthKey === todayMonthKey && dayKey === todayDayKey && apelStatus === "ended") return true;
+
+  return false;
+};
+
+const isTanpaKeteranganOnDay = (status) =>
+  !status || status === "Tanpa Keterangan" || !ACCOUNTED_STATUSES.has(status);
+
+/** Akumulasi jumlah Tanpa Keterangan per pegawai sepanjang bulan berjalan. */
+export const calcMonthlyTanpaKeterangan = (
+  monthlyAttendance,
+  apelMeta,
+  people = [],
+  { todayMonthKey, todayDayKey, apelStatus }
+) => {
+  const counts = {};
+  for (const p of people) counts[p.id] = 0;
+
+  if (!monthlyAttendance || people.length === 0) return counts;
+
+  for (const [dayKey, dayAttendance] of Object.entries(monthlyAttendance)) {
+    if (!isDayCountable(dayKey, todayMonthKey, apelMeta, { todayMonthKey, todayDayKey, apelStatus })) {
+      continue;
+    }
+    if (!dayAttendance || typeof dayAttendance !== "object") continue;
+
+    for (const p of people) {
+      const status = dayAttendance[p.id]?.status;
+      if (isTanpaKeteranganOnDay(status)) {
+        counts[p.id]++;
+      }
+    }
+  }
+
+  return counts;
+};
+
+/**
+ * Rata-rata persentase kehadiran harian per bidang (Cara 1).
+ * "Hadir" = hanya status Hadir (scan QR).
+ */
+export const calcMonthlyBidangStats = (
+  monthlyAttendance,
+  apelMeta,
+  bidangList,
+  people = [],
+  { todayMonthKey, todayDayKey, apelStatus }
+) => {
+  return bidangList.map((bidang) => {
+    const members = people.filter((p) => p.bidang === bidang.nama);
+    if (members.length === 0) {
+      return { ...bidang, persen: 0, daysCounted: 0 };
+    }
+
+    const dailyPersents = [];
+
+    for (const [dayKey, dayAttendance] of Object.entries(monthlyAttendance || {})) {
+      if (!isDayCountable(dayKey, todayMonthKey, apelMeta, { todayMonthKey, todayDayKey, apelStatus })) {
+        continue;
+      }
+
+      let hadir = 0;
+      for (const p of members) {
+        if (dayAttendance?.[p.id]?.status === "Hadir") hadir++;
+      }
+      dailyPersents.push(Math.round((hadir / members.length) * 100));
+    }
+
+    const persen =
+      dailyPersents.length > 0
+        ? Math.round(dailyPersents.reduce((a, b) => a + b, 0) / dailyPersents.length)
+        : 0;
+
+    return { ...bidang, persen, daysCounted: dailyPersents.length };
+  });
+};
+
 export const calcAttendanceStats = (attendance, apelStatus, people = [], { includeMissingAsUnrecorded = true } = {}) => {
   // Guard: pastikan people array valid
   if (!people || people.length === 0) {

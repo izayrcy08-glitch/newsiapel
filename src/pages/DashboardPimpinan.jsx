@@ -8,7 +8,7 @@ import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { REASON_OPTIONS } from "../bersama/konstanta_aplikasi";
 import { getStatusIcon } from "../bersama/util_status_dan_warna";
 import { getUnitLabel, getScopedPeople } from "../bersama/util_unit_dan_scope";
-import { getAttendanceStatItems, calcAttendanceStats } from "../fitur/absensi/logika_absensi";
+import { getAttendanceStatItems, calcAttendanceStats, calcMonthlyTanpaKeterangan, calcMonthlyBidangStats } from "../fitur/absensi/logika_absensi";
 import { getBidangPerformanceStatus, RANK_MEDALS } from "../bersama/util_dashboard_ringkasan";
 import { useClock } from "../hooks/useClock";
 import { useAttendanceStats } from "../hooks/useAttendanceStats";
@@ -17,7 +17,7 @@ import { useShowMore } from "../hooks/useShowMore";
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PIMPINAN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], apelStatus, apelSession, apelReason, apelReasonText, selectedPimpinan, onLogout }) => {
+const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance, apelMeta, monthKey, dayKey, pengajuan = [], apelStatus, apelSession, apelReason, apelReasonText, selectedPimpinan, onLogout }) => {
   const { now, greeting, dateStr, timeWIB } = useClock();
   const [showDetailPengajuan, setShowDetailPengajuan] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
@@ -50,20 +50,20 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
     return calcAttendanceStats(attendance, apelStatus, members, { includeMissingAsUnrecorded: true });
   };
 
-  // Perhatian list — hanya tampil jika ada data absensi
-  const hasAttendanceData = Object.keys(attendance).length > 0;
-  const perhatianList = !hasAttendanceData
-    ? []
-    : people.filter(p => {
-      const att = attendance[p.id];
-      return att?.status === "Tanpa Keterangan" || (!att?.status && apelStatus === "ended");
-    })
-    .map(p => ({
-      pegawaiId: p.id,
-      pegawai: p,
-      totalTanpaKeterangan: 1,
+  const monthlyTK = calcMonthlyTanpaKeterangan(monthlyAttendance, apelMeta, people, {
+    todayMonthKey: monthKey,
+    todayDayKey: dayKey,
+    apelStatus,
+  });
+  const perhatianList = Object.entries(monthlyTK)
+    .filter(([, count]) => count > 0)
+    .map(([pegawaiId, totalTanpaKeterangan]) => ({
+      pegawaiId,
+      pegawai: people.find((p) => String(p.id) === String(pegawaiId)),
+      totalTanpaKeterangan,
     }))
-    .sort((a, b) => a.pegawai.nama.localeCompare(b.pegawai.nama));
+    .filter((r) => r.pegawai)
+    .sort((a, b) => b.totalTanpaKeterangan - a.totalTanpaKeterangan || a.pegawai.nama.localeCompare(b.pegawai.nama));
   const { showAll: showAllPerhatian, toggle: togglePerhatian, visibleItems: visiblePerhatianList } = useShowMore(perhatianList, 3);
 
   const bidangList = orgData.bidang.filter(b => b.id !== "pimpinan");
@@ -72,10 +72,17 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
     .filter(b => b.stats.total > 0);
   const todayRanking = [...bidangAnalytics].sort((a, b) => b.stats.persen - a.stats.persen || b.stats.hadir - a.stats.hadir || a.nama.localeCompare(b.nama));
   const { showAll: showAllBidangToday, toggle: toggleBidangToday, visibleItems: visibleTodayRanking } = useShowMore(todayRanking, 3);
-  const lastMonthRanking = [...bidangAnalytics]
-    .map(b => ({ ...b, persen: b.stats.persen }))
+  const monthlyBidangStats = calcMonthlyBidangStats(
+    monthlyAttendance,
+    apelMeta,
+    bidangList,
+    people,
+    { todayMonthKey: monthKey, todayDayKey: dayKey, apelStatus }
+  );
+  const monthlyRanking = [...monthlyBidangStats]
+    .filter((b) => b.daysCounted > 0)
     .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
-  const { showAll: showAllLastMonth, toggle: toggleLastMonth, visibleItems: visibleLastMonthRanking } = useShowMore(lastMonthRanking, 3);
+  const { showAll: showAllLastMonth, toggle: toggleLastMonth, visibleItems: visibleLastMonthRanking } = useShowMore(monthlyRanking, 3);
 
   if (selectedBidang) {
     const b = selectedBidang;
@@ -293,7 +300,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
           <Card className="p-4 border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_18px_55px_rgba(0,0,0,0.26)]">
             <div className="mb-4 border-b border-amber-200/10 pb-3">
               <div className="text-amber-100/90 text-xs font-semibold uppercase tracking-[0.18em]">Kehadiran Per Bidang</div>
-              <div className="text-slate-600 text-[11px] mt-0.5">Analitik performa bidang hari ini dan bulan lalu</div>
+              <div className="text-slate-600 text-[11px] mt-0.5">Analitik performa bidang hari ini dan bulan ini</div>
             </div>
 
             <div className="rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3.5 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
@@ -362,8 +369,8 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
             <div className="rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <div className="text-slate-50 text-sm font-black">🏅 Kehadiran Per Bidang</div>
-                  <div className="text-slate-500 text-[11px]">Ranking kehadiran hari ini</div>
+                  <div className="text-slate-50 text-sm font-black">🏅 Rata-rata Kehadiran Harian Bidang/UPT Bulan Ini</div>
+                  <div className="text-slate-500 text-[11px]">Rata-rata persen kehadiran harian (hanya status Hadir)</div>
                 </div>
                 <button
                   onClick={() => showOperationalStats && toggleLastMonth()}
@@ -398,8 +405,8 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, pengajuan = [], a
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 px-4 py-5 text-center">
-                  <div className="text-slate-300 text-sm font-semibold">Belum ada data kehadiran hari ini</div>
-                  <div className="text-slate-500 text-xs mt-1">Data akan muncul setelah pegawai melakukan absensi.</div>
+                  <div className="text-slate-300 text-sm font-semibold">Belum ada data bulan ini</div>
+                  <div className="text-slate-500 text-xs mt-1">Data akan muncul setelah hari apel selesai dihitung.</div>
                 </div>
               )}
             </div>
