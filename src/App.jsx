@@ -4,12 +4,25 @@ import { FirebaseDataProvider, useFirebaseData } from "./contexts/FirebaseDataCo
 import { LoginPage } from "./pages/LoginPage";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { AuthInit } from "./components/AuthInit";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
-const DashboardPegawai = lazy(() => import("./pages/DashboardPegawai"));
-const DashboardPimpinan = lazy(() => import("./pages/DashboardPimpinan"));
-const PimpinanSelector = lazy(() => import("./pages/PimpinanSelector"));
-const DashboardAdmin = lazy(() => import("./pages/DashboardAdmin"));
-const DeveloperConsole = lazy(() => import("./pages/DeveloperConsole"));
+// Lazy import dengan retry — di jaringan HP yang tidak stabil, chunk kadang gagal
+// dimuat saat pertama kali navigasi (layar jadi blank). Coba ulang sekali sebelum menyerah.
+const lazyWithRetry = (importFn) =>
+  lazy(() =>
+    importFn().catch(
+      () =>
+        new Promise((resolve, reject) => {
+          setTimeout(() => importFn().then(resolve).catch(reject), 800);
+        })
+    )
+  );
+
+const DashboardPegawai = lazyWithRetry(() => import("./pages/DashboardPegawai"));
+const DashboardPimpinan = lazyWithRetry(() => import("./pages/DashboardPimpinan"));
+const PimpinanSelector = lazyWithRetry(() => import("./pages/PimpinanSelector"));
+const DashboardAdmin = lazyWithRetry(() => import("./pages/DashboardAdmin"));
+const DeveloperConsole = lazyWithRetry(() => import("./pages/DeveloperConsole"));
 
 function AppRouter() {
   const {
@@ -167,14 +180,16 @@ export default function App() {
   } catch (_) {}
 
   return (
-    <AuthInit>
-      <SessionProvider>
-        <FirebaseDataProvider>
-          <div style={{ fontFamily: "'DM Sans', 'Inter', system-ui, sans-serif" }}>
-            <AppRouter />
-          </div>
-        </FirebaseDataProvider>
-      </SessionProvider>
-    </AuthInit>
+    <ErrorBoundary>
+      <AuthInit>
+        <SessionProvider>
+          <FirebaseDataProvider>
+            <div style={{ fontFamily: "'DM Sans', 'Inter', system-ui, sans-serif" }}>
+              <AppRouter />
+            </div>
+          </FirebaseDataProvider>
+        </SessionProvider>
+      </AuthInit>
+    </ErrorBoundary>
   );
 }

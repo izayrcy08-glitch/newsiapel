@@ -19,19 +19,21 @@ export default function PanelKoreksi({
     [people]
   );
 
-  // ── Tab: Koreksi Manual ──
-  const koreksiPeople = useMemo(
-    () => people.filter((p) => attendance[p.id]?.status === "Tanpa Keterangan"),
-    [people, attendance]
-  );
-
-  const { filtered: filteredKoreksi } = usePegawaiSearch(koreksiPeople, search, {
+  // ── Tab: Koreksi Manual ── (semua pegawai bisa dicari & di-set status apa pun)
+  const { filtered: filteredKoreksi } = usePegawaiSearch(people, search, {
     searchFields: ["nama", "nip", "bidang", "jabatan"],
   });
 
-  const displayKoreksi = bidangFilter
-    ? filteredKoreksi.filter((p) => p.bidang === bidangFilter)
-    : filteredKoreksi;
+  // Perlu ada pencarian atau filter bidang dulu — hindari render 300+ kartu sekaligus
+  const koreksiActive = search.trim().length > 0 || Boolean(bidangFilter);
+  const displayKoreksi = !koreksiActive
+    ? []
+    : (bidangFilter
+        ? filteredKoreksi.filter((p) => p.bidang === bidangFilter)
+        : filteredKoreksi
+      ).slice(0, 50);
+
+  const KOREKSI_STATUS_OPTIONS = ["Hadir", "Izin", "Sakit", "Dinas Dalam", "Dinas Luar", "Tanpa Keterangan"];
 
   // ── Tab: Pengajuan ──
   const pendingPengajuan = useMemo(
@@ -155,38 +157,63 @@ export default function PanelKoreksi({
         {/* ── Tab: Koreksi Manual ── */}
         {tab === "koreksi" && (
           <>
-            {displayKoreksi.length === 0 ? (
+            {!koreksiActive ? (
               <Card className="p-6 text-center">
-                <div className="text-4xl mb-2">✅</div>
-                <div className="text-slate-400 text-sm">Tidak ada yang perlu dikoreksi</div>
+                <div className="text-4xl mb-2">🔎</div>
+                <div className="text-slate-400 text-sm">Cari pegawai untuk dikoreksi</div>
                 <div className="text-slate-500 text-xs mt-1">
-                  Semua pegawai sudah memiliki status kehadiran
+                  Ketik nama/NIP atau pilih bidang di atas untuk menampilkan daftar
+                </div>
+              </Card>
+            ) : displayKoreksi.length === 0 ? (
+              <Card className="p-6 text-center">
+                <div className="text-4xl mb-2">🤷</div>
+                <div className="text-slate-400 text-sm">Pegawai tidak ditemukan</div>
+                <div className="text-slate-500 text-xs mt-1">
+                  Coba kata kunci atau bidang yang lain
                 </div>
               </Card>
             ) : (
               <div className="space-y-3">
-                {displayKoreksi.map((p) => (
-                  <Card key={p.id} className="p-3.5">
-                    <div className="flex items-start justify-between gap-2 mb-3">
-                      <div className="min-w-0">
-                        <div className="text-white text-sm font-semibold truncate">{p.nama}</div>
-                        <div className="text-slate-500 text-xs">{p.bidang}</div>
+                {displayKoreksi.map((p) => {
+                  const currentStatus = attendance[p.id]?.status || null;
+                  return (
+                    <Card key={p.id} className="p-3.5">
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <div className="min-w-0">
+                          <div className="text-white text-sm font-semibold truncate">{p.nama}</div>
+                          <div className="text-slate-500 text-xs">{p.bidang}</div>
+                        </div>
+                        {currentStatus ? (
+                          <StatusBadge status={currentStatus} />
+                        ) : (
+                          <span className="shrink-0 text-[10px] text-slate-500 border border-slate-700/60 rounded-full px-2 py-1">
+                            Belum ada status
+                          </span>
+                        )}
                       </div>
-                      <StatusBadge status="Tanpa Keterangan" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {["Izin", "Sakit", "Dinas Dalam", "Dinas Luar"].map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => onKoreksi(p.id, s)}
-                          className="text-xs py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/50 transition-all active:scale-[0.97]"
-                        >
-                          → {s}
-                        </button>
-                      ))}
-                    </div>
-                  </Card>
-                ))}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {KOREKSI_STATUS_OPTIONS.map((s) => {
+                          const isActive = currentStatus === s;
+                          return (
+                            <button
+                              key={s}
+                              onClick={() => !readOnly && !isActive && onKoreksi(p.id, s)}
+                              disabled={readOnly || isActive}
+                              className={`text-xs py-1.5 px-2 rounded-lg border transition-all active:scale-[0.97] ${
+                                isActive
+                                  ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 cursor-default"
+                                  : "bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border-slate-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                              }`}
+                            >
+                              {isActive ? "✓ " : "→ "}{s}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </>

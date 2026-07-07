@@ -73,8 +73,8 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
   const handleFileChange = (e) => {
     const selected = e.target.files?.[0];
     if (selected) {
-      if (selected.size > 5 * 1024 * 1024) {
-        showToast("File maksimal 5 MB", true);
+      if (selected.size > 2 * 1024 * 1024) {
+        showToast("File maksimal 2 MB", true);
         e.target.value = "";
         return;
       }
@@ -152,7 +152,7 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
 
       {/* Dokumen Pendukung */}
       <div className="mb-4">
-        <div className="text-slate-500 text-xs mb-2">Dokumen Pendukung (opsional, maks 5 MB)</div>
+        <div className="text-slate-500 text-xs mb-2">Dokumen Pendukung (opsional, maks 2 MB)</div>
         <label className="block">
           <div className={`flex items-center gap-3 p-3 rounded-xl border border-slate-700/50 bg-slate-800 cursor-pointer hover:border-slate-600 transition-colors ${
             file ? "border-emerald-500/30" : ""

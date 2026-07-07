@@ -17,7 +17,13 @@ export class ErrorBoundary extends Component {
         <ErrorDisplay
           message={this.state.error.message || "Terjadi kesalahan yang tidak terduga."}
           onRetry={() => {
-            this.setState({ error: null });
+            // Reload penuh — paling andal memulihkan chunk yang gagal dimuat
+            // (penyebab umum layar blank saat pertama buka di jaringan HP).
+            if (typeof window !== "undefined") {
+              window.location.reload();
+            } else {
+              this.setState({ error: null });
+            }
           }}
         />
       );

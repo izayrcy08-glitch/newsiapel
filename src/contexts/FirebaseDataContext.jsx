@@ -22,6 +22,8 @@ import {
   isWeekend,
   buildAttendanceDayPath,
   buildApelMetaDayPath,
+  getWibDayStamp,
+  getWibDayStampFromTs,
 } from "../bersama/util_tanggal";
 import { loadPegawaiFromFirebase } from "../utils/firebase-sync-pegawai";
 
@@ -407,40 +409,41 @@ export function FirebaseDataProvider({ children }) {
     return () => clearInterval(id);
   }, [activeUserId]);
 
-  // ── Auto-cleanup: hapus file storage >24j setelah disetujui ──
+  // ── Auto-cleanup: hapus pengajuan hari sebelumnya saat ganti hari (00:00 WIB) ──
+  // Tujuan: jaga memori Firebase (Storage + RTDB) tetap aman. Pengajuan itu
+  // berlaku untuk hari pengirimannya; begitu lewat tengah malam, absensi sudah
+  // tercatat per-tanggal sehingga pengajuan lama tidak diperlukan lagi.
+  // Pengecualian: yang masih "menunggu" (belum diverifikasi) TIDAK dihapus,
+  // supaya admin tidak kehilangan pengajuan yang dikirim larut malam.
   useEffect(() => {
-    const FILE_TTL_MS = 24 * 60 * 60 * 1000;
-    const now = Date.now();
+    const todayStamp = getWibDayStamp();
 
     for (const item of pengajuan) {
-      if (
-        item.statusVerifikasi === "disetujui" &&
-        item.dokumenPath &&
-        item.approvedAt &&
-        now - item.approvedAt >= FILE_TTL_MS
-      ) {
+      if (!item.createdAt) continue;
+      const itemStamp = getWibDayStampFromTs(item.createdAt);
+      if (itemStamp >= todayStamp) continue; // hari ini — biarkan
+      if (item.statusVerifikasi === "menunggu") continue; // pending — pertahankan
+
+      const removeRecord = () =>
+        set(ref(database, `${PENGAJUAN_PATH}/${item.id}`), null).catch((err) =>
+          console.error("Gagal hapus record pengajuan lama:", item.id, err)
+        );
+
+      if (item.dokumenPath) {
         deleteStorageFile(item.dokumenPath)
-          .then(() => {
-            // Hapus referensi file di database
-            update(ref(database, `${PENGAJUAN_PATH}/${item.id}`), {
-              dokumenPath: "",
-              dokumen: "",
-            }).catch(err => console.error("Gagal hapus referensi dokumen (1):", err));
-          })
+          .then(removeRecord)
           .catch((err) => {
             if (err.code === "storage/object-not-found") {
-              // File sudah tidak ada — tetap bersihkan referensi
-              update(ref(database, `${PENGAJUAN_PATH}/${item.id}`), {
-                dokumenPath: "",
-                dokumen: "",
-              }).catch(err2 => console.error("Gagal hapus referensi dokumen (2):", err2));
+              removeRecord();
             } else {
-              console.error("Gagal hapus file storage:", item.dokumenPath, err);
+              console.error("Gagal hapus file storage lama:", item.dokumenPath, err);
             }
           });
+      } else {
+        removeRecord();
       }
     }
-  }, [pengajuan]);
+  }, [pengajuan, dayKey]);
 
   // ── Derived state ──
   const apelStatus = useMemo(() => getApelStatus(new Date(), apelSession), [apelSession]);
@@ -546,10 +549,16 @@ export function FirebaseDataProvider({ children }) {
         status: null,
         jamHadir: null,
       };
-      set(ref(database, `${attendanceDayPath}/${pegawaiId}`), {
-        ...currentAttendance,
-        status: newStatus,
-      });
+      // Saat set "Hadir" secara manual tapi belum ada jam, isi jam sekarang.
+      const jamHadir =
+        newStatus === "Hadir" && !currentAttendance.jamHadir
+          ? formatJamHadir()
+          : currentAttendance.jamHadir;
+      const payload = { status: newStatus };
+      if (jamHadir) payload.jamHadir = jamHadir;
+      set(ref(database, `${attendanceDayPath}/${pegawaiId}`), payload).catch((err) =>
+        console.error("Gagal menyimpan koreksi:", pegawaiId, err)
+      );
     },
     [attendance, attendanceDayPath]
   );

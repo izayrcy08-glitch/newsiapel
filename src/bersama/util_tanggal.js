@@ -26,3 +26,15 @@ export const buildAttendanceDayPath = (root, monthKey, dayKey) =>
 
 export const buildApelMetaDayPath = (root, monthKey, dayKey) =>
   `${root}/${monthKey}/${dayKey}`;
+
+/** Cap tanggal WIB hari ini, format "YYYY-MM-DD" (untuk perbandingan antar-hari). */
+export const getWibDayStamp = () => `${getMonthKey()}-${getDayKey()}`;
+
+/** Cap tanggal WIB dari sebuah timestamp (ms), format "YYYY-MM-DD". */
+export const getWibDayStampFromTs = (ts) => {
+  const d = new Date(ts + WIB_OFFSET_MS);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
