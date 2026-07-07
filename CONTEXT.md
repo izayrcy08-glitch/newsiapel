@@ -8,7 +8,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main)
-- **Sesi terakhir:** 2026-07-08 — Absensi per-tanggal WIB + akumulasi bulanan nyata
+- **Sesi terakhir:** 2026-07-08 — Pengajuan tanpa upload + nonaktifkan lampiran dokumen (plan Spark)
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth active ✅)
 - **Firebase Console:** Rules diperbaiki, Anonymous Auth: **enable** ✅
 - **Build:** `npm run build` ✅
@@ -62,6 +62,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-07 | `main` | **🎯 FIX AKAR: Absensi tidak masuk DB + kamera kedip putih** — 2 root cause ditemukan & diperbaiki: (1) **Data tidak update:** `handleScan`/`handleScanSimulate` simpan `jamHadir` via `toLocaleTimeString("id-ID")` yang hasilkan titik (`07.15`), sedangkan Firebase Rule wajib titik dua (`07:15`) → write DITOLAK diam-diam (tanpa `.catch`). Fix: helper `formatJamHadir()` (selalu `HH:MM`) + tambah `.catch` logging. TIDAK perlu ubah Firebase Console. (2) **Kamera flash putih:** `useClock` render tiap 1 detik + `qrbox` objek baru tiap render → `startScanning` ganti identitas → useEffect restart kamera tiap detik. Fix: simpan config di ref (stabilkan `startScanning`) + guard anti double-start di `useQrScanner`. (3) Hapus duplikasi `useEffect` di DashboardPegawai. 3 file changed. Build ✅ |
 | 2026-07-08 | `main` | **📅 ABSENSI PER-TANGGAL + AKUMULASI BULANAN** — Ganti `attendance/today` → `attendance/{YYYY-MM}/{DD}/{pegawaiId}` + `apelMeta/{YYYY-MM}/{DD}`. Reset harian otomatis 00:00 WIB (baca node tanggal baru). Akumulasi TK bulanan nyata untuk "Perlu Perhatian" + peringkat bidang bulanan (rata-rata persen harian, hanya status Hadir). Saat apel ditiadakan: wipe absensi hari itu + `held: false`. Reset Developer: hanya hapus hari ini. File baru: `util_tanggal.js`. **⚠️ WAJIB publish firebase-rules.json baru ke Console.** Data lama `attendance/today` tidak dimigrasi. Build ✅ |
 | 2026-07-08 | `main` | **🩹 FIX BLANK SCREEN + KOREKSI + CLEANUP PENGAJUAN** — (1) **Blank saat pertama login:** pasang `ErrorBoundary` di `App.jsx` (sebelumnya tidak terpasang → error transient/chunk gagal = layar putih) + `lazyWithRetry` (retry import chunk sekali di jaringan HP tidak stabil) + tombol "Coba Lagi" reload penuh. (2) **Koreksi manual admin & developer:** tab Koreksi Manual kini cari SEMUA pegawai (butuh kata kunci/bidang dulu, batas 50 kartu) & set status apa pun; highlight status aktif; `handleKoreksi` isi jam saat set Hadir. (3) **Upload surat pengajuan:** batas 5MB → **2MB**. (4) **Cleanup pengajuan:** ganti TTL 24 jam → hapus file Storage + record pengajuan hari sebelumnya saat ganti hari (00:00 WIB); yang masih "menunggu" dipertahankan. Helper baru: `getWibDayStamp`, `getWibDayStampFromTs`. Build ✅ |
+| 2026-07-08 | `main` | **📋 PENGAJUAN TANPA UPLOAD (PILOT SPARK)** — Firebase Storage tidak tersedia di plan Spark (gratis); upload surat butuh upgrade Blaze. Keputusan pilot: pengajuan cukup **status baru + keterangan teks** (DD/DL/Izin/Sakit). `PengajuanStatusForm`: flag `UPLOAD_DOKUMEN_AKTIF = false`, hapus input file, banner peringatan kuning. Alur: pegawai kirim → admin tab Pengajuan di PanelKoreksi → Setujui/Tolak → absensi hari ini terupdate. Surat fisik tetap ke TU manual. Build ✅ |
 
 ## Prioritas (Sekarang)
 
@@ -70,8 +71,8 @@ Status proyek terkini. Update tiap selesai sesi.
 2. 🟢 **Akumulasi bulanan nyata** ✅ — TK per pegawai + peringkat bidang bulan ini (rata-rata persen harian, hanya Hadir).
 3. 🟢 **FIXED: Device lock 1 akun = 1 perangkat** ✅ — first-login-wins + heartbeat 30s + basi 90s.
 4. 🟢 **FIXED: Scan berhasil + kamera QR** ✅ — jamHadir `HH:MM`, startScanning distabilkan.
-5. 🟡 **P3-A: Bundle optimization** — Lazy load html5-qrcode + framer-motion (future)
-6. 🟡 **P3-B: Error handling retry** — Tambah exponential backoff + retry (future)
+5. 🟢 **Pengajuan tanpa lampiran file** ✅ — Pilot Spark: status + keterangan teks; upload dokumen dinonaktifkan sampai upgrade Blaze + Storage.
+6. 🟡 **Upload dokumen pengajuan** — Butuh Firebase Blaze + Storage Rules; aktifkan kembali via `UPLOAD_DOKUMEN_AKTIF` di `PengajuanStatusForm.jsx`.
 7. 🟡 **Peringkat bulan lalu** — Butuh baca node bulan sebelumnya (belum termasuk)
 
 ## Arsitektur Inti
@@ -128,6 +129,13 @@ Hari dihitung hanya jika: (1) bukan Sabtu/Minggu, (2) `apelMeta.held === true`, 
 - **Peringkat bidang bulanan:** rata-rata persentase kehadiran harian — "hadir" = HANYA status `Hadir` (scan QR)
 - **Apel ditiadakan:** wipe absensi hari itu + `held: false` → hari di-skip dari akumulasi
 - **Reset Developer:** hanya hapus data hari ini + apelMeta hari ini
+
+### Alur Pengajuan Perubahan Status (keputusan 2026-07-08, pilot Spark)
+- Pegawai: pilih status baru (Dinas Dalam/Luar, Izin, Sakit) + **keterangan wajib** → kirim tanpa file
+- Admin/Developer: `PanelKoreksi` tab Pengajuan → baca keterangan → Setujui/Tolak
+- Disetujui → `attendance/{bulan}/{hari}/{id}` terupdate otomatis
+- **Upload dokumen dinonaktifkan** (`UPLOAD_DOKUMEN_AKTIF = false`) — Firebase Storage butuh plan Blaze
+- Cleanup: record pengajuan hari lalu dihapus 00:00 WIB (kecuali status masih `menunggu`)
 
 ## Catatan
 

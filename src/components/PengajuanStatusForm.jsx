@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { uploadPengajuanFile } from "../utils/storage-helper";
 import { Card } from "../components/Card";
 import { StatusBadge } from "../components/StatusBadge";
 import { STATUS_OPTIONS } from "../bersama/konstanta_aplikasi";
+
+// Upload dokumen membutuhkan Firebase Storage (plan Blaze). Nonaktif sementara di pilot Spark.
+const UPLOAD_DOKUMEN_AKTIF = false;
 
 // ─── PENGAJUAN PERUBAHAN STATUS ────────────────────────────────────────────────
 const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
@@ -10,7 +12,6 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [keterangan, setKeterangan] = useState("");
   const [toast, setToast] = useState(null);
-  const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const showToast = (message, isError = false) => {
@@ -36,49 +37,25 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
     setUploading(true);
 
     try {
-      let dokumenUrl = "";
-      let dokumenPath = "";
-
-      // Upload file ke Firebase Storage jika ada (lazy — SDK hanya di-load saat upload)
-      if (file) {
-        const result = await uploadPengajuanFile(pegawai.id, file);
-        dokumenUrl = result.downloadUrl;
-        dokumenPath = result.path;
-      }
-
-      // Kirim pengajuan ke Firebase via callback
       await onSubmit(pegawai.id, {
         nama: pegawai.nama,
         nip: pegawai.nip,
         statusLama: myStatus || "",
         statusBaru: selectedStatus,
         keterangan: keterangan.trim(),
-        dokumen: dokumenUrl,
-        dokumenPath: dokumenPath,
+        dokumen: "",
+        dokumenPath: "",
       });
 
       showToast("Pengajuan berhasil dikirim");
       setSelectedStatus(null);
       setKeterangan("");
-      setFile(null);
       setShowForm(false);
     } catch (err) {
       console.error("Gagal mengirim pengajuan:", err);
       showToast("Gagal mengirim — periksa koneksi dan coba lagi", true);
     } finally {
       setUploading(false);
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const selected = e.target.files?.[0];
-    if (selected) {
-      if (selected.size > 2 * 1024 * 1024) {
-        showToast("File maksimal 2 MB", true);
-        e.target.value = "";
-        return;
-      }
-      setFile(selected);
     }
   };
 
@@ -89,7 +66,7 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
           <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">📄</div>
           <div className="flex-1">
             <div className="text-white text-sm font-semibold">Pengajuan Perubahan Status</div>
-            <div className="text-slate-400 text-xs">Ajukan perubahan status absensi</div>
+            <div className="text-slate-400 text-xs">Ajukan status baru + keterangan (tanpa lampiran file)</div>
           </div>
           <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -121,6 +98,11 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
         </button>
       </div>
 
+      <p className="text-slate-400 text-xs mb-4 leading-relaxed">
+        Pilih status yang ingin diajukan, tuliskan alasan, lalu kirim. Admin akan meninjau keterangan Anda
+        sebelum menyetujui atau menolak.
+      </p>
+
       {/* Status Saat Ini */}
       <div className="mb-4">
         <div className="text-slate-500 text-xs mb-1">Status Saat Ini</div>
@@ -150,34 +132,30 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
         </div>
       </div>
 
-      {/* Dokumen Pendukung */}
-      <div className="mb-4">
-        <div className="text-slate-500 text-xs mb-2">Dokumen Pendukung (opsional, maks 2 MB)</div>
-        <label className="block">
-          <div className={`flex items-center gap-3 p-3 rounded-xl border border-slate-700/50 bg-slate-800 cursor-pointer hover:border-slate-600 transition-colors ${
-            file ? "border-emerald-500/30" : ""
-          }`}>
-            <div className="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center text-sm">📎</div>
-            <div className="flex-1 min-w-0">
-              <div className="text-slate-400 text-xs truncate">{file ? file.name : "Pilih File (PDF/JPG/PNG)"}</div>
-              {file && (
-                <div className="text-slate-500 text-[10px] mt-0.5">
-                  {(file.size / 1024).toFixed(1)} KB
-                </div>
-              )}
+      {/* Peringatan: upload dokumen belum aktif */}
+      {!UPLOAD_DOKUMEN_AKTIF && (
+        <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-3">
+          <div className="flex items-start gap-2">
+            <span className="text-base shrink-0" aria-hidden="true">⚠️</span>
+            <div>
+              <div className="text-amber-200 text-xs font-semibold">Upload dokumen belum aktif</div>
+              <p className="text-amber-100/70 text-[11px] mt-1 leading-relaxed">
+                Fitur lampiran surat (PDF/gambar) sementara dinonaktifkan. Anda tetap bisa mengajukan
+                perubahan status dengan <strong className="text-amber-100/90">keterangan teks</strong> saja.
+                Admin akan meninjau alasan Anda di tab Pengajuan.
+              </p>
             </div>
           </div>
-          <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} disabled={uploading} />
-        </label>
-      </div>
+        </div>
+      )}
 
       {/* Keterangan */}
       <div className="mb-4">
-        <div className="text-slate-500 text-xs mb-2">Keterangan</div>
+        <div className="text-slate-500 text-xs mb-2">Keterangan / Alasan <span className="text-red-400">*</span></div>
         <textarea
           value={keterangan}
           onChange={(e) => setKeterangan(e.target.value)}
-          placeholder="Tuliskan alasan pengajuan..."
+          placeholder="Contoh: Dinas ke lapangan proyek jembatan, ada surat tugas nomor ..."
           rows={3}
           disabled={uploading}
           className="w-full bg-slate-800 border border-slate-700/50 rounded-xl px-3 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500/50 resize-none"

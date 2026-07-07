@@ -111,8 +111,9 @@ Lihat `firebase-rules.json` — copy paste ke Firebase Console → Realtime Data
 2. **Reset harian otomatis:** Dashboard baca node tanggal WIB hari ini. Lewat 00:00 WIB, tanggal berganti → tampilan bersih, riwayat kemarin tetap utuh.
 3. **QR token TTL** 10 detik — regenerasi otomatis via `setInterval`.
 4. **Session apel** dikendalikan manual oleh Admin. Saat `ditiadakan`: absensi hari ini dihapus + `apelMeta.held = false`.
-5. **Pengajuan** flow: Pegawai submit → Firebase → Admin lihat + Setujui/Tolak → Jika disetujui, attendance auto-update ke path tanggal hari ini.
+5. **Pengajuan** flow: Pegawai pilih status baru + keterangan teks → Firebase `pengajuan/` → Admin/Developer tab Pengajuan di PanelKoreksi → Setujui/Tolak → jika disetujui, attendance hari ini terupdate. **Upload dokumen sementara nonaktif** (plan Spark; aktifkan setelah upgrade Blaze + Storage).
 6. **Data lama** di `attendance/today` tidak dimigrasi otomatis — mulai bersih dari struktur baru.
+7. **Firebase Storage** — tidak tersedia di plan Spark. Upload surat pengajuan membutuhkan upgrade Blaze; kode siap di `storage-helper.js`, toggle `UPLOAD_DOKUMEN_AKTIF` di `PengajuanStatusForm.jsx`.
 
 ---
 
@@ -150,7 +151,8 @@ Pages baca dari context (useFirebaseData()) — tidak ada props drilling
 5. **Dashboard pegawai muncul** — status "Hadir" otomatis
 6. **Pimpinan lihat** → Dashboard Pimpinan → ranking bidang realtime
 7. **Admin atur sesi apel "Selesai"** → semua yang belum absen jadi "Tanpa Keterangan"
-8. **Pegawai bisa ajukan perubahan status** via formulir pengajuan
+8. **Pegawai ajukan perubahan status** — pilih DD/DL/Izin/Sakit + tulis keterangan (tanpa lampiran file di pilot Spark)
+9. **Admin verifikasi** — Koreksi Absensi → tab Pengajuan → Setujui/Tolak berdasarkan keterangan
 
 ---
 
