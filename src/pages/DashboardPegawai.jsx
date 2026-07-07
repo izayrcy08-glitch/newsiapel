@@ -82,13 +82,6 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatu
   const monthlyDisciplineStatus = getDisciplineStatus(monthlyDisciplineCount);
   const statusLabel = displayStatus === "Hadir" ? "Hadir" : displayStatus;
 
-  useEffect(() => {
-    if (!canSubmitAttendance) {
-      setShowManualCode(false);
-      setShowScanner(false);
-    }
-  }, [canSubmitAttendance]);
-
   const handleManualCodeSubmit = async () => {
     if (!canSubmitAttendance) return;
     if (!manualCode.trim()) return;

@@ -62,6 +62,15 @@ const getDeviceId = () => {
   }
 };
 
+/**
+ * formatJamHadir — format jam "HH:MM" (selalu titik dua).
+ * PENTING: jangan pakai toLocaleTimeString("id-ID") karena locale Indonesia
+ * menghasilkan titik ("07.15"), sedangkan Firebase Rules mewajibkan titik dua
+ * ("07:15"). Ketidakcocokan ini bikin penyimpanan absensi ditolak diam-diam.
+ */
+const formatJamHadir = (date = new Date()) =>
+  `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+
 const FirebaseDataContext = createContext(null);
 
 export function FirebaseDataProvider({ children }) {
@@ -368,14 +377,12 @@ export function FirebaseDataProvider({ children }) {
   const handleScan = useCallback(
     (pegawaiId) => {
       if (attendance[pegawaiId]?.status === "Hadir") return;
-      const jamNow = new Date().toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
       set(ref(database, `${ATTENDANCE_PATH}/${pegawaiId}`), {
         status: "Hadir",
-        jamHadir: jamNow,
-      });
+        jamHadir: formatJamHadir(),
+      }).catch((err) =>
+        console.error("Gagal menyimpan absensi (handleScan):", pegawaiId, err)
+      );
     },
     [attendance]
   );
@@ -388,13 +395,12 @@ export function FirebaseDataProvider({ children }) {
         .map((p) => p.id);
       const toScan = belum.slice(0, count);
       if (toScan.length === 0) return;
-      const jamNow = new Date().toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      const jamNow = formatJamHadir();
       const updates = {};
       for (const id of toScan) updates[id] = { status: "Hadir", jamHadir: jamNow };
-      update(ref(database, ATTENDANCE_PATH), updates);
+      update(ref(database, ATTENDANCE_PATH), updates).catch((err) =>
+        console.error("Gagal menyimpan absensi (handleScanSimulate):", err)
+      );
     },
     [attendance, masterPegawaiData]
   );

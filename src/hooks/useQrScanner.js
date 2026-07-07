@@ -23,6 +23,17 @@ export function useQrScanner({
   const cancelledRef = useRef(false);
   const onScanSuccessRef = useRef(onScanSuccess);
 
+  // Config disimpan di ref supaya identitas startScanning STABIL.
+  // Tanpa ini, `qrbox` (objek baru tiap render) bikin startScanning berubah
+  // identitas → useEffect pemanggil jalan ulang tiap detik (karena jam berdetak)
+  // → kamera restart terus → layar putih berkedip.
+  const fpsRef = useRef(fps);
+  const qrboxRef = useRef(qrbox);
+  useEffect(() => {
+    fpsRef.current = fps;
+    qrboxRef.current = qrbox;
+  });
+
   // Keep callback ref in sync
   useEffect(() => {
     onScanSuccessRef.current = onScanSuccess;
@@ -60,6 +71,9 @@ export function useQrScanner({
 
   const startScanning = useCallback(async () => {
     if (isValidatingScan.current) return;
+    // Guard anti double-start: jika scanner sudah ada (sedang jalan/inisialisasi),
+    // jangan bikin instance baru. Ini yang mencegah kamera restart berulang.
+    if (scannerRef.current) return;
     resetResult();
 
     let scanner;
@@ -120,7 +134,7 @@ export function useQrScanner({
         }
       };
 
-      const scanConfig = { fps, qrbox };
+      const scanConfig = { fps: fpsRef.current, qrbox: qrboxRef.current };
       const preferredCameraConfig = rearCamera
         ? rearCamera.id
         : { facingMode: "environment" };
@@ -156,7 +170,7 @@ export function useQrScanner({
       }
       await stopScanning();
     }
-  }, [fps, qrbox, resetResult, stopScanning, onScanError]);
+  }, [resetResult, stopScanning, onScanError]);
 
   useEffect(() => {
     if (!enabled) {
