@@ -31,7 +31,8 @@ export async function syncPegawaiToFirebase(pegawaiData) {
       }
     });
 
-    await update(ref(database), updates);
+    await update(ref(database, MASTER_PEGAWAI_PATH), updates);
+    console.log(`✅ [Firebase] Synced ${pegawaiData.length} pegawai to ${MASTER_PEGAWAI_PATH}`);
     return true;
   } catch (error) {
     console.error('Error syncing pegawai to Firebase:', error);
