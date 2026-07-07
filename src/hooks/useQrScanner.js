@@ -42,16 +42,16 @@ export function useQrScanner({
     try {
       await scanner.stop();
     } catch (error) {
-      if (error && typeof error === 'object') {
-        console.debug("Scanner already stopped or unmounted:", error.message || String(error));
+      if (error?.name !== 'AbortError' && error && typeof error === 'object') {
+        console.debug("Scanner stop error:", error.message || String(error));
       }
     }
     
     try {
       await scanner.clear();
     } catch (error) {
-      if (error && typeof error === 'object') {
-        console.debug("Scanner already cleared or unmounted:", error.message || String(error));
+      if (error?.name !== 'AbortError' && error && typeof error === 'object') {
+        console.debug("Scanner clear error:", error.message || String(error));
       }
     }
     
@@ -67,6 +67,7 @@ export function useQrScanner({
       scanner = new Html5Qrcode("qr-reader");
     } catch (error) {
       console.error("Gagal inisialisasi scanner:", error);
+      setScanResult({ type: "error", label: "SCANNER INIT FAILED" });
       return;
     }
 
@@ -74,16 +75,24 @@ export function useQrScanner({
     scannerRef.current = scanner;
 
     try {
-      const cameras = await Html5Qrcode.getCameras();
+      const camerasPromise = Html5Qrcode.getCameras();
+      const camerasTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Camera detection timeout")), 5000)
+      );
+      
+      const cameras = await Promise.race([camerasPromise, camerasTimeout]);
+      
+      if (!cameras || cameras.length === 0) {
+        console.error("Tidak ada kamera tersedia");
+        setScanResult({ type: "error", label: "NO CAMERA FOUND" });
+        await stopScanning();
+        return;
+      }
+
       const rearCamera = cameras.find((cam) =>
         /back|rear|environment/i.test(cam.label)
       );
       const selectedCamera = rearCamera || cameras[0];
-
-      if (!selectedCamera) {
-        console.error("Tidak ada kamera tersedia");
-        return;
-      }
 
       if (cancelledRef.current) return;
 
@@ -116,15 +125,25 @@ export function useQrScanner({
         ? rearCamera.id
         : { facingMode: "environment" };
 
+      const startPromise = scanner.start(preferredCameraConfig, scanConfig, onScanSuccessWrapper);
+      const startTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Camera start timeout")), 5000)
+      );
+
       try {
-        await scanner.start(preferredCameraConfig, scanConfig, onScanSuccessWrapper);
+        await Promise.race([startPromise, startTimeout]);
       } catch (error) {
         if (cancelledRef.current) return;
         if (rearCamera) throw error;
         try {
-          await scanner.start(selectedCamera.id, scanConfig, onScanSuccessWrapper);
+          const fallbackPromise = scanner.start(selectedCamera.id, scanConfig, onScanSuccessWrapper);
+          const fallbackTimeout = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Camera start timeout")), 5000)
+          );
+          await Promise.race([fallbackPromise, fallbackTimeout]);
         } catch (fallbackError) {
           console.error("Gagal start scanner dengan fallback:", fallbackError);
+          setScanResult({ type: "error", label: "CAMERA START FAILED" });
           throw fallbackError;
         }
       }
@@ -132,6 +151,9 @@ export function useQrScanner({
       setIsScanning(true);
     } catch (error) {
       console.error("Gagal memulai scanner:", error);
+      if (!cancelledRef.current) {
+        setScanResult({ type: "error", label: "SCANNER ERROR" });
+      }
       await stopScanning();
     }
   }, [fps, qrbox, resetResult, stopScanning, onScanError]);
