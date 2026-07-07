@@ -34,6 +34,7 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatu
 
   const {
     startScanning,
+    stopScanning,
     scanResult,
     setScanResult,
     resetResult,
@@ -403,7 +404,13 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, apelStatu
               <div className="relative z-10">
                 <TokenFeedback result={scanResult} />
               </div>
-              <button onClick={() => setShowScanner(false)} className="relative z-10 w-full mt-4 py-3 rounded-xl bg-slate-800 text-white">
+              <button 
+                onClick={async () => {
+                  await stopScanning();
+                  setShowScanner(false);
+                }} 
+                className="relative z-10 w-full mt-4 py-3 rounded-xl bg-slate-800 text-white"
+              >
                 Tutup
               </button>
             </div>

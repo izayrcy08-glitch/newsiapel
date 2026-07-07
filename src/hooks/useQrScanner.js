@@ -36,17 +36,25 @@ export function useQrScanner({
   const stopScanning = useCallback(async () => {
     if (!scannerRef.current) return;
     cancelledRef.current = true;
-    try {
-      await scannerRef.current.stop();
-    } catch (error) {
-      console.error("Error stopping scanner:", error?.message);
-    }
-    try {
-      await scannerRef.current.clear();
-    } catch (error) {
-      console.error("Error clearing scanner:", error?.message);
-    }
+    const scanner = scannerRef.current;
     scannerRef.current = null;
+    
+    try {
+      await scanner.stop();
+    } catch (error) {
+      if (error && typeof error === 'object') {
+        console.debug("Scanner already stopped or unmounted:", error.message || String(error));
+      }
+    }
+    
+    try {
+      await scanner.clear();
+    } catch (error) {
+      if (error && typeof error === 'object') {
+        console.debug("Scanner already cleared or unmounted:", error.message || String(error));
+      }
+    }
+    
     setIsScanning(false);
   }, []);
 
@@ -94,11 +102,11 @@ export function useQrScanner({
             await stopScanning();
           }
         } catch (error) {
-          console.error("Gagal validasi QR:", error);
           if (!cancelledRef.current) {
+            console.error("Gagal validasi QR:", error);
             setScanResult({ type: "invalid", label: "INVALID TOKEN" });
           }
-          if (onScanError) onScanError(error);
+          if (onScanError && !cancelledRef.current) onScanError(error);
           await stopScanning();
         }
       };
