@@ -219,6 +219,13 @@ export function FirebaseDataProvider({ children }) {
       if (isFirstSync) {
         console.log(`[SESSION] Initial sync for ${activeUserId}:`, val);
         isFirstSync = false;
+        if (val && val.sessionId !== sessionIdRef.current) {
+          console.warn(`[SESSION] 🔴 Immediate conflict detected on first sync:`, {
+            stored: { sessionId: val.sessionId, deviceId: val.deviceId },
+            current: { sessionId: sessionIdRef.current, deviceId: deviceIdRef.current },
+          });
+          goBack();
+        }
         return;
       }
 
@@ -231,7 +238,7 @@ export function FirebaseDataProvider({ children }) {
       }
     });
 
-    // Periodic conflict check tiap 15 detik sebagai fallback
+    // Periodic conflict check tiap 3 detik sebagai aggressive fallback
     const conflictTimer = setInterval(async () => {
       try {
         const snap = await get(ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`));
@@ -241,9 +248,9 @@ export function FirebaseDataProvider({ children }) {
           goBack();
         }
       } catch (_) {
-        // Silent
+        console.error("[SESSION] Periodic check error:", _.message);
       }
-    }, 15000);
+    }, 3000);
 
     return () => {
       unsub();

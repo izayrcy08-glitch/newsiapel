@@ -35,15 +35,16 @@ export function useQrScanner({
 
   const stopScanning = useCallback(async () => {
     if (!scannerRef.current) return;
+    cancelledRef.current = true;
     try {
       await scannerRef.current.stop();
     } catch (error) {
-      // ignore if already stopped
+      console.error("Error stopping scanner:", error?.message);
     }
     try {
       await scannerRef.current.clear();
     } catch (error) {
-      // ignore
+      console.error("Error clearing scanner:", error?.message);
     }
     scannerRef.current = null;
     setIsScanning(false);
@@ -79,11 +80,12 @@ export function useQrScanner({
       if (cancelledRef.current) return;
 
       const onScanSuccessWrapper = async (decodedText) => {
-        if (isValidatingScan.current) return;
+        if (cancelledRef.current || isValidatingScan.current) return;
         isValidatingScan.current = true;
 
         try {
           const result = await validateQrToken(decodedText);
+          if (cancelledRef.current) return;
           setScanResult(result);
           if (onScanSuccessRef.current) {
             onScanSuccessRef.current(result);
@@ -93,7 +95,9 @@ export function useQrScanner({
           }
         } catch (error) {
           console.error("Gagal validasi QR:", error);
-          setScanResult({ type: "invalid", label: "INVALID TOKEN" });
+          if (!cancelledRef.current) {
+            setScanResult({ type: "invalid", label: "INVALID TOKEN" });
+          }
           if (onScanError) onScanError(error);
           await stopScanning();
         }
@@ -107,28 +111,40 @@ export function useQrScanner({
       try {
         await scanner.start(preferredCameraConfig, scanConfig, onScanSuccessWrapper);
       } catch (error) {
-        if (cancelledRef.current || rearCamera) throw error;
-        await scanner.start(selectedCamera.id, scanConfig, onScanSuccessWrapper);
+        if (cancelledRef.current) return;
+        if (rearCamera) throw error;
+        try {
+          await scanner.start(selectedCamera.id, scanConfig, onScanSuccessWrapper);
+        } catch (fallbackError) {
+          console.error("Gagal start scanner dengan fallback:", fallbackError);
+          throw fallbackError;
+        }
       }
 
       setIsScanning(true);
     } catch (error) {
       console.error("Gagal memulai scanner:", error);
+      await stopScanning();
     }
   }, [fps, qrbox, resetResult, stopScanning, onScanError]);
 
-  // Cleanup on unmount or disabled
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      cancelledRef.current = true;
+      if (scannerRef.current) {
+        stopScanning();
+      }
+    }
+  }, [enabled, stopScanning]);
 
+  useEffect(() => {
     return () => {
       cancelledRef.current = true;
-      isValidatingScan.current = false;
       if (scannerRef.current) {
         stopScanning();
       }
     };
-  }, [enabled, stopScanning]);
+  }, [stopScanning]);
 
   return {
     startScanning,
