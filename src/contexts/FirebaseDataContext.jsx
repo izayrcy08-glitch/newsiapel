@@ -211,6 +211,7 @@ export function FirebaseDataProvider({ children }) {
     }
 
     let isFirstSync = true;
+    let isRefresh = false;
 
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
     const unsub = onValue(sessionRef, (snapshot) => {
@@ -219,20 +220,35 @@ export function FirebaseDataProvider({ children }) {
       if (isFirstSync) {
         console.log(`[SESSION] Initial sync for ${activeUserId}:`, val);
         isFirstSync = false;
-        if (val && val.sessionId !== sessionIdRef.current) {
-          console.warn(`[SESSION] 🔴 Immediate conflict detected on first sync:`, {
+        
+        if (val && val.deviceId === deviceIdRef.current) {
+          isRefresh = true;
+          console.log(`[SESSION] 🔄 Detected refresh (same device):`, {
             stored: { sessionId: val.sessionId, deviceId: val.deviceId },
             current: { sessionId: sessionIdRef.current, deviceId: deviceIdRef.current },
+          });
+        }
+        
+        if (val && val.deviceId !== deviceIdRef.current) {
+          console.warn(`[SESSION] 🔴 Different device detected on first sync:`, {
+            stored: { deviceId: val.deviceId },
+            current: { deviceId: deviceIdRef.current },
           });
           goBack();
         }
         return;
       }
 
-      if (val && (val.sessionId !== sessionIdRef.current || val.deviceId !== deviceIdRef.current)) {
+      if (val && val.deviceId !== deviceIdRef.current) {
         console.warn(`[SESSION] 🔴 Device conflict detected:`, {
-          stored: { sessionId: val.sessionId, deviceId: val.deviceId },
-          current: { sessionId: sessionIdRef.current, deviceId: deviceIdRef.current },
+          stored: { deviceId: val.deviceId },
+          current: { deviceId: deviceIdRef.current },
+        });
+        goBack();
+      } else if (val && val.sessionId !== sessionIdRef.current && !isRefresh) {
+        console.warn(`[SESSION] 🔴 Session conflict detected (not a refresh):`, {
+          stored: { sessionId: val.sessionId },
+          current: { sessionId: sessionIdRef.current },
         });
         goBack();
       }
@@ -243,8 +259,11 @@ export function FirebaseDataProvider({ children }) {
       try {
         const snap = await get(ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`));
         const val = snap.val();
-        if (val && val.sessionId !== sessionIdRef.current) {
-          console.warn(`[SESSION] Conflict detected on periodic check`);
+        if (val && val.deviceId !== deviceIdRef.current) {
+          console.warn(`[SESSION] Device conflict detected on periodic check:`, {
+            stored: { deviceId: val.deviceId },
+            current: { deviceId: deviceIdRef.current },
+          });
           goBack();
         }
       } catch (_) {
