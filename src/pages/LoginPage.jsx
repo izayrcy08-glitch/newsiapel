@@ -226,8 +226,10 @@ const LoginPage = () => {
         if (!sessionResult.ok) {
           const pesan =
             sessionResult.reason === "device_lain"
-              ? "Akun ini sedang aktif di perangkat lain. Logout dulu di perangkat tersebut, atau tunggu ±1 menit lalu coba lagi."
-              : "Gagal memulai sesi. Periksa koneksi internet lalu coba lagi.";
+              ? "Akun ini sedang aktif di perangkat lain. Logout dulu di perangkat tersebut, atau tunggu ±1 menit."
+              : sessionResult.reason === "sesi_lain"
+                ? "Akun ini sedang dipakai di tab/jendela lain. Tutup sesi tersebut dulu, atau tunggu ±1 menit."
+                : "Gagal memulai sesi. Periksa koneksi internet lalu coba lagi.";
           console.error(`[LOGIN] ❌ Session registration failed:`, sessionResult.reason);
           setError(pesan);
           setLoading(false);

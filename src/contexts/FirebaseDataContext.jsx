@@ -45,9 +45,7 @@ const generateUUID = () => {
 };
 
 /**
- * getDeviceId — ID unik perangkat yang PERSISTEN di localStorage.
- * Berbeda dari sessionId yang baru tiap halaman di-refresh.
- * Dipakai untuk bedain "device sama setelah refresh" vs "device beda".
+ * getDeviceId — ID unik perangkat (localStorage, sama di semua tab browser ini).
  */
 const getDeviceId = () => {
   try {
@@ -62,6 +60,38 @@ const getDeviceId = () => {
   }
 };
 
+const SESSION_ID_KEY = "siapel_session_id";
+
+// Ambang sesi "basi": jika tidak ada heartbeat selama ini, sesi dianggap ditinggalkan.
+const SESSION_STALE_MS = 90 * 1000; // 90 detik
+// Interval pengiriman heartbeat oleh tab yang sedang aktif.
+const HEARTBEAT_INTERVAL_MS = 30 * 1000; // 30 detik
+
+/**
+ * getOrCreateSessionId — ID unik per TAB (sessionStorage).
+ * Tab baru = ID baru → bisa bedakan 2 jendela di browser yang sama.
+ * Refresh tab yang sama = ID tetap → tidak kena tendang sendiri.
+ */
+const getOrCreateSessionId = () => {
+  try {
+    let id = window.sessionStorage.getItem(SESSION_ID_KEY);
+    if (!id) {
+      id = generateUUID();
+      window.sessionStorage.setItem(SESSION_ID_KEY, id);
+    }
+    return id;
+  } catch {
+    return generateUUID();
+  }
+};
+
+/** Apakah sesi Firebase masih dianggap aktif (belum basi)? */
+const isSessionActive = (existing, now = Date.now()) => {
+  if (!existing) return false;
+  const heartbeat = existing.lastSeen ?? existing.loginAt;
+  return typeof heartbeat === "number" && now - heartbeat < SESSION_STALE_MS;
+};
+
 /**
  * formatJamHadir — format jam "HH:MM" (selalu titik dua).
  * PENTING: jangan pakai toLocaleTimeString("id-ID") karena locale Indonesia
@@ -71,19 +101,13 @@ const getDeviceId = () => {
 const formatJamHadir = (date = new Date()) =>
   `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 
-// Ambang sesi "basi": jika perangkat aktif tidak mengirim heartbeat selama ini,
-// sesinya dianggap ditinggalkan sehingga perangkat lain boleh login.
-const SESSION_STALE_MS = 90 * 1000; // 90 detik
-// Interval pengiriman heartbeat oleh perangkat yang sedang aktif.
-const HEARTBEAT_INTERVAL_MS = 30 * 1000; // 30 detik
-
 const FirebaseDataContext = createContext(null);
 
 export function FirebaseDataProvider({ children }) {
   const { page, role, activePegawai, selectedPimpinan, goBack, masterPegawaiData } = useSession();
 
-  // Session ID unik tiap kali halaman di-load — dipakai untuk deteksi login ganda
-  const sessionIdRef = useRef(generateUUID());
+  // Session ID unik per TAB (sessionStorage) — beda tiap jendela/tab browser
+  const sessionIdRef = useRef(getOrCreateSessionId());
 
   // Device ID persisten (localStorage) — tetap sama walau halaman di-refresh
   // Dipakai untuk bedain "device yang sama setelah F5" vs "device berbeda"
@@ -214,75 +238,56 @@ export function FirebaseDataProvider({ children }) {
   // ── Ref: apakah ini callback pertama setelah subscribe (sync awal) ──
   const initialSyncRef = useRef(true);
 
-  // ── Subscription: Active Session (deteksi login dari device lain) ──
-  // Strategi:
-  //   - Subscription listen untuk session changes (conflict detection)
-  //   - Registration sudah dilakukan di LoginPage via handleRegisterSession()
-  //   - Jika sessionId/deviceId berubah → ada login device lain → goBack()
+  // ── Subscription: Active Session — tendang jika ada login lain (tab/device) ──
   useEffect(() => {
     if (!activeUserId) {
       initialSyncRef.current = true;
       return;
     }
 
-    let isFirstSync = true;
-    let isRefresh = false;
-
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
+    let isFirstSync = true;
+
     const unsub = onValue(sessionRef, (snapshot) => {
       const val = snapshot.val();
+      const now = Date.now();
 
       if (isFirstSync) {
-        console.log(`[SESSION] Initial sync for ${activeUserId}:`, val);
         isFirstSync = false;
-        
-        if (val && val.deviceId === deviceIdRef.current) {
-          isRefresh = true;
-          console.log(`[SESSION] 🔄 Detected refresh (same device):`, {
-            stored: { sessionId: val.sessionId, deviceId: val.deviceId },
-            current: { sessionId: sessionIdRef.current, deviceId: deviceIdRef.current },
-          });
-        }
-        
-        if (val && val.deviceId !== deviceIdRef.current) {
-          console.warn(`[SESSION] 🔴 Different device detected on first sync:`, {
-            stored: { deviceId: val.deviceId },
-            current: { deviceId: deviceIdRef.current },
+        console.log(`[SESSION] Initial sync for ${activeUserId}:`, val);
+        if (!val) return;
+        if (val.sessionId === sessionIdRef.current) return;
+        if (isSessionActive(val, now)) {
+          console.warn(`[SESSION] 🔴 Sesi ditendang — login lain aktif`, {
+            storedSessionId: val.sessionId,
+            mySessionId: sessionIdRef.current,
           });
           goBack();
         }
         return;
       }
 
-      if (val && val.deviceId !== deviceIdRef.current) {
-        console.warn(`[SESSION] 🔴 Device conflict detected:`, {
-          stored: { deviceId: val.deviceId },
-          current: { deviceId: deviceIdRef.current },
-        });
-        goBack();
-      } else if (val && val.sessionId !== sessionIdRef.current && !isRefresh) {
-        console.warn(`[SESSION] 🔴 Session conflict detected (not a refresh):`, {
-          stored: { sessionId: val.sessionId },
-          current: { sessionId: sessionIdRef.current },
-        });
+      if (!val) return;
+      if (val.sessionId !== sessionIdRef.current) {
+        console.warn(`[SESSION] 🔴 Sesi diganti oleh login/tab lain`);
         goBack();
       }
     });
 
-    // Periodic conflict check tiap 3 detik sebagai aggressive fallback
     const conflictTimer = setInterval(async () => {
       try {
-        const snap = await get(ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`));
+        const snap = await get(sessionRef);
         const val = snap.val();
-        if (val && val.deviceId !== deviceIdRef.current) {
-          console.warn(`[SESSION] Device conflict detected on periodic check:`, {
-            stored: { deviceId: val.deviceId },
-            current: { deviceId: deviceIdRef.current },
-          });
+        if (
+          val &&
+          val.sessionId !== sessionIdRef.current &&
+          isSessionActive(val, Date.now())
+        ) {
+          console.warn(`[SESSION] 🔴 Conflict on periodic check`);
           goBack();
         }
-      } catch (_) {
-        console.error("[SESSION] Periodic check error:", _.message);
+      } catch (err) {
+        console.error("[SESSION] Periodic check error:", err?.message);
       }
     }, 3000);
 
@@ -503,35 +508,42 @@ export function FirebaseDataProvider({ children }) {
 
   const handleClearActiveSession = useCallback((userId) => {
     if (!userId) return;
-    set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), null);
+    set(ref(database, `${ACTIVE_SESSION_PATH}/${userId}`), null).catch((err) =>
+      console.error("Gagal clear active session:", err)
+    );
+    // Reset session tab agar login berikutnya dapat ID sesi baru
+    try {
+      window.sessionStorage.removeItem(SESSION_ID_KEY);
+    } catch (_) {}
+    sessionIdRef.current = generateUUID();
+    try {
+      window.sessionStorage.setItem(SESSION_ID_KEY, sessionIdRef.current);
+    } catch (_) {}
   }, []);
 
-  // First-login-wins: tolak login jika akun sedang aktif di PERANGKAT LAIN.
-  // Return object { ok, reason } supaya LoginPage bisa kasih pesan tepat.
+  // First-login-wins: 1 akun = 1 sesi aktif (per tab).
+  // Tolak jika ada sesi lain yang masih hidup — termasuk tab kedua di browser yang sama.
   const handleRegisterSession = useCallback(async (userId) => {
     if (!userId) return { ok: true };
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${userId}`);
     try {
       const now = Date.now();
-      const existingSnap = await get(sessionRef);
-      const existing = existingSnap.val();
+      const existing = (await get(sessionRef)).val();
 
-      // Ada sesi milik perangkat lain yang MASIH aktif (heartbeat belum basi) → tolak.
-      // Perangkat sama (refresh/buka ulang) selalu diizinkan lanjut.
-      const sesiPerangkatLain =
-        existing &&
-        existing.deviceId &&
-        existing.deviceId !== deviceIdRef.current;
-      const heartbeatMasihHidup =
-        typeof existing?.lastSeen === "number" &&
-        now - existing.lastSeen < SESSION_STALE_MS;
-
-      if (sesiPerangkatLain && heartbeatMasihHidup) {
-        console.warn(`[LOGIN] ❌ Ditolak — akun aktif di perangkat lain`, {
-          existingDevice: existing.deviceId,
-          lastSeenAgoMs: now - existing.lastSeen,
+      if (isSessionActive(existing, now)) {
+        if (existing.sessionId === sessionIdRef.current) {
+          await update(sessionRef, { lastSeen: now });
+          console.log(`[LOGIN] ✅ Reclaim sesi yang sama (tab ini)`);
+          return { ok: true };
+        }
+        const reason =
+          existing.deviceId !== deviceIdRef.current ? "device_lain" : "sesi_lain";
+        console.warn(`[LOGIN] ❌ Ditolak — sesi aktif di tempat lain`, {
+          reason,
+          existingSessionId: existing.sessionId,
+          mySessionId: sessionIdRef.current,
         });
-        return { ok: false, reason: "device_lain" };
+        return { ok: false, reason };
       }
 
       const newSessionData = {
@@ -543,19 +555,34 @@ export function FirebaseDataProvider({ children }) {
       console.log(`[LOGIN] Writing new session for ${userId}`, newSessionData);
       await set(sessionRef, newSessionData);
 
-      const verifySnap = await get(sessionRef);
-      const written = verifySnap.val();
-      if (written && written.sessionId === sessionIdRef.current) {
-        console.log(`[LOGIN] ✅ Session registered successfully for ${userId}`);
+      const written = (await get(sessionRef)).val();
+      if (written?.sessionId === sessionIdRef.current) {
+        console.log(`[LOGIN] ✅ Session registered for ${userId}`);
         return { ok: true };
       }
-      console.error(`[LOGIN] ❌ Session verification failed - data mismatch`);
+      console.error(`[LOGIN] ❌ Session verification failed`);
       return { ok: false, reason: "verify_gagal" };
     } catch (error) {
       console.error("[LOGIN] ❌ Gagal register session:", error);
       return { ok: false, reason: "error" };
     }
   }, []);
+
+  // Saat buka dashboard dari localStorage (tanpa lewat login), klaim ulang sesi.
+  // Jika sesi sudah dipakai tab/device lain → tendang ke login.
+  useEffect(() => {
+    if (!activeUserId || page === "login") return;
+    let cancelled = false;
+    handleRegisterSession(activeUserId).then((result) => {
+      if (!cancelled && !result.ok) {
+        console.warn("[SESSION] Reclaim gagal — logout paksa");
+        goBack();
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeUserId, page, handleRegisterSession, goBack]);
 
   const value = useMemo(
     () => ({
