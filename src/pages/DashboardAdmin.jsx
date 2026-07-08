@@ -21,7 +21,7 @@ const DashboardAdmin = ({
   people = pegawaiData, attendance, pengajuan = [], apelStatus, apelSession,
   apelReason, apelReasonText, onAppealPhaseChange, onApelReasonChange,
   onScanSimulate, onReset, onLogout, onKoreksi, onPengajuanVerifikasi,
-  onAddPegawai, onUpdatePegawai, onDeletePegawai, readOnly = false,
+  onAddPegawai, onUpdatePegawai, onDeletePegawai, onClearActiveSession, readOnly = false,
 }) => {
   const { now } = useClock();
   const [activeMenu, setActiveMenu] = useState(null);
@@ -65,7 +65,7 @@ const DashboardAdmin = ({
   if (activeMenu === "absensi") return <PanelAbsensi people={attendancePeople} attendance={attendance} now={now} onBack={() => setActiveMenu(null)} />;
   if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} apelStatus={apelStatus} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} pengajuan={pengajuan} onPengajuanVerifikasi={onPengajuanVerifikasi} readOnly={readOnly} />;
   if (activeMenu === "laporan") return <PanelLaporan people={attendancePeople} attendance={attendance} stats={stats} now={now} onBack={() => setActiveMenu(null)} />;
-  if (activeMenu === "kelola") return <PanelKelolaPegawai people={people} readOnly={readOnly} onAddPegawai={onAddPegawai} onUpdatePegawai={onUpdatePegawai} onDeletePegawai={onDeletePegawai} onBack={() => setActiveMenu(null)} />;
+  if (activeMenu === "kelola") return <PanelKelolaPegawai people={people} readOnly={readOnly} onAddPegawai={onAddPegawai} onUpdatePegawai={onUpdatePegawai} onDeletePegawai={onDeletePegawai} onClearActiveSession={onClearActiveSession} onBack={() => setActiveMenu(null)} />;
 
   // ── Main menu ──
   return (

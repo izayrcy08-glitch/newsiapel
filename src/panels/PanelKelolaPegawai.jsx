@@ -12,7 +12,13 @@ const INITIAL_DRAFT = {
   role: "EMPLOYEE", password: "", isActive: true,
 };
 
-export default function PanelKelolaPegawai({ people, readOnly, onAddPegawai, onUpdatePegawai, onDeletePegawai, onBack }) {
+const getSessionUserId = (person) => {
+  if (person?.role === "ADMIN") return "admin";
+  if (person?.role === "DEVELOPER") return "developer";
+  return `pegawai_${person.id}`;
+};
+
+export default function PanelKelolaPegawai({ people, readOnly, onAddPegawai, onUpdatePegawai, onDeletePegawai, onClearActiveSession, onBack }) {
   const [tab, setTab] = useState("pegawai");
   const [search, setSearch] = useState("");
   const [selectedPegawaiId, setSelectedPegawaiId] = useState(null);
@@ -86,6 +92,15 @@ export default function PanelKelolaPegawai({ people, readOnly, onAddPegawai, onU
     onDeletePegawai?.(selectedPegawai.id);
     setSelectedPegawaiId(null);
     setDraft({ ...INITIAL_DRAFT });
+  };
+
+  const resetSession = () => {
+    if (!selectedPegawai || !onClearActiveSession) return;
+    const userId = getSessionUserId(selectedPegawai);
+    if (!window.confirm(
+      `Reset sesi login untuk ${selectedPegawai.nama}?\n\nPerangkat lama akan dilepas. Pegawai bisa login di HP baru dengan username & password yang sama.`
+    )) return;
+    onClearActiveSession(userId);
   };
 
   const selectedTitle = selectedPegawaiId === "new"
@@ -239,16 +254,23 @@ export default function PanelKelolaPegawai({ people, readOnly, onAddPegawai, onU
               </div>
             </div>
 
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               <button onClick={save} disabled={readOnly || !draft.nama.trim()}
-                className="flex-1 rounded-xl bg-emerald-500/20 border border-emerald-500/30 py-3 text-sm font-semibold text-emerald-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-emerald-500/30 transition-colors">
+                className="flex-1 min-w-[120px] rounded-xl bg-emerald-500/20 border border-emerald-500/30 py-3 text-sm font-semibold text-emerald-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-emerald-500/30 transition-colors">
                 Simpan
               </button>
               {selectedPegawaiId !== "new" && (
-                <button onClick={deleteSelected} disabled={readOnly}
-                  className="rounded-xl bg-red-500/20 border border-red-500/30 py-3 px-4 text-sm font-semibold text-red-200 disabled:opacity-50 hover:bg-red-500/30 transition-colors">
-                  Hapus
-                </button>
+                <>
+                  <button onClick={resetSession} disabled={readOnly || !onClearActiveSession}
+                    className="rounded-xl bg-amber-500/20 border border-amber-500/30 py-3 px-4 text-sm font-semibold text-amber-200 disabled:opacity-50 hover:bg-amber-500/30 transition-colors"
+                    title="Lepaskan kunci perangkat agar pegawai bisa login di HP baru">
+                    Reset Sesi
+                  </button>
+                  <button onClick={deleteSelected} disabled={readOnly}
+                    className="rounded-xl bg-red-500/20 border border-red-500/30 py-3 px-4 text-sm font-semibold text-red-200 disabled:opacity-50 hover:bg-red-500/30 transition-colors">
+                    Hapus
+                  </button>
+                </>
               )}
               <button onClick={() => setSelectedPegawaiId(null)}
                 className="rounded-xl bg-slate-800 border border-slate-700/60 py-3 px-4 text-sm font-semibold text-slate-300 hover:bg-slate-700 transition-colors">

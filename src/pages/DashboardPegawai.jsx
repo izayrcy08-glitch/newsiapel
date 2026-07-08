@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import { Card } from "../components/Card";
 import { LogoutConfirm } from "../components/LogoutConfirm";
@@ -8,9 +8,9 @@ import { TokenFeedback } from "../components/TokenFeedback";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { PengajuanStatusForm } from "../components/PengajuanStatusForm";
 import { REASON_OPTIONS } from "../bersama/konstanta_aplikasi";
-import { getDisciplineStatus } from "../bersama/util_status_dan_warna";
+import { getDisciplineStatus, STATUS_COLORS, getStatusIcon } from "../bersama/util_status_dan_warna";
 import { getScopedPeople, excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
-import { calcMonthlyTanpaKeterangan } from "../fitur/absensi/logika_absensi";
+import { calcMonthlyTanpaKeterangan, getEffectiveAttendanceStatus } from "../fitur/absensi/logika_absensi";
 import { validateQrToken } from "../utils/qr-token";
 import { useClock } from "../hooks/useClock";
 import { useAttendanceStats } from "../hooks/useAttendanceStats";
@@ -19,7 +19,7 @@ import { useQrScanner } from "../hooks/useQrScanner";
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PEGAWAI
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAttendance, apelMeta, monthKey, dayKey, apelStatus, apelReason, apelReasonText, onScan, onLogout, onPengajuanSubmit }) => {
+const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAttendance, apelMeta, monthKey, dayKey, pengajuan = [], apelStatus, apelReason, apelReasonText, onScan, onLogout, onPengajuanSubmit }) => {
   const { now, greeting } = useClock();
   const [showScanner, setShowScanner] = useState(false);
   const [showManualCode, setShowManualCode] = useState(false);
@@ -31,8 +31,22 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
   const attendancePeople = excludeSystemAccounts(people);
   const scopePeople = getScopedPeople(attendancePeople, pegawai, "UNIT");
   const { stats, statItems, isDitiadakan } = useAttendanceStats(attendance, apelStatus, scopePeople);
+  const effectiveStatus = getEffectiveAttendanceStatus(myAttendance, apelStatus);
+  const hasRecordedStatus = Boolean(myAttendance.status);
   const sudahAbsen = myAttendance.status === "Hadir";
+  const isTanpaKeterangan = !hasRecordedStatus && apelStatus === "ended";
+  const showScanActions = !hasRecordedStatus && apelStatus !== "ended";
   const canSubmitAttendance = apelStatus === "ongoing";
+  const statusColors = STATUS_COLORS[effectiveStatus] || STATUS_COLORS["Belum Hadir"];
+  const statusIcon = getStatusIcon(effectiveStatus);
+
+  const myPengajuan = useMemo(
+    () =>
+      (pengajuan || [])
+        .filter((p) => String(p.pegawaiId) === String(pegawai.id))
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    [pengajuan, pegawai.id]
+  );
 
   const {
     startScanning,
@@ -79,7 +93,7 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
   const displayStatus = isUnrecordedStatus
     ? (apelStatus === "ended" ? "Tanpa Keterangan" : "Belum Melakukan Absensi")
     : myAttendance.status;
-  const showAttendanceTime = !isUnrecordedStatus && myAttendance.jamHadir;
+  const showAttendanceTime = sudahAbsen && myAttendance.jamHadir;
   const monthlyTK = calcMonthlyTanpaKeterangan(monthlyAttendance, apelMeta, [pegawai], {
     todayMonthKey: monthKey,
     todayDayKey: dayKey,
@@ -152,11 +166,11 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {/* Left Column: Hadir / Status */}
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 flex flex-col items-center text-center">
+            {/* Left Column: Status Hari Ini */}
+            <div className={`${statusColors.bg} border ${statusColors.border} rounded-xl p-3 flex flex-col items-center text-center`}>
               <div className="flex flex-col items-center mb-2">
-                <span className="text-lg mb-1">🟢</span>
-                <span className="text-xs font-semibold text-emerald-400">
+                <span className="text-lg mb-1">{statusIcon?.icon || "⏳"}</span>
+                <span className={`text-xs font-semibold ${statusColors.text}`}>
                   {statusLabel}
                 </span>
               </div>
@@ -169,7 +183,9 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
                   <div className="text-white text-xl font-black">{myAttendance.jamHadir} WIB</div>
                 </div>
               ) : (
-                <div className="text-slate-500 text-xs">Belum Absen</div>
+                <div className={`text-xs ${statusColors.text} opacity-80`}>
+                  {isTanpaKeterangan ? "Tidak hadir apel" : "Belum absen"}
+                </div>
               )}
             </div>
 
@@ -208,7 +224,7 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
         </Card>
 
         {/* Apel Status */}
-        {!sudahAbsen && (
+        {showScanActions && (
         <Card className="p-4 mb-4">
           <div className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">Sesi Apel</div>
           {apelStatus === "before" && (
@@ -241,8 +257,8 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
           </div>
         )}
 
-        {/* Scan QR Button */}
-        {!sudahAbsen ? (
+        {/* Scan QR / Status Hasil */}
+        {showScanActions ? (
           <>
           <button
             onClick={() => canSubmitAttendance && (resetResult(), setShowScanner(true))}
@@ -293,7 +309,7 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
             )}
           </Card>
           </>
-        ) : (
+        ) : sudahAbsen ? (
           <Card className="p-4 mb-6 border-emerald-500/30 bg-emerald-500/10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-xl">✅</div>
@@ -303,7 +319,31 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
               </div>
             </div>
           </Card>
-        )}
+        ) : isTanpaKeterangan ? (
+          <Card className="p-4 mb-6 border-red-500/30 bg-red-500/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-xl">❌</div>
+              <div>
+                <div className="text-red-400 font-bold text-sm">Tanpa Keterangan</div>
+                <div className="text-slate-400 text-xs leading-relaxed">
+                  Anda belum melakukan absensi apel hari ini. Ajukan perubahan status bila ada keterangan.
+                </div>
+              </div>
+            </div>
+          </Card>
+        ) : hasRecordedStatus ? (
+          <Card className={`p-4 mb-6 border ${statusColors.border} ${statusColors.bg}`}>
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl ${statusColors.bg}`}>
+                {statusIcon?.icon || "📋"}
+              </div>
+              <div>
+                <div className={`font-bold text-sm ${statusColors.text}`}>Status Hari Ini: {myAttendance.status}</div>
+                <div className="text-slate-400 text-xs">Absensi hari ini sudah tercatat</div>
+              </div>
+            </div>
+          </Card>
+        ) : null}
 
         {/* Org Stats */}
         <div className="mb-2">
@@ -338,7 +378,7 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
         </div>
 
         {/* ─── PENGAJUAN PERUBAHAN STATUS ─── */}
-        <PengajuanStatusForm myStatus={displayStatus} pegawai={pegawai} onSubmit={onPengajuanSubmit} />
+        <PengajuanStatusForm myStatus={displayStatus} pegawai={pegawai} myPengajuan={myPengajuan} onSubmit={onPengajuanSubmit} />
 
         {/* ATURAN MODAL */}
         {showAturanModal && (

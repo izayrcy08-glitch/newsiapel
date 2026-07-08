@@ -7,7 +7,7 @@ import { STATUS_OPTIONS } from "../bersama/konstanta_aplikasi";
 const UPLOAD_DOKUMEN_AKTIF = false;
 
 // ─── PENGAJUAN PERUBAHAN STATUS ────────────────────────────────────────────────
-const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
+const PengajuanStatusForm = ({ myStatus, pegawai, myPengajuan = [], onSubmit }) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [keterangan, setKeterangan] = useState("");
@@ -61,22 +61,28 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
 
   if (!showForm) {
     return (
-      <Card className="p-4 mb-4" onClick={() => setShowForm(true)}>
-        <div className="flex items-center gap-3 cursor-pointer">
-          <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">📄</div>
-          <div className="flex-1">
-            <div className="text-white text-sm font-semibold">Pengajuan Perubahan Status</div>
-            <div className="text-slate-400 text-xs">Ajukan status baru + keterangan (tanpa lampiran file)</div>
+      <>
+        <Card className="p-4 mb-4" onClick={() => setShowForm(true)}>
+          <div className="flex items-center gap-3 cursor-pointer">
+            <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">📄</div>
+            <div className="flex-1">
+              <div className="text-white text-sm font-semibold">Pengajuan Perubahan Status</div>
+              <div className="text-slate-400 text-xs">Ajukan status baru + keterangan (tanpa lampiran file)</div>
+            </div>
+            <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
           </div>
-          <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
-      </Card>
+        </Card>
+        {myPengajuan.length > 0 && (
+          <PengajuanRiwayatList items={myPengajuan} />
+        )}
+      </>
     );
   }
 
   return (
+    <>
     <Card className="p-4 mb-4 border-blue-500/30">
       {/* Toast */}
       {toast && (
@@ -185,8 +191,62 @@ const PengajuanStatusForm = ({ myStatus, pegawai, onSubmit }) => {
         )}
       </button>
     </Card>
+    {myPengajuan.length > 0 && (
+      <PengajuanRiwayatList items={myPengajuan} />
+    )}
+    </>
   );
 };
+
+const PengajuanRiwayatList = ({ items }) => (
+  <Card className="p-4 mb-4 border-slate-700/60">
+    <div className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">
+      Riwayat Pengajuan Saya
+    </div>
+    <div className="space-y-2">
+      {items.map((p) => {
+        const isMenunggu = p.statusVerifikasi === "menunggu";
+        const isDisetujui = p.statusVerifikasi === "disetujui";
+        const isDitolak = p.statusVerifikasi === "ditolak";
+        return (
+          <div
+            key={p.id}
+            className={`rounded-xl border p-3 ${
+              isDisetujui
+                ? "border-emerald-500/30 bg-emerald-500/10"
+                : isDitolak
+                  ? "border-red-500/30 bg-red-500/10"
+                  : "border-amber-500/30 bg-amber-500/10"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <span className="text-white text-xs font-semibold">{p.statusBaru}</span>
+              <span className={`text-[10px] font-bold uppercase ${
+                isDisetujui ? "text-emerald-400" : isDitolak ? "text-red-400" : "text-amber-400"
+              }`}>
+                {isMenunggu ? "Menunggu" : isDisetujui ? "Disetujui" : "Ditolak"}
+              </span>
+            </div>
+            {p.keterangan && (
+              <p className="text-slate-400 text-[11px] italic mb-1">"{p.keterangan}"</p>
+            )}
+            {isDisetujui && (
+              <p className="text-emerald-300/80 text-[11px]">
+                Status diubah ke {p.statusBaru}
+              </p>
+            )}
+            {isDitolak && p.alasanAdmin && (
+              <p className="text-red-300/80 text-[11px]">
+                Alasan: {p.alasanAdmin}
+              </p>
+            )}
+            <div className="text-slate-500 text-[10px] mt-1">🕘 {p.waktu || "—"} WIB</div>
+          </div>
+        );
+      })}
+    </div>
+  </Card>
+);
 
 export { PengajuanStatusForm };
 export default PengajuanStatusForm;

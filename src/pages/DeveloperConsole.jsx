@@ -236,6 +236,7 @@ const DeveloperConsole = ({
   onAddPegawai,
   onUpdatePegawai,
   onDeletePegawai,
+  onClearActiveSession,
   onSavePasswordOverride,
   syncStatus = 'idle',
 }) => {
@@ -298,6 +299,7 @@ const DeveloperConsole = ({
         onAddPegawai={onAddPegawai}
         onUpdatePegawai={onUpdatePegawai}
         onDeletePegawai={onDeletePegawai}
+        onClearActiveSession={onClearActiveSession}
         onBack={() => setActiveMenu(null)}
       />
     );

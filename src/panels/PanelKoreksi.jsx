@@ -14,6 +14,8 @@ export default function PanelKoreksi({
   const [tab, setTab] = useState("koreksi");
   const [search, setSearch] = useState("");
   const [bidangFilter, setBidangFilter] = useState("");
+  const [rejectingId, setRejectingId] = useState(null);
+  const [alasanTolak, setAlasanTolak] = useState("");
 
   const attendancePeople = useMemo(() => excludeSystemAccounts(people), [people]);
 
@@ -287,6 +289,41 @@ export default function PanelKoreksi({
 
                     <div className="text-slate-500 text-xs mb-3 ml-1">🕘 {p.waktu || "—"} WIB</div>
 
+                    {rejectingId === p.id ? (
+                      <div className="space-y-2 mb-2">
+                        <div className="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">
+                          Alasan penolakan <span className="text-red-400">*</span>
+                        </div>
+                        <textarea
+                          value={alasanTolak}
+                          onChange={(e) => setAlasanTolak(e.target.value)}
+                          placeholder="Contoh: Surat tugas belum diserahkan ke TU..."
+                          rows={2}
+                          disabled={readOnly}
+                          className="w-full bg-slate-800 border border-slate-700/50 rounded-xl px-3 py-2 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-red-500/50 resize-none"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => {
+                              if (!alasanTolak.trim()) return;
+                              onPengajuanVerifikasi?.(p.id, "ditolak", alasanTolak.trim());
+                              setRejectingId(null);
+                              setAlasanTolak("");
+                            }}
+                            disabled={readOnly || !alasanTolak.trim()}
+                            className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Konfirmasi Tolak
+                          </button>
+                          <button
+                            onClick={() => { setRejectingId(null); setAlasanTolak(""); }}
+                            className="py-2 px-3 rounded-lg bg-slate-800 text-slate-400 text-xs border border-slate-700/50"
+                          >
+                            Batal
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
                     <div className="flex gap-2">
                       <button
                         onClick={() => onPengajuanVerifikasi?.(p.id, "disetujui")}
@@ -296,13 +333,14 @@ export default function PanelKoreksi({
                         ✅ Setujui
                       </button>
                       <button
-                        onClick={() => onPengajuanVerifikasi?.(p.id, "ditolak")}
+                        onClick={() => { setRejectingId(p.id); setAlasanTolak(""); }}
                         disabled={readOnly}
                         className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97]"
                       >
                         ❌ Tolak
                       </button>
                     </div>
+                    )}
                   </Card>
                 ))}
               </div>

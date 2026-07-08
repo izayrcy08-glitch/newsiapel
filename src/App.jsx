@@ -83,6 +83,7 @@ function AppRouter() {
                apelSession={apelSession}
                apelReason={apelReason}
                apelReasonText={apelReasonText}
+               pengajuan={pengajuan}
                onScan={handleScan}
                onPengajuanSubmit={handlePengajuanSubmit}
                onLogout={handleLogout}
@@ -139,6 +140,7 @@ function AppRouter() {
           onAddPegawai={handleAddPegawai}
           onUpdatePegawai={handleUpdatePegawaiWithFirebase}
           onDeletePegawai={handleDeletePegawai}
+          onClearActiveSession={handleClearActiveSession}
         />
       );
 
@@ -163,6 +165,7 @@ function AppRouter() {
           onAddPegawai={handleAddPegawai}
           onUpdatePegawai={handleUpdatePegawaiWithFirebase}
           onDeletePegawai={handleDeletePegawai}
+          onClearActiveSession={handleClearActiveSession}
           onSavePasswordOverride={handleSavePasswordOverride}
           onLogout={handleLogout}
           syncStatus={syncStatus}

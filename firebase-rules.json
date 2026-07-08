@@ -121,6 +121,12 @@
         "createdAt": {
           ".validate": "newData.isNumber()"
         },
+        "verifiedAt": {
+          ".validate": "!newData.exists() || newData.isNumber()"
+        },
+        "alasanAdmin": {
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().length >= 1)"
+        },
         "$other": {
           ".validate": false
         }

@@ -73,8 +73,6 @@ const getDeviceId = () => {
 
 const SESSION_ID_KEY = "siapel_session_id";
 
-// Ambang sesi "basi": jika tidak ada heartbeat selama ini, sesi dianggap ditinggalkan.
-const SESSION_STALE_MS = 90 * 1000; // 90 detik
 // Interval pengiriman heartbeat oleh tab yang sedang aktif.
 const HEARTBEAT_INTERVAL_MS = 30 * 1000; // 30 detik
 
@@ -94,13 +92,6 @@ const getOrCreateSessionId = () => {
   } catch {
     return generateUUID();
   }
-};
-
-/** Apakah sesi Firebase masih dianggap aktif (belum basi)? */
-const isSessionActive = (existing, now = Date.now()) => {
-  if (!existing) return false;
-  const heartbeat = existing.lastSeen ?? existing.loginAt;
-  return typeof heartbeat === "number" && now - heartbeat < SESSION_STALE_MS;
 };
 
 /**
@@ -305,99 +296,28 @@ export function FirebaseDataProvider({ children }) {
     return null;
   }, [page, role, activePegawai, selectedPimpinan]);
 
-  // ── Ref: apakah ini callback pertama setelah subscribe (sync awal) ──
-  const initialSyncRef = useRef(true);
-
-  // ── Subscription: Active Session — tendang jika ada login lain (tab/device) ──
-  useEffect(() => {
-    if (!activeUserId) {
-      initialSyncRef.current = true;
-      return;
-    }
-
-    const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
-    let isFirstSync = true;
-
-    const unsub = onValue(sessionRef, (snapshot) => {
-      const val = snapshot.val();
-      const now = Date.now();
-
-      if (isFirstSync) {
-        isFirstSync = false;
-        console.log(`[SESSION] Initial sync for ${activeUserId}:`, val);
-        if (!val) return;
-        if (val.sessionId === sessionIdRef.current) return;
-        if (isSessionActive(val, now)) {
-          console.warn(`[SESSION] 🔴 Sesi ditendang — login lain aktif`, {
-            storedSessionId: val.sessionId,
-            mySessionId: sessionIdRef.current,
-          });
-          goBack();
-        }
-        return;
-      }
-
-      if (!val) return;
-      if (val.sessionId !== sessionIdRef.current) {
-        console.warn(`[SESSION] 🔴 Sesi diganti oleh login/tab lain`);
-        goBack();
-      }
-    });
-
-    const conflictTimer = setInterval(async () => {
-      try {
-        const snap = await get(sessionRef);
-        const val = snap.val();
-        if (
-          val &&
-          val.sessionId !== sessionIdRef.current &&
-          isSessionActive(val, Date.now())
-        ) {
-          console.warn(`[SESSION] 🔴 Conflict on periodic check`);
-          goBack();
-        }
-      } catch (err) {
-        console.error("[SESSION] Periodic check error:", err?.message);
-      }
-    }, 3000);
-
-    return () => {
-      unsub();
-      clearInterval(conflictTimer);
-    };
-  }, [activeUserId, goBack]);
-
   // ── Bersihkan session saat logout (activeUserId berubah dari X → null) ──
-  // Dipisah dari subscription biar nge-clear sesi bahkan saat onValue sedang delay
   const prevActiveUserIdRef = useRef(activeUserId);
   useEffect(() => {
     const prev = prevActiveUserIdRef.current;
     prevActiveUserIdRef.current = activeUserId;
 
     if (prev && prev !== activeUserId) {
-      // Cek dulu: apakah session path ini masih berisi session KITA?
-      // Jika sudah di-overwrite oleh device lain (conflict detection), biarkan saja
       get(ref(database, `${ACTIVE_SESSION_PATH}/${prev}`))
         .then((snap) => {
           const val = snap.val();
-          if (val && val.sessionId === sessionIdRef.current) {
-            // Session masih milik kita → ini logout sadar → hapus
+          if (val && val.deviceId === deviceIdRef.current) {
             set(ref(database, `${ACTIVE_SESSION_PATH}/${prev}`), null);
           }
-          // else: session sudah di-overwrite device lain → biarkan (tidak dihapus)
         })
         .catch((err) => {
           console.error("Gagal cek session sebelum cleanup:", err);
-          // Fallback: tetap clear (mungkin koneksi bermasalah)
           set(ref(database, `${ACTIVE_SESSION_PATH}/${prev}`), null);
         });
     }
   }, [activeUserId]);
 
-  // ── Heartbeat: perbarui lastSeen supaya sesi tidak dianggap basi ──
-  // Selama user login, kirim "tanda hidup" tiap HEARTBEAT_INTERVAL_MS.
-  // Jika perangkat ditutup, heartbeat berhenti → sesi jadi basi setelah
-  // SESSION_STALE_MS → perangkat lain boleh login.
+  // ── Heartbeat: perbarui lastSeen (visibilitas admin, bukan auto-lepas kunci) ──
   useEffect(() => {
     if (!activeUserId) return;
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${activeUserId}`);
@@ -583,25 +503,44 @@ export function FirebaseDataProvider({ children }) {
     return push(ref(database, PENGAJUAN_PATH), submission);
   }, []);
 
+  const resolveAttendancePegawaiId = (pegawaiId) => {
+    const raw = String(pegawaiId);
+    const numeric = parseInt(raw, 10);
+    if (!Number.isNaN(numeric)) return numeric;
+    return raw;
+  };
+
   const handlePengajuanVerifikasi = useCallback(
-    (submissionId, newStatus) => {
-      // Update status + timestamp approval (untuk scheduling hapus file)
-      update(ref(database, `${PENGAJUAN_PATH}/${submissionId}`), {
+    (submissionId, newStatus, alasanAdmin = "") => {
+      const verifiedAt = Date.now();
+      const updates = {
         statusVerifikasi: newStatus,
-        ...(newStatus === "disetujui" ? { approvedAt: Date.now() } : {}),
-      });
+        verifiedAt,
+        ...(newStatus === "ditolak" && alasanAdmin.trim()
+          ? { alasanAdmin: alasanAdmin.trim() }
+          : {}),
+      };
+
+      update(ref(database, `${PENGAJUAN_PATH}/${submissionId}`), updates).catch((err) =>
+        console.error("Gagal verifikasi pengajuan:", submissionId, err)
+      );
 
       if (newStatus === "disetujui") {
         const submission = pengajuan.find((s) => s.id === submissionId);
-        if (submission && submission.pegawaiId && submission.statusBaru) {
-          const current = attendance[submission.pegawaiId] || {
-            status: null,
-            jamHadir: null,
-          };
-          set(ref(database, `${attendanceDayPath}/${submission.pegawaiId}`), {
+        if (submission?.pegawaiId && submission.statusBaru) {
+          const pegawaiId = resolveAttendancePegawaiId(submission.pegawaiId);
+          const current =
+            attendance[pegawaiId] ||
+            attendance[submission.pegawaiId] || {
+              status: null,
+              jamHadir: null,
+            };
+          set(ref(database, `${attendanceDayPath}/${pegawaiId}`), {
             ...current,
             status: submission.statusBaru,
-          });
+          }).catch((err) =>
+            console.error("Gagal update absensi dari pengajuan:", pegawaiId, err)
+          );
         }
       }
     },
@@ -635,8 +574,7 @@ export function FirebaseDataProvider({ children }) {
     } catch (_) {}
   }, []);
 
-  // First-login-wins: 1 akun = 1 sesi aktif (per tab).
-  // Tolak jika ada sesi lain yang masih hidup — termasuk tab kedua di browser yang sama.
+  // Skema A + admin-only: 1 akun = 1 perangkat. Reclaim by deviceId (tahan refresh HP).
   const handleRegisterSession = useCallback(async (userId) => {
     if (!userId) return { ok: true };
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${userId}`);
@@ -644,20 +582,21 @@ export function FirebaseDataProvider({ children }) {
       const now = Date.now();
       const existing = (await get(sessionRef)).val();
 
-      if (isSessionActive(existing, now)) {
-        if (existing.sessionId === sessionIdRef.current) {
-          await update(sessionRef, { lastSeen: now });
-          console.log(`[LOGIN] ✅ Reclaim sesi yang sama (tab ini)`);
-          return { ok: true };
-        }
-        const reason =
-          existing.deviceId !== deviceIdRef.current ? "device_lain" : "sesi_lain";
-        console.warn(`[LOGIN] ❌ Ditolak — sesi aktif di tempat lain`, {
-          reason,
-          existingSessionId: existing.sessionId,
-          mySessionId: sessionIdRef.current,
+      if (existing && existing.deviceId === deviceIdRef.current) {
+        await update(sessionRef, {
+          sessionId: sessionIdRef.current,
+          lastSeen: now,
         });
-        return { ok: false, reason };
+        console.log(`[LOGIN] ✅ Reclaim sesi (deviceId sama)`);
+        return { ok: true };
+      }
+
+      if (existing && existing.deviceId !== deviceIdRef.current) {
+        console.warn(`[LOGIN] ❌ Ditolak — akun aktif di perangkat lain`, {
+          existingDeviceId: existing.deviceId,
+          myDeviceId: deviceIdRef.current,
+        });
+        return { ok: false, reason: "device_lain" };
       }
 
       const newSessionData = {
@@ -670,7 +609,7 @@ export function FirebaseDataProvider({ children }) {
       await set(sessionRef, newSessionData);
 
       const written = (await get(sessionRef)).val();
-      if (written?.sessionId === sessionIdRef.current) {
+      if (written?.deviceId === deviceIdRef.current) {
         console.log(`[LOGIN] ✅ Session registered for ${userId}`);
         return { ok: true };
       }
