@@ -75,6 +75,7 @@ export const buildPimpinanAccessRoles = (people) => {
 
     items.push({
       id: `${person.role.toLowerCase()}-${person.nip || normalizeIdentity(person.nama) || normalizeIdentity(person.jabatan) || normalizeIdentity(person.unit)}`,
+      pegawaiId: person.id,
       group: person.role,
       name: person.nama || person.jabatan || "Sekretaris Dinas",
       nip: person.nip || "",

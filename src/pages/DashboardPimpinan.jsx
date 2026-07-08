@@ -25,25 +25,10 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const attendancePeople = excludeSystemAccounts(people);
-
-  const isDitiadakan = apelStatus === "ditiadakan";
-  const displayPimpinan = selectedPimpinan || {
-    name: orgData.kepala_dinas.nama,
-    nip: orgData.kepala_dinas.nip,
-    jabatan: orgData.kepala_dinas.jabatan,
-    unit: "PIMPINAN",
-    scope: "ALL",
-    group: "EXECUTIVE",
-    description: "Kepala Dinas",
-  };
-
-  const getReasonDisplay = () => {
-    if (apelReason === "lainnya") return apelReasonText || "Lainnya";
-    const reason = REASON_OPTIONS.find(r => r.id === apelReason);
-    return reason ? reason.label : "Ditiadakan";
-  };
-
-  const scopePeople = getScopedPeople(attendancePeople, displayPimpinan, displayPimpinan.scope);
+  const displayPimpinan = selectedPimpinan;
+  const scopePeople = displayPimpinan
+    ? getScopedPeople(attendancePeople, displayPimpinan, displayPimpinan.scope)
+    : [];
   const { stats, statItems } = useAttendanceStats(attendance, apelStatus, scopePeople);
   const unaccountedItem = getAttendanceStatItems(apelStatus)[1];
   const showOperationalStats = true;
@@ -87,9 +72,17 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
     .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
   const { showAll: showAllLastMonth, toggle: toggleLastMonth, visibleItems: visibleLastMonthRanking } = useShowMore(monthlyRanking, 3);
 
+  const scopedPegawaiIds = useMemo(
+    () => new Set(scopePeople.map((p) => String(p.id))),
+    [scopePeople]
+  );
+
   const pengajuanHariIni = useMemo(
-    () => pengajuan.filter((p) => isPengajuanHariIni(p)),
-    [pengajuan]
+    () =>
+      pengajuan.filter(
+        (p) => isPengajuanHariIni(p) && scopedPegawaiIds.has(String(p.pegawaiId))
+      ),
+    [pengajuan, scopedPegawaiIds]
   );
   const pengajuanMenunggu = pengajuanHariIni.filter((p) => p.statusVerifikasi === "menunggu");
   const pengajuanDisetujui = pengajuanHariIni.filter((p) => p.statusVerifikasi === "disetujui");
@@ -103,6 +96,17 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
       return <span className="text-xs px-2 py-1 rounded-full font-medium bg-red-500/20 text-red-400">Ditolak</span>;
     }
     return <span className="text-xs px-2 py-1 rounded-full font-medium bg-amber-500/20 text-amber-400">Menunggu</span>;
+  };
+
+  if (!displayPimpinan) return null;
+
+  const isDitiadakan = apelStatus === "ditiadakan";
+  const todayHeld = apelMeta?.[dayKey]?.held === true;
+
+  const getReasonDisplay = () => {
+    if (apelReason === "lainnya") return apelReasonText || "Lainnya";
+    const reason = REASON_OPTIONS.find(r => r.id === apelReason);
+    return reason ? reason.label : "Ditiadakan";
   };
 
   if (selectedBidang) {
@@ -416,8 +420,14 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 px-4 py-5 text-center">
-                  <div className="text-slate-300 text-sm font-semibold">Belum ada data bulan ini</div>
-                  <div className="text-slate-500 text-xs mt-1">Data akan muncul setelah hari apel selesai dihitung.</div>
+                  <div className="text-slate-300 text-sm font-semibold">
+                    {!todayHeld ? "Admin belum memulai apel hari ini" : "Belum ada data bulan ini"}
+                  </div>
+                  <div className="text-slate-500 text-xs mt-1">
+                    {!todayHeld
+                      ? "Statistik bulanan akan terisi setelah admin memulai apel (Saat Apel) di dashboard operasional."
+                      : "Data akan muncul setelah hari apel selesai dihitung."}
+                  </div>
                 </div>
               )}
             </div>
@@ -428,7 +438,11 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
         <Card className="p-4 mb-4 border-blue-700/20 bg-black/40 backdrop-blur-xl">
           <div className="mb-3 border-b border-slate-700/50 pb-3">
             <div className="text-slate-50 font-bold text-sm">📋 Perubahan Status Hari Ini</div>
-            <div className="text-slate-500 text-xs mt-0.5">Monitoring perubahan absensi pegawai</div>
+            <div className="text-slate-500 text-xs mt-0.5">
+              {displayPimpinan.scope === "ALL"
+                ? "Monitoring perubahan absensi seluruh pegawai"
+                : `Bidang: ${getUnitLabel(displayPimpinan.unit)}`}
+            </div>
           </div>
 
           {showOperationalStats && !isDitiadakan ? (
@@ -493,7 +507,11 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-white font-bold">📋 Perubahan Status Hari Ini</h3>
-                  <p className="text-slate-500 text-xs mt-0.5">Monitoring perubahan absensi pegawai</p>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    {displayPimpinan.scope === "ALL"
+                      ? "Monitoring perubahan absensi seluruh pegawai"
+                      : `Bidang: ${getUnitLabel(displayPimpinan.unit)}`}
+                  </p>
                 </div>
                 <button onClick={() => setShowDetailPengajuan(false)} className="text-slate-400 hover:text-white">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>

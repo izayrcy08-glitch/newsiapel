@@ -75,6 +75,8 @@ const SESSION_ID_KEY = "siapel_session_id";
 
 // Interval pengiriman heartbeat oleh tab yang sedang aktif.
 const HEARTBEAT_INTERVAL_MS = 30 * 1000; // 30 detik
+// Sesi dianggap basi jika tidak ada heartbeat selama ini (3× interval).
+const STALE_SESSION_MS = 90 * 1000;
 
 /**
  * getOrCreateSessionId — ID unik per TAB (sessionStorage).
@@ -600,11 +602,16 @@ export function FirebaseDataProvider({ children }) {
       }
 
       if (existing && existing.deviceId !== deviceIdRef.current) {
-        console.warn(`[LOGIN] ❌ Ditolak — akun aktif di perangkat lain`, {
-          existingDeviceId: existing.deviceId,
-          myDeviceId: deviceIdRef.current,
-        });
-        return { ok: false, reason: "device_lain" };
+        const lastSeen = existing.lastSeen || existing.loginAt || 0;
+        if (Date.now() - lastSeen < STALE_SESSION_MS) {
+          console.warn(`[LOGIN] ❌ Ditolak — akun aktif di perangkat lain`, {
+            existingDeviceId: existing.deviceId,
+            myDeviceId: deviceIdRef.current,
+            lastSeen,
+          });
+          return { ok: false, reason: "device_lain" };
+        }
+        console.log(`[LOGIN] Sesi lama basi (>${STALE_SESSION_MS / 1000}s) — izinkan ambil alih`);
       }
 
       const newSessionData = {

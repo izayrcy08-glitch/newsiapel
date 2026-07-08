@@ -67,13 +67,14 @@ const restoreSession = (masterData) => {
     const p = saved.activePegawaiId
       ? masterData.find((item) => String(item.id) === String(saved.activePegawaiId))
       : null;
-    const sp = saved.selectedPimpinanId
-      ? masterData.find((item) => String(item.id) === String(saved.selectedPimpinanId))
+    const sp = saved.selectedPimpinan?.id
+      ? saved.selectedPimpinan
       : null;
     return {
       page: saved.page || "login",
+      role: saved.role || null,
       activePegawai: p || null,
-      selectedPimpinan: sp || null,
+      selectedPimpinan: sp,
     };
   } catch (e) {
     return {};
@@ -94,7 +95,7 @@ export function SessionProvider({ children }) {
   }, []);
 
   const [page, setPage] = useState(initialSession.page || "login");
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState(initialSession.role || null);
   const [activePegawai, setActivePegawai] = useState(initialSession.activePegawai || null);
   const [selectedPimpinan, setSelectedPimpinan] = useState(initialSession.selectedPimpinan || null);
   const [masterPegawaiData, setMasterPegawaiData] = useState(initialMaster);
@@ -139,14 +140,15 @@ export function SessionProvider({ children }) {
         SESSION_KEY,
         JSON.stringify({
           page,
+          role,
           activePegawaiId: activePegawai?.id || null,
-          selectedPimpinanId: selectedPimpinan?.id || null,
+          selectedPimpinan: selectedPimpinan || null,
         })
       );
     } catch (error) {
       console.error("Gagal persist session:", error);
     }
-  }, [page, activePegawai, selectedPimpinan]);
+  }, [page, role, activePegawai, selectedPimpinan]);
 
   // Validasi activePegawai masih ada di master data
   useEffect(() => {

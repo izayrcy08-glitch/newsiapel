@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback } from "react";
+import { lazy, Suspense, useCallback, useEffect } from "react";
 import { SessionProvider, useSession } from "./contexts/SessionContext";
 import { FirebaseDataProvider, useFirebaseData } from "./contexts/FirebaseDataContext";
 import { LoginPage } from "./pages/LoginPage";
@@ -63,6 +63,12 @@ function AppRouter() {
       {children}
     </Suspense>
   );
+
+  useEffect(() => {
+    if (page === "pimpinan_dashboard" && !selectedPimpinan) {
+      goBack();
+    }
+  }, [page, selectedPimpinan, goBack]);
 
   switch (page) {
     case "login":
