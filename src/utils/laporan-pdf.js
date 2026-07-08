@@ -23,10 +23,6 @@ const buildRows = (members, attendance, apelStatus) =>
       return [String(index + 1), p.nama || "-", p.nip ? String(p.nip) : "-", ket];
     });
 
-/**
- * Ringkasan kehadiran + bar sederhana sebelum tabel.
- * Mengembalikan posisi Y berikutnya untuk konten setelahnya.
- */
 const drawSummary = (doc, stats, startY) => {
   const marginX = 40;
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -47,7 +43,6 @@ const drawSummary = (doc, stats, startY) => {
   y += 16;
   doc.text(ringkasan.join("   |   "), marginX, y);
 
-  // Bar persentase kehadiran (grafik sederhana)
   y += 18;
   const barWidth = pageWidth - marginX * 2;
   const barHeight = 12;
@@ -79,7 +74,7 @@ const drawHeader = (doc, judul, tanggalStr) => {
   return 116;
 };
 
-const addSection = (doc, autoTable, { judul, tanggalStr, stats, rows, startY }) => {
+const addSection = (doc, autoTable, { judul, stats, rows, startY }) => {
   let y = startY;
   if (judul) {
     doc.setFontSize(11);
@@ -103,10 +98,6 @@ const addSection = (doc, autoTable, { judul, tanggalStr, stats, rows, startY }) 
   return doc.lastAutoTable.finalY + 24;
 };
 
-const triggerDownload = (doc, filename) => {
-  doc.save(filename);
-};
-
 const slugify = (str) =>
   String(str || "")
     .trim()
@@ -121,7 +112,6 @@ const dateStamp = (date) => {
   return `${y}${m}${d}`;
 };
 
-/** Load jsPDF + autotable secara lazy (hanya saat tombol ditekan). */
 const loadPdfEngine = async () => {
   const [{ default: jsPDF }, autoTableModule] = await Promise.all([
     import("jspdf"),
@@ -131,8 +121,7 @@ const loadPdfEngine = async () => {
   return { jsPDF, autoTable };
 };
 
-/** Download PDF laporan untuk satu bidang. */
-export const downloadLaporanBidang = async ({ bidangNama, people, attendance, apelStatus, now = new Date() }) => {
+const buildLaporanBidangDoc = async ({ bidangNama, people, attendance, apelStatus, now = new Date() }) => {
   const { jsPDF, autoTable } = await loadPdfEngine();
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const tanggalStr = formatTanggal(now);
@@ -141,22 +130,23 @@ export const downloadLaporanBidang = async ({ bidangNama, people, attendance, ap
   const stats = calcAttendanceStats(attendance, apelStatus, members, { includeMissingAsUnrecorded: true });
   const rows = buildRows(members, attendance, apelStatus);
 
-  let y = drawHeader(doc, `Bidang/UPT: ${bidangNama}`, tanggalStr);
-  addSection(doc, autoTable, { judul: "", tanggalStr, stats, rows, startY: y });
+  const y = drawHeader(doc, `Bidang/UPT: ${bidangNama}`, tanggalStr);
+  addSection(doc, autoTable, { judul: "", stats, rows, startY: y });
 
-  triggerDownload(doc, `laporan-apel-${slugify(bidangNama)}-${dateStamp(now)}.pdf`);
+  return {
+    doc,
+    filename: `laporan-apel-${slugify(bidangNama)}-${dateStamp(now)}.pdf`,
+    title: `Preview — ${bidangNama}`,
+  };
 };
 
-/** Download satu PDF berisi semua bidang (dikelompokkan per bidang). */
-export const downloadLaporanSemua = async ({ people, attendance, apelStatus, now = new Date() }) => {
+const buildLaporanSemuaDoc = async ({ people, attendance, apelStatus, now = new Date() }) => {
   const { jsPDF, autoTable } = await loadPdfEngine();
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const tanggalStr = formatTanggal(now);
   const pageHeight = doc.internal.pageSize.getHeight();
-
   const bidangList = orgData.bidang.filter((b) => b.id !== "pimpinan");
 
-  // Ringkasan keseluruhan di halaman awal
   const statsAll = calcAttendanceStats(attendance, apelStatus, people, { includeMissingAsUnrecorded: true });
   let y = drawHeader(doc, "Rekap Seluruh Bidang/UPT", tanggalStr);
   y = drawSummary(doc, statsAll, y + 6);
@@ -173,8 +163,45 @@ export const downloadLaporanSemua = async ({ people, attendance, apelStatus, now
       doc.addPage();
       y = 56;
     }
-    y = addSection(doc, autoTable, { judul: `Bidang/UPT: ${b.nama}`, tanggalStr, stats, rows, startY: y });
+    y = addSection(doc, autoTable, { judul: `Bidang/UPT: ${b.nama}`, stats, rows, startY: y });
   }
 
-  triggerDownload(doc, `laporan-apel-semua-bidang-${dateStamp(now)}.pdf`);
+  return {
+    doc,
+    filename: `laporan-apel-semua-bidang-${dateStamp(now)}.pdf`,
+    title: "Preview — Semua Bidang",
+  };
+};
+
+/** Buat blob URL untuk preview di iframe / tab baru. */
+export const createPdfPreview = (doc) => {
+  const blob = doc.output("blob");
+  return URL.createObjectURL(blob);
+};
+
+export const revokePdfPreview = (blobUrl) => {
+  if (blobUrl) URL.revokeObjectURL(blobUrl);
+};
+
+const withPreview = async (builder, params) => {
+  const { doc, filename, title } = await builder(params);
+  return { blobUrl: createPdfPreview(doc), filename, title, doc };
+};
+
+export const previewLaporanBidang = (params) => withPreview(buildLaporanBidangDoc, params);
+export const previewLaporanSemua = (params) => withPreview(buildLaporanSemuaDoc, params);
+
+export const downloadLaporanBidang = async (params) => {
+  const { doc, filename } = await buildLaporanBidangDoc(params);
+  doc.save(filename);
+};
+
+export const downloadLaporanSemua = async (params) => {
+  const { doc, filename } = await buildLaporanSemuaDoc(params);
+  doc.save(filename);
+};
+
+/** Download dari preview yang sudah dibuka (pakai doc yang sama). */
+export const downloadFromPreviewDoc = (doc, filename) => {
+  doc.save(filename);
 };
