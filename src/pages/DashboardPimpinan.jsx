@@ -7,7 +7,7 @@ import { ProgressRing } from "../components/ProgressRing";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { REASON_OPTIONS } from "../bersama/konstanta_aplikasi";
 import { getStatusIcon } from "../bersama/util_status_dan_warna";
-import { getUnitLabel, getScopedPeople } from "../bersama/util_unit_dan_scope";
+import { getUnitLabel, getScopedPeople, excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
 import { getAttendanceStatItems, calcAttendanceStats, calcMonthlyTanpaKeterangan, calcMonthlyBidangStats } from "../fitur/absensi/logika_absensi";
 import { getBidangPerformanceStatus, RANK_MEDALS } from "../bersama/util_dashboard_ringkasan";
 import { useClock } from "../hooks/useClock";
@@ -22,6 +22,8 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
   const [showDetailPengajuan, setShowDetailPengajuan] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const attendancePeople = excludeSystemAccounts(people);
 
   const isDitiadakan = apelStatus === "ditiadakan";
   const displayPimpinan = selectedPimpinan || {
@@ -40,17 +42,17 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
     return reason ? reason.label : "Ditiadakan";
   };
 
-  const scopePeople = getScopedPeople(people, displayPimpinan, displayPimpinan.scope);
+  const scopePeople = getScopedPeople(attendancePeople, displayPimpinan, displayPimpinan.scope);
   const { stats, statItems } = useAttendanceStats(attendance, apelStatus, scopePeople);
   const unaccountedItem = getAttendanceStatItems(apelStatus)[1];
   const showOperationalStats = true;
 
   const getBidangStats = (bidangNama) => {
-    const members = people.filter(p => p.bidang === bidangNama);
+    const members = attendancePeople.filter(p => p.bidang === bidangNama);
     return calcAttendanceStats(attendance, apelStatus, members, { includeMissingAsUnrecorded: true });
   };
 
-  const monthlyTK = calcMonthlyTanpaKeterangan(monthlyAttendance, apelMeta, people, {
+  const monthlyTK = calcMonthlyTanpaKeterangan(monthlyAttendance, apelMeta, attendancePeople, {
     todayMonthKey: monthKey,
     todayDayKey: dayKey,
     apelStatus,
@@ -59,7 +61,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
     .filter(([, count]) => count > 0)
     .map(([pegawaiId, totalTanpaKeterangan]) => ({
       pegawaiId,
-      pegawai: people.find((p) => String(p.id) === String(pegawaiId)),
+      pegawai: attendancePeople.find((p) => String(p.id) === String(pegawaiId)),
       totalTanpaKeterangan,
     }))
     .filter((r) => r.pegawai)
@@ -76,7 +78,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
     monthlyAttendance,
     apelMeta,
     bidangList,
-    people,
+    attendancePeople,
     { todayMonthKey: monthKey, todayDayKey: dayKey, apelStatus }
   );
   const monthlyRanking = [...monthlyBidangStats]

@@ -26,6 +26,12 @@ export const PEGAWAI_GROUP_ORDER = [
 
 export const getUnitLabel = (unitCode) => UNIT_LABELS[unitCode] || unitCode || "";
 
+/** Akun login operasional — bukan pegawai absensi. */
+export const isSystemAccount = (p) => p?.role === "ADMIN" || p?.role === "DEVELOPER";
+
+/** Hanya pegawai yang ikut absensi (exclude admin/developer). */
+export const excludeSystemAccounts = (people = []) => people.filter((p) => !isSystemAccount(p));
+
 export const getPegawaiGroupKey = (pegawai) => pegawai.unit || pegawai.bidang || "LAINNYA";
 
 export const getPegawaiGroupLabel = (groupKey) => getUnitLabel(groupKey);

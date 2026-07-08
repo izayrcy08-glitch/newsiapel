@@ -565,7 +565,7 @@ export function FirebaseDataProvider({ children }) {
 
   const handlePengajuanSubmit = useCallback((pegawaiId, data) => {
     const submission = {
-      pegawaiId,
+      pegawaiId: String(pegawaiId),
       nama: data.nama || "",
       nip: data.nip || "",
       statusLama: data.statusLama || "",

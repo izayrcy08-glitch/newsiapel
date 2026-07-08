@@ -9,7 +9,7 @@ import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { PengajuanStatusForm } from "../components/PengajuanStatusForm";
 import { REASON_OPTIONS } from "../bersama/konstanta_aplikasi";
 import { getDisciplineStatus } from "../bersama/util_status_dan_warna";
-import { getScopedPeople } from "../bersama/util_unit_dan_scope";
+import { getScopedPeople, excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
 import { calcMonthlyTanpaKeterangan } from "../fitur/absensi/logika_absensi";
 import { validateQrToken } from "../utils/qr-token";
 import { useClock } from "../hooks/useClock";
@@ -28,7 +28,8 @@ const DashboardPegawai = ({ pegawai, people = pegawaiData, attendance, monthlyAt
   const [showAturanModal, setShowAturanModal] = useState(false);
 
   const myAttendance = attendance[pegawai.id] || { status: null, jamHadir: null };
-  const scopePeople = getScopedPeople(people, pegawai, "UNIT");
+  const attendancePeople = excludeSystemAccounts(people);
+  const scopePeople = getScopedPeople(attendancePeople, pegawai, "UNIT");
   const { stats, statItems, isDitiadakan } = useAttendanceStats(attendance, apelStatus, scopePeople);
   const sudahAbsen = myAttendance.status === "Hadir";
   const canSubmitAttendance = apelStatus === "ongoing";

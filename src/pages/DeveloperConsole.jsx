@@ -308,6 +308,7 @@ const DeveloperConsole = ({
       <PanelKoreksi
         people={masterPegawaiData}
         attendance={attendance}
+        apelStatus={apelStatus}
         onKoreksi={onKoreksi}
         onBack={() => setActiveMenu(null)}
         pengajuan={pengajuan}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import orgData from "../data/organization.json";
 import { Card } from "../components/Card";
@@ -6,6 +6,7 @@ import { LogoutConfirm } from "../components/LogoutConfirm";
 import { getAttendanceStatItems, calcAttendanceStats } from "../fitur/absensi/logika_absensi";
 import { REASON_OPTIONS, APEL_SESSIONS } from "../bersama/konstanta_aplikasi";
 import { formatTime } from "../bersama/util_waktu_dan_apel";
+import { excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
 import { useClock } from "../hooks/useClock";
 import { useQrGenerator } from "../hooks/useQrGenerator";
 import { FullscreenQR } from "../components/FullscreenQR";
@@ -26,9 +27,11 @@ const DashboardAdmin = ({
   const [activeMenu, setActiveMenu] = useState(null);
   const [showFullscreenQr, setShowFullscreenQr] = useState(false);
 
+  const attendancePeople = useMemo(() => excludeSystemAccounts(people), [people]);
+
   const qrActive = !readOnly && apelStatus === "ongoing";
   const { currentQr, secsLeft } = useQrGenerator({ active: qrActive });
-  const stats = calcAttendanceStats(attendance, apelStatus, people, { includeMissingAsUnrecorded: true });
+  const stats = calcAttendanceStats(attendance, apelStatus, attendancePeople, { includeMissingAsUnrecorded: true });
 
   const exitFullscreenQr = useCallback(() => {
     setShowFullscreenQr(false);
@@ -59,9 +62,9 @@ const DashboardAdmin = ({
   }
 
   // ── Panel routing ──
-  if (activeMenu === "absensi") return <PanelAbsensi people={people} attendance={attendance} now={now} onBack={() => setActiveMenu(null)} />;
-  if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} pengajuan={pengajuan} onPengajuanVerifikasi={onPengajuanVerifikasi} readOnly={readOnly} />;
-  if (activeMenu === "laporan") return <PanelLaporan people={people} attendance={attendance} stats={stats} now={now} onBack={() => setActiveMenu(null)} />;
+  if (activeMenu === "absensi") return <PanelAbsensi people={attendancePeople} attendance={attendance} now={now} onBack={() => setActiveMenu(null)} />;
+  if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} apelStatus={apelStatus} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} pengajuan={pengajuan} onPengajuanVerifikasi={onPengajuanVerifikasi} readOnly={readOnly} />;
+  if (activeMenu === "laporan") return <PanelLaporan people={attendancePeople} attendance={attendance} stats={stats} now={now} onBack={() => setActiveMenu(null)} />;
   if (activeMenu === "kelola") return <PanelKelolaPegawai people={people} readOnly={readOnly} onAddPegawai={onAddPegawai} onUpdatePegawai={onUpdatePegawai} onDeletePegawai={onDeletePegawai} onBack={() => setActiveMenu(null)} />;
 
   // ── Main menu ──

@@ -31,6 +31,15 @@ export const getAttendanceStatItems = (apelStatus) => {
 
 export const isApelDitiadakan = (apelStatus) => apelStatus === "ditiadakan";
 
+/** Status tampilan untuk UI — TK/Belum Hadir dihitung dari fase apel jika DB kosong. */
+export const getEffectiveAttendanceStatus = (attendanceRecord, apelStatus) => {
+  const status = attendanceRecord?.status;
+  if (status) return status;
+  if (apelStatus === "ended") return "Tanpa Keterangan";
+  if (apelStatus === "ditiadakan") return null;
+  return "Belum Hadir";
+};
+
 const ACCOUNTED_STATUSES = new Set([
   "Hadir",
   "Dinas Dalam",

@@ -4,23 +4,27 @@ import { BackButton } from "../components/BackButton";
 import { StatusBadge } from "../components/StatusBadge";
 import { usePegawaiSearch } from "../hooks/usePegawaiSearch";
 import { getStatusIcon } from "../bersama/util_status_dan_warna";
+import { excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
+import { getEffectiveAttendanceStatus } from "../fitur/absensi/logika_absensi";
 
 export default function PanelKoreksi({
-  people, attendance, onKoreksi, onBack,
+  people, attendance, apelStatus, onKoreksi, onBack,
   pengajuan = [], onPengajuanVerifikasi, readOnly = false,
 }) {
   const [tab, setTab] = useState("koreksi");
   const [search, setSearch] = useState("");
   const [bidangFilter, setBidangFilter] = useState("");
 
-  // Daftar bidang unik (untuk filter)
+  const attendancePeople = useMemo(() => excludeSystemAccounts(people), [people]);
+
+  // Daftar bidang unik (untuk filter) — tanpa akun sistem
   const bidangList = useMemo(
-    () => [...new Set(people.map((p) => p.bidang).filter(Boolean))].sort(),
-    [people]
+    () => [...new Set(attendancePeople.map((p) => p.bidang).filter(Boolean))].sort(),
+    [attendancePeople]
   );
 
   // ── Tab: Koreksi Manual ── (semua pegawai bisa dicari & di-set status apa pun)
-  const { filtered: filteredKoreksi } = usePegawaiSearch(people, search, {
+  const { filtered: filteredKoreksi } = usePegawaiSearch(attendancePeople, search, {
     searchFields: ["nama", "nip", "bidang", "jabatan"],
   });
 
@@ -47,11 +51,11 @@ export default function PanelKoreksi({
       pendingPengajuan.map((p) => ({
         ...p,
         bidang:
-          people.find(
-            (peg) => peg.id === p.pegawaiId || peg.id === parseInt(p.pegawaiId)
+          attendancePeople.find(
+            (peg) => String(peg.id) === String(p.pegawaiId)
           )?.bidang || "",
       })),
-    [pendingPengajuan, people]
+    [pendingPengajuan, attendancePeople]
   );
 
   const { filtered: filteredPengajuan } = usePegawaiSearch(enrichedPengajuan, search, {
@@ -176,7 +180,7 @@ export default function PanelKoreksi({
             ) : (
               <div className="space-y-3">
                 {displayKoreksi.map((p) => {
-                  const currentStatus = attendance[p.id]?.status || null;
+                  const effectiveStatus = getEffectiveAttendanceStatus(attendance[p.id], apelStatus);
                   return (
                     <Card key={p.id} className="p-3.5">
                       <div className="flex items-start justify-between gap-2 mb-3">
@@ -184,17 +188,17 @@ export default function PanelKoreksi({
                           <div className="text-white text-sm font-semibold truncate">{p.nama}</div>
                           <div className="text-slate-500 text-xs">{p.bidang}</div>
                         </div>
-                        {currentStatus ? (
-                          <StatusBadge status={currentStatus} />
+                        {effectiveStatus ? (
+                          <StatusBadge status={effectiveStatus} />
                         ) : (
                           <span className="shrink-0 text-[10px] text-slate-500 border border-slate-700/60 rounded-full px-2 py-1">
-                            Belum ada status
+                            —
                           </span>
                         )}
                       </div>
                       <div className="grid grid-cols-2 gap-1.5">
                         {KOREKSI_STATUS_OPTIONS.map((s) => {
-                          const isActive = currentStatus === s;
+                          const isActive = effectiveStatus === s;
                           return (
                             <button
                               key={s}
