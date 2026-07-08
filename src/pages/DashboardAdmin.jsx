@@ -64,7 +64,7 @@ const DashboardAdmin = ({
   // ── Panel routing ──
   if (activeMenu === "absensi") return <PanelAbsensi people={attendancePeople} attendance={attendance} now={now} onBack={() => setActiveMenu(null)} />;
   if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} apelStatus={apelStatus} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} pengajuan={pengajuan} onPengajuanVerifikasi={onPengajuanVerifikasi} readOnly={readOnly} />;
-  if (activeMenu === "laporan") return <PanelLaporan people={attendancePeople} attendance={attendance} stats={stats} now={now} onBack={() => setActiveMenu(null)} />;
+  if (activeMenu === "laporan") return <PanelLaporan people={attendancePeople} attendance={attendance} stats={stats} now={now} apelStatus={apelStatus} onBack={() => setActiveMenu(null)} />;
   if (activeMenu === "kelola") return <PanelKelolaPegawai people={people} readOnly={readOnly} onAddPegawai={onAddPegawai} onUpdatePegawai={onUpdatePegawai} onDeletePegawai={onDeletePegawai} onClearActiveSession={onClearActiveSession} onBack={() => setActiveMenu(null)} />;
 
   // ── Main menu ──
