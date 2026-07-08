@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { LogOut } from "lucide-react";
 import pegawaiData from "../data/pegawai_master.json";
 import orgData from "../data/organization.json";
@@ -6,8 +6,9 @@ import { Card } from "../components/Card";
 import { ProgressRing } from "../components/ProgressRing";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { REASON_OPTIONS } from "../bersama/konstanta_aplikasi";
-import { getStatusIcon } from "../bersama/util_status_dan_warna";
+import { getStatusIcon, getTanpaKeteranganTone } from "../bersama/util_status_dan_warna";
 import { getUnitLabel, getScopedPeople, excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
+import { isPengajuanHariIni } from "../bersama/util_tanggal";
 import { getAttendanceStatItems, calcAttendanceStats, calcMonthlyTanpaKeterangan, calcMonthlyBidangStats } from "../fitur/absensi/logika_absensi";
 import { getBidangPerformanceStatus, RANK_MEDALS } from "../bersama/util_dashboard_ringkasan";
 import { useClock } from "../hooks/useClock";
@@ -85,6 +86,24 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
     .filter((b) => b.daysCounted > 0)
     .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
   const { showAll: showAllLastMonth, toggle: toggleLastMonth, visibleItems: visibleLastMonthRanking } = useShowMore(monthlyRanking, 3);
+
+  const pengajuanHariIni = useMemo(
+    () => pengajuan.filter((p) => isPengajuanHariIni(p)),
+    [pengajuan]
+  );
+  const pengajuanMenunggu = pengajuanHariIni.filter((p) => p.statusVerifikasi === "menunggu");
+  const pengajuanDisetujui = pengajuanHariIni.filter((p) => p.statusVerifikasi === "disetujui");
+  const pengajuanDitolak = pengajuanHariIni.filter((p) => p.statusVerifikasi === "ditolak");
+
+  const renderVerifikasiBadge = (status) => {
+    if (status === "disetujui") {
+      return <span className="text-xs px-2 py-1 rounded-full font-medium bg-emerald-500/20 text-emerald-400">Disetujui</span>;
+    }
+    if (status === "ditolak") {
+      return <span className="text-xs px-2 py-1 rounded-full font-medium bg-red-500/20 text-red-400">Ditolak</span>;
+    }
+    return <span className="text-xs px-2 py-1 rounded-full font-medium bg-amber-500/20 text-amber-400">Menunggu</span>;
+  };
 
   if (selectedBidang) {
     const b = selectedBidang;
@@ -244,32 +263,23 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
         <Card className="p-4 mb-4 border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_14px_42px_rgba(0,0,0,0.24)]">
           <div className="mb-3 border-b border-slate-700/50 pb-3">
             <div className="text-slate-50 font-bold text-sm">Pegawai Perlu Perhatian</div>
-            <div className="text-slate-500 text-xs mt-0.5">Top 3 berdasarkan sanksi bulan ini</div>
+            <div className="text-slate-500 text-xs mt-0.5">Diurutkan dari tanpa keterangan terbanyak</div>
           </div>
           {visiblePerhatianList.length === 0 ? (
             <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 px-4 py-5 text-center">
               <div className="text-slate-300 text-sm font-semibold">Belum ada data operasional</div>
-              <div className="text-slate-500 text-xs mt-1">Daftar ini akan terisi setelah data sanksi nyata tersedia.</div>
+              <div className="text-slate-500 text-xs mt-1">Daftar ini akan terisi setelah ada akumulasi tanpa keterangan bulan ini.</div>
             </div>
           ) : (
             <>
               <div className="space-y-2">
                 {visiblePerhatianList.map(r => {
                   const tanpaKeterangan = r.totalTanpaKeterangan;
-                  const sanctionText =
-                    tanpaKeterangan >= 5 ? "Pemotongan TPP 10%" :
-                      tanpaKeterangan === 4 ? "SP2" :
-                        tanpaKeterangan === 3 ? "SP1" :
-                          "Belum Ada Sanksi";
-                  const indicatorClass =
-                    tanpaKeterangan >= 5 ? "bg-red-500" :
-                      tanpaKeterangan === 4 ? "bg-orange-500" :
-                        tanpaKeterangan >= 2 ? "bg-yellow-400" :
-                          "bg-slate-200";
+                  const tone = getTanpaKeteranganTone(tanpaKeterangan);
                   return (
                     <div key={r.pegawaiId} className="rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                       <div className="flex items-start gap-3">
-                        <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full ${indicatorClass}`} />
+                        <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full ${tone.dot}`} />
                         <div className="min-w-0 flex-1">
                           <div className="text-white text-sm font-semibold truncate">{r.pegawai.nama}</div>
                           <div className="text-slate-500 text-[11px] mt-0.5 truncate">NIP {r.pegawai.nip}</div>
@@ -279,9 +289,8 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
                       <div className="mt-3 pt-3 border-t border-amber-200/10">
                         <div className="flex items-center justify-between">
                           <span className="text-slate-500 text-xs">Tanpa Keterangan</span>
-                          <span className="text-red-400 text-sm font-black">{tanpaKeterangan}x</span>
+                          <span className={`text-sm font-black ${tone.text}`}>{tanpaKeterangan}x</span>
                         </div>
-                        <div className="mt-1 text-sm font-black text-white">{sanctionText}</div>
                       </div>
                     </div>
                   );
@@ -424,8 +433,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
 
           {showOperationalStats && !isDitiadakan ? (
             (() => {
-              const pendingStatus = pengajuan.filter(p => p.statusVerifikasi === "menunggu");
-              if (pendingStatus.length === 0) {
+              if (pengajuanHariIni.length === 0) {
                 return (
                   <div className="text-slate-500 text-xs text-center py-4">
                     Belum ada perubahan status hari ini
@@ -435,25 +443,20 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
               return (
                 <>
                   <div className="text-center mb-4">
-                    <div className="text-2xl font-black text-white mb-1">{pendingStatus.length}</div>
-                    <div className="text-slate-500 text-xs">Perubahan Status</div>
+                    <div className="text-2xl font-black text-white mb-1">{pengajuanHariIni.length}</div>
+                    <div className="text-slate-500 text-xs">Perubahan Status Hari Ini</div>
                   </div>
-                  <div className="flex justify-center gap-6 mb-4">
+                  <div className="flex justify-center gap-4 mb-4 flex-wrap">
                     {[
-                      { status: "Dinas Luar", icon: "🚗" },
-                      { status: "Izin", icon: "📝" },
-                      { status: "Sakit", icon: "🤒" },
-                    ].map(item => {
-                      const count = pendingStatus.filter(p => p.statusBaru === item.status).length;
-                      if (count === 0) return null;
-                      return (
-                        <div key={item.status} className="text-center">
-                          <div className="text-xl mb-0.5">{item.icon}</div>
-                          <div className="text-white text-sm font-bold">{count}</div>
-                          <div className="text-slate-600 text-[10px]">{item.status}</div>
-                        </div>
-                      );
-                    })}
+                      { label: "Menunggu", count: pengajuanMenunggu.length, tone: "text-amber-400" },
+                      { label: "Disetujui", count: pengajuanDisetujui.length, tone: "text-emerald-400" },
+                      { label: "Ditolak", count: pengajuanDitolak.length, tone: "text-red-400" },
+                    ].map((item) => (
+                      <div key={item.label} className="text-center min-w-[72px]">
+                        <div className={`text-white text-sm font-bold ${item.tone}`}>{item.count}</div>
+                        <div className="text-slate-600 text-[10px]">{item.label}</div>
+                      </div>
+                    ))}
                   </div>
                   <button
                     onClick={() => setShowDetailPengajuan(true)}
@@ -497,11 +500,17 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
                 </button>
               </div>
               <div className="space-y-3">
-                {pengajuan.filter(p => p.statusVerifikasi === "menunggu").map((p) => (
+                {pengajuanHariIni.length === 0 ? (
+                  <div className="text-slate-500 text-xs text-center py-4">Belum ada perubahan status hari ini</div>
+                ) : (
+                  pengajuanHariIni.map((p) => (
                   <div key={p.id} className="border-t border-slate-800/60 pt-3 first:border-t-0 first:pt-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-slate-400">🔄</span>
-                      <span className="text-white text-sm font-semibold">{p.nama}</span>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-slate-400 shrink-0">🔄</span>
+                        <span className="text-white text-sm font-semibold truncate">{p.nama}</span>
+                      </div>
+                      {renderVerifikasiBadge(p.statusVerifikasi)}
                     </div>
                     <div className="text-slate-600 text-[10px] mb-2 ml-6">NIP: {p.nip}</div>
                     <div className="bg-slate-800/60 rounded-xl p-3 mb-2 ml-6">
@@ -516,15 +525,18 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
                       </div>
                     </div>
                     {p.keterangan && <div className="text-slate-400 text-xs mb-2 ml-6 italic">"{p.keterangan}"</div>}
+                    {p.statusVerifikasi === "ditolak" && p.alasanAdmin && (
+                      <div className="text-red-400/90 text-xs mb-2 ml-6">
+                        Alasan tolak: {p.alasanAdmin}
+                      </div>
+                    )}
                     <div className="flex items-center gap-4 text-slate-500 text-xs ml-6 mb-2">
                       <span>📄 {p.dokumen || "—"}</span>
                       <span>🕘 {p.waktu || "—"} WIB</span>
                     </div>
-                    <div className="ml-6">
-                      <span className="text-xs px-2 py-1 rounded-full font-medium bg-amber-500/20 text-amber-400">🟡 Menunggu Verifikasi</span>
-                    </div>
                   </div>
-                ))}
+                  ))
+                )}
               </div>
               <button onClick={() => setShowDetailPengajuan(false)} className="w-full mt-4 py-3 rounded-xl bg-blue-900/30 backdrop-blur-md hover:bg-blue-800/40 text-slate-300 text-sm font-semibold transition-colors border border-blue-700/30">
                 Tutup

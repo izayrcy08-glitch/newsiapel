@@ -463,6 +463,14 @@ export function FirebaseDataProvider({ children }) {
     );
   }, []);
 
+  const handleResetPegawai = useCallback((pegawaiId) => {
+    const { monthKey: mk, dayKey: dk } = dateKeysRef.current;
+    const path = `${buildAttendanceDayPath(ATTENDANCE_ROOT, mk, dk)}/${pegawaiId}`;
+    set(ref(database, path), null).catch((err) =>
+      console.error("Gagal reset absensi pegawai:", pegawaiId, err)
+    );
+  }, []);
+
   const handleKoreksi = useCallback(
     (pegawaiId, newStatus) => {
       const currentAttendance = attendance[pegawaiId] || {
@@ -657,6 +665,7 @@ export function FirebaseDataProvider({ children }) {
       handleScan,
       handleScanSimulate,
       handleReset,
+      handleResetPegawai,
       handleKoreksi,
       handleApelSessionChange,
       handleApelReasonChange,
@@ -672,7 +681,7 @@ export function FirebaseDataProvider({ children }) {
       apelSession, apelReason, apelReasonText, apelStatus, pengajuan, passwordOverrides,
       passwordOverridesLoaded, activeUserId,
       firebaseReady, firebaseError,
-      handleScan, handleScanSimulate, handleReset, handleKoreksi,
+      handleScan, handleScanSimulate, handleReset, handleResetPegawai, handleKoreksi,
       handleApelSessionChange, handleApelReasonChange,
       handlePengajuanSubmit, handlePengajuanVerifikasi,
       handleSaveFingerprint, handleSavePasswordOverride,

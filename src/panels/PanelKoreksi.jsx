@@ -5,6 +5,7 @@ import { StatusBadge } from "../components/StatusBadge";
 import { usePegawaiSearch } from "../hooks/usePegawaiSearch";
 import { getStatusIcon } from "../bersama/util_status_dan_warna";
 import { excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
+import { isPengajuanHariIni } from "../bersama/util_tanggal";
 import { getEffectiveAttendanceStatus } from "../fitur/absensi/logika_absensi";
 
 export default function PanelKoreksi({
@@ -43,7 +44,17 @@ export default function PanelKoreksi({
 
   // ── Tab: Pengajuan ──
   const pendingPengajuan = useMemo(
-    () => pengajuan.filter((p) => p.statusVerifikasi === "menunggu"),
+    () => pengajuan.filter((p) => p.statusVerifikasi === "menunggu" && isPengajuanHariIni(p)),
+    [pengajuan]
+  );
+
+  const verifiedPengajuanHariIni = useMemo(
+    () =>
+      pengajuan.filter(
+        (p) =>
+          isPengajuanHariIni(p) &&
+          (p.statusVerifikasi === "disetujui" || p.statusVerifikasi === "ditolak")
+      ),
     [pengajuan]
   );
 
@@ -67,6 +78,78 @@ export default function PanelKoreksi({
   const displayPengajuan = bidangFilter
     ? filteredPengajuan.filter((p) => p.bidang === bidangFilter)
     : filteredPengajuan;
+
+  const enrichedVerified = useMemo(
+    () =>
+      verifiedPengajuanHariIni.map((p) => ({
+        ...p,
+        bidang:
+          attendancePeople.find(
+            (peg) => String(peg.id) === String(p.pegawaiId)
+          )?.bidang || "",
+      })),
+    [verifiedPengajuanHariIni, attendancePeople]
+  );
+
+  const { filtered: filteredVerified } = usePegawaiSearch(enrichedVerified, search, {
+    searchFields: ["nama", "nip"],
+  });
+
+  const displayVerified = bidangFilter
+    ? filteredVerified.filter((p) => p.bidang === bidangFilter)
+    : filteredVerified;
+
+  const renderVerifikasiBadge = (status) => {
+    if (status === "disetujui") {
+      return <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-500/20 text-emerald-400">Disetujui</span>;
+    }
+    return <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-red-500/20 text-red-400">Ditolak</span>;
+  };
+
+  const renderPengajuanDetail = (p) => (
+    <>
+      <div className="bg-slate-800/60 rounded-xl p-3 mb-2">
+        <div className="text-slate-500 text-[10px] mb-1.5 font-semibold tracking-wide">
+          STATUS SAAT INI → PENGAJUAN
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {p.statusLama ? (
+            <StatusBadge status={p.statusLama} />
+          ) : (
+            <span className="text-slate-500 text-xs">—</span>
+          )}
+          <span className="text-slate-600 text-xs">→</span>
+          {getStatusIcon(p.statusBaru) ? (
+            <span className="text-blue-300 text-xs font-medium">
+              {getStatusIcon(p.statusBaru).icon} {getStatusIcon(p.statusBaru).label}
+            </span>
+          ) : (
+            <span className="text-blue-300 text-xs font-medium">{p.statusBaru}</span>
+          )}
+        </div>
+      </div>
+
+      {p.keterangan && (
+        <div className="text-slate-400 text-xs mb-2 ml-1 italic leading-relaxed">
+          "{p.keterangan}"
+        </div>
+      )}
+
+      {p.dokumen && p.dokumen.startsWith("http") && (
+        <div className="flex items-center gap-2 text-xs mb-2 ml-1">
+          <span className="text-slate-500">📄</span>
+          <a
+            href={p.dokumen} target="_blank" rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 underline underline-offset-2 truncate max-w-[200px]"
+          >
+            Lihat Lampiran ↗
+          </a>
+        </div>
+      )}
+
+      <div className="text-slate-500 text-xs mb-3 ml-1">🕘 {p.waktu || "—"} WIB</div>
+    </>
+  );
 
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-6">
@@ -228,121 +311,121 @@ export default function PanelKoreksi({
         {/* ── Tab: Pengajuan ── */}
         {tab === "pengajuan" && (
           <>
-            {displayPengajuan.length === 0 ? (
+            {displayPengajuan.length === 0 && displayVerified.length === 0 ? (
               <Card className="p-6 text-center">
                 <div className="text-4xl mb-2">📭</div>
-                <div className="text-slate-400 text-sm">Belum ada pengajuan</div>
+                <div className="text-slate-400 text-sm">Belum ada pengajuan hari ini</div>
                 <div className="text-slate-500 text-xs mt-1">
                   Pengajuan perubahan status dari pegawai akan muncul di sini
                 </div>
               </Card>
             ) : (
-              <div className="space-y-3">
-                {displayPengajuan.map((p) => (
-                  <Card key={p.id} className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-slate-400 shrink-0">👤</span>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-white text-sm font-semibold truncate">{p.nama}</div>
-                        <div className="text-slate-500 text-[10px]">NIP: {p.nip}</div>
-                      </div>
+              <div className="space-y-5">
+                {displayPengajuan.length > 0 && (
+                  <div>
+                    <div className="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">
+                      Menunggu ({displayPengajuan.length})
                     </div>
+                    <div className="space-y-3">
+                      {displayPengajuan.map((p) => (
+                        <Card key={p.id} className="p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-slate-400 shrink-0">👤</span>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-white text-sm font-semibold truncate">{p.nama}</div>
+                              <div className="text-slate-500 text-[10px]">NIP: {p.nip}</div>
+                            </div>
+                          </div>
 
-                    <div className="bg-slate-800/60 rounded-xl p-3 mb-2">
-                      <div className="text-slate-500 text-[10px] mb-1.5 font-semibold tracking-wide">
-                        STATUS SAAT INI → PENGAJUAN
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {p.statusLama ? (
-                          <StatusBadge status={p.statusLama} />
-                        ) : (
-                          <span className="text-slate-500 text-xs">—</span>
-                        )}
-                        <span className="text-slate-600 text-xs">→</span>
-                        {getStatusIcon(p.statusBaru) ? (
-                          <span className="text-blue-300 text-xs font-medium">
-                            {getStatusIcon(p.statusBaru).icon} {getStatusIcon(p.statusBaru).label}
-                          </span>
-                        ) : (
-                          <span className="text-blue-300 text-xs font-medium">{p.statusBaru}</span>
-                        )}
-                      </div>
+                          {renderPengajuanDetail(p)}
+
+                          {rejectingId === p.id ? (
+                            <div className="space-y-2 mb-2">
+                              <div className="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">
+                                Alasan penolakan <span className="text-red-400">*</span>
+                              </div>
+                              <textarea
+                                value={alasanTolak}
+                                onChange={(e) => setAlasanTolak(e.target.value)}
+                                placeholder="Contoh: Surat tugas belum diserahkan ke TU..."
+                                rows={2}
+                                disabled={readOnly}
+                                className="w-full bg-slate-800 border border-slate-700/50 rounded-xl px-3 py-2 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-red-500/50 resize-none"
+                              />
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => {
+                                    if (!alasanTolak.trim()) return;
+                                    onPengajuanVerifikasi?.(p.id, "ditolak", alasanTolak.trim());
+                                    setRejectingId(null);
+                                    setAlasanTolak("");
+                                  }}
+                                  disabled={readOnly || !alasanTolak.trim()}
+                                  className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  Konfirmasi Tolak
+                                </button>
+                                <button
+                                  onClick={() => { setRejectingId(null); setAlasanTolak(""); }}
+                                  className="py-2 px-3 rounded-lg bg-slate-800 text-slate-400 text-xs border border-slate-700/50"
+                                >
+                                  Batal
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => onPengajuanVerifikasi?.(p.id, "disetujui")}
+                                disabled={readOnly}
+                                className="flex-1 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/30 transition-all border border-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97]"
+                              >
+                                ✅ Setujui
+                              </button>
+                              <button
+                                onClick={() => { setRejectingId(p.id); setAlasanTolak(""); }}
+                                disabled={readOnly}
+                                className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97]"
+                              >
+                                ❌ Tolak
+                              </button>
+                            </div>
+                          )}
+                        </Card>
+                      ))}
                     </div>
+                  </div>
+                )}
 
-                    {p.keterangan && (
-                      <div className="text-slate-400 text-xs mb-2 ml-1 italic leading-relaxed">
-                        "{p.keterangan}"
-                      </div>
-                    )}
-
-                    {p.dokumen && p.dokumen.startsWith("http") && (
-                      <div className="flex items-center gap-2 text-xs mb-2 ml-1">
-                        <span className="text-slate-500">📄</span>
-                        <a
-                          href={p.dokumen} target="_blank" rel="noopener noreferrer"
-                          className="text-blue-400 hover:text-blue-300 underline underline-offset-2 truncate max-w-[200px]"
-                        >
-                          Lihat Lampiran ↗
-                        </a>
-                      </div>
-                    )}
-
-                    <div className="text-slate-500 text-xs mb-3 ml-1">🕘 {p.waktu || "—"} WIB</div>
-
-                    {rejectingId === p.id ? (
-                      <div className="space-y-2 mb-2">
-                        <div className="text-slate-500 text-[10px] font-semibold uppercase tracking-wide">
-                          Alasan penolakan <span className="text-red-400">*</span>
-                        </div>
-                        <textarea
-                          value={alasanTolak}
-                          onChange={(e) => setAlasanTolak(e.target.value)}
-                          placeholder="Contoh: Surat tugas belum diserahkan ke TU..."
-                          rows={2}
-                          disabled={readOnly}
-                          className="w-full bg-slate-800 border border-slate-700/50 rounded-xl px-3 py-2 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-red-500/50 resize-none"
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => {
-                              if (!alasanTolak.trim()) return;
-                              onPengajuanVerifikasi?.(p.id, "ditolak", alasanTolak.trim());
-                              setRejectingId(null);
-                              setAlasanTolak("");
-                            }}
-                            disabled={readOnly || !alasanTolak.trim()}
-                            className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            Konfirmasi Tolak
-                          </button>
-                          <button
-                            onClick={() => { setRejectingId(null); setAlasanTolak(""); }}
-                            className="py-2 px-3 rounded-lg bg-slate-800 text-slate-400 text-xs border border-slate-700/50"
-                          >
-                            Batal
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => onPengajuanVerifikasi?.(p.id, "disetujui")}
-                        disabled={readOnly}
-                        className="flex-1 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/30 transition-all border border-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97]"
-                      >
-                        ✅ Setujui
-                      </button>
-                      <button
-                        onClick={() => { setRejectingId(p.id); setAlasanTolak(""); }}
-                        disabled={readOnly}
-                        className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-all border border-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97]"
-                      >
-                        ❌ Tolak
-                      </button>
+                {displayVerified.length > 0 && (
+                  <div>
+                    <div className="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">
+                      Sudah Diverifikasi Hari Ini ({displayVerified.length})
                     </div>
-                    )}
-                  </Card>
-                ))}
+                    <div className="space-y-3">
+                      {displayVerified.map((p) => (
+                        <Card key={p.id} className="p-4 border-slate-700/40">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-slate-400 shrink-0">👤</span>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-white text-sm font-semibold truncate">{p.nama}</div>
+                              <div className="text-slate-500 text-[10px]">NIP: {p.nip}</div>
+                            </div>
+                            {renderVerifikasiBadge(p.statusVerifikasi)}
+                          </div>
+
+                          {renderPengajuanDetail(p)}
+
+                          {p.statusVerifikasi === "ditolak" && p.alasanAdmin && (
+                            <div className="text-red-400/90 text-xs bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                              Alasan tolak: {p.alasanAdmin}
+                            </div>
+                          )}
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </>

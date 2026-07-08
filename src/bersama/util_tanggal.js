@@ -38,3 +38,9 @@ export const getWibDayStampFromTs = (ts) => {
   const day = String(d.getUTCDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 };
+
+/** Apakah record pengajuan dibuat hari ini (WIB)? */
+export const isPengajuanHariIni = (item, todayStamp = getWibDayStamp()) => {
+  if (!item?.createdAt) return false;
+  return getWibDayStampFromTs(item.createdAt) === todayStamp;
+};

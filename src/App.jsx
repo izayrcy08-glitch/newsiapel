@@ -36,7 +36,7 @@ function AppRouter() {
     apelStatus, apelSession, apelReason, apelReasonText,
     pengajuan, activeUserId,
     handleClearActiveSession,
-    handleScan, handleScanSimulate, handleReset, handleKoreksi,
+    handleScan, handleScanSimulate, handleReset, handleResetPegawai, handleKoreksi,
     handleApelSessionChange, handleApelReasonChange,
     handlePengajuanSubmit, handlePengajuanVerifikasi,
     handleSavePasswordOverride,
@@ -156,6 +156,7 @@ function AppRouter() {
           apelReasonText={apelReasonText}
           onScan={handleScan}
           onReset={handleReset}
+          onResetPegawai={handleResetPegawai}
           onKoreksi={handleKoreksi}
           onApelSessionChange={handleApelSessionChange}
           onApelReasonChange={handleApelReasonChange}

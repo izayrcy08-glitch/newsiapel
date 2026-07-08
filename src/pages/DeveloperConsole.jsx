@@ -8,7 +8,8 @@ import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { DashboardPegawai } from "./DashboardPegawai";
 import { DashboardPimpinan } from "./DashboardPimpinan";
 import { DashboardAdmin } from "./DashboardAdmin";
-import { getUnitLabel } from "../bersama/util_unit_dan_scope";
+import { getUnitLabel, excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
+import { getEffectiveAttendanceStatus } from "../fitur/absensi/logika_absensi";
 import PanelKelolaPegawai from "../panels/PanelKelolaPegawai";
 import PanelKoreksi from "../panels/PanelKoreksi";
 
@@ -227,6 +228,7 @@ const DeveloperConsole = ({
   apelReasonText,
   onScan,
   onReset,
+  onResetPegawai,
   onKoreksi,
   onApelSessionChange,
   onApelReasonChange,
@@ -241,6 +243,8 @@ const DeveloperConsole = ({
   syncStatus = 'idle',
 }) => {
   const [search, setSearch] = useState("");
+  const [resetUserQuery, setResetUserQuery] = useState("");
+  const [selectedResetPegawai, setSelectedResetPegawai] = useState(null);
   const [viewAsRole, setViewAsRole] = useState(null);
   const [viewAsPersonId, setViewAsPersonId] = useState("");
   const [activeMenu, setActiveMenu] = useState(null);
@@ -270,6 +274,15 @@ const DeveloperConsole = ({
 
   const searchQuery = (search || "").toLowerCase().trim();
   const searchResults = searchPegawai(masterPegawaiData, search);
+
+  const resetUserResults = useMemo(
+    () => searchPegawai(excludeSystemAccounts(masterPegawaiData), resetUserQuery),
+    [masterPegawaiData, resetUserQuery]
+  );
+
+  const selectedResetStatus = selectedResetPegawai
+    ? getEffectiveAttendanceStatus(attendance[selectedResetPegawai.id], apelStatus)
+    : null;
 
   const filteredRoleCandidates = searchQuery
     ? searchPegawai(roleCandidates, search)
@@ -546,25 +559,109 @@ const DeveloperConsole = ({
 
         {/* Reset Attendance */}
         <Card className="p-4 mb-3 border-red-900/40 bg-red-950/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-sm font-bold text-red-300">Data Absensi</div>
-              <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-red-400/70">
-                {Object.keys(attendance).length > 0
-                  ? `${Object.keys(attendance).length} record tersimpan`
-                  : "Kosong — siap untuk pilot"}
+          <div className="text-sm font-bold text-red-300 mb-1">Reset Absensi Hari Ini</div>
+          <div className="text-[10px] uppercase tracking-[0.18em] text-red-400/70 mb-4">
+            {Object.keys(attendance).length > 0
+              ? `${Object.keys(attendance).length} record tersimpan`
+              : "Kosong — siap untuk pilot"}
+          </div>
+
+          <div className="space-y-4">
+            <div className="rounded-xl border border-red-800/40 bg-red-950/30 p-3">
+              <div className="text-red-200 text-xs font-semibold mb-1">Reset Semua Hari Ini</div>
+              <div className="text-red-400/70 text-[10px] mb-3">
+                Hapus seluruh absensi dan meta apel hari ini.
               </div>
+              <button
+                onClick={() => {
+                  if (window.confirm("Hapus semua data absensi hari ini? Tindakan ini tidak bisa dibatalkan.")) {
+                    onReset();
+                  }
+                }}
+                className="w-full rounded-xl border border-red-700/50 bg-red-800/40 px-4 py-2.5 text-xs font-bold text-red-200 transition-all duration-150 hover:bg-red-700/50 hover:border-red-500/50 active:scale-[0.97]"
+              >
+                Reset Semua
+              </button>
             </div>
-            <button
-              onClick={() => {
-                if (window.confirm("Hapus semua data absensi hari ini? Tindakan ini tidak bisa dibatalkan.")) {
-                  onReset();
-                }
-              }}
-              className="rounded-xl border border-red-700/50 bg-red-800/40 px-4 py-2.5 text-xs font-bold text-red-200 transition-all duration-150 hover:bg-red-700/50 hover:border-red-500/50 active:scale-[0.97]"
-            >
-              Reset Attendance
-            </button>
+
+            <div className="rounded-xl border border-red-800/40 bg-red-950/30 p-3">
+              <div className="text-red-200 text-xs font-semibold mb-1">Reset Per User</div>
+              <div className="text-red-400/70 text-[10px] mb-3">
+                Kembalikan satu pegawai ke belum absen (atau TK jika apel sudah selesai).
+              </div>
+
+              <SearchInput
+                value={resetUserQuery}
+                onChange={(e) => {
+                  setResetUserQuery(e.target.value);
+                  setSelectedResetPegawai(null);
+                }}
+                placeholder="Cari nama atau NIP pegawai..."
+              />
+
+              {resetUserQuery.trim() && !selectedResetPegawai && (
+                <div className="mt-2 max-h-40 overflow-y-auto space-y-1 rounded-xl border border-slate-700/50 bg-slate-900/80 p-2">
+                  {resetUserResults.length === 0 ? (
+                    <div className="text-slate-500 text-xs text-center py-2">Pegawai tidak ditemukan</div>
+                  ) : (
+                    resetUserResults.slice(0, 8).map((person) => (
+                      <button
+                        key={person.id}
+                        onClick={() => {
+                          setSelectedResetPegawai(person);
+                          setResetUserQuery(person.nama || "");
+                        }}
+                        className="w-full rounded-lg border border-slate-700/40 bg-slate-800/50 px-3 py-2 text-left transition-all hover:border-red-600/40 hover:bg-slate-800 active:scale-[0.98]"
+                      >
+                        <div className="text-white text-xs font-semibold truncate">{person.nama}</div>
+                        <div className="text-slate-500 text-[10px] truncate">{person.nip} · {person.bidang}</div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+
+              {selectedResetPegawai && (
+                <div className="mt-3 rounded-xl border border-slate-700/50 bg-slate-900/60 p-3">
+                  <div className="text-white text-sm font-semibold">{selectedResetPegawai.nama}</div>
+                  <div className="text-slate-500 text-[10px] mt-0.5">NIP {selectedResetPegawai.nip}</div>
+                  <div className="text-slate-400 text-xs mt-2">
+                    Status saat ini:{" "}
+                    <span className="text-red-200 font-semibold">
+                      {selectedResetStatus || "Belum Hadir"}
+                    </span>
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => {
+                        const nama = selectedResetPegawai.nama;
+                        if (
+                          window.confirm(
+                            `Reset absensi hari ini untuk ${nama}? Pegawai akan kembali belum absen.`
+                          )
+                        ) {
+                          onResetPegawai?.(selectedResetPegawai.id);
+                          setSelectedResetPegawai(null);
+                          setResetUserQuery("");
+                        }
+                      }}
+                      className="flex-1 rounded-xl border border-red-700/50 bg-red-800/40 px-3 py-2 text-xs font-bold text-red-200 transition-all hover:bg-red-700/50 active:scale-[0.97]"
+                    >
+                      Reset Pegawai Ini
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedResetPegawai(null);
+                        setResetUserQuery("");
+                      }}
+                      className="rounded-xl border border-slate-700/50 bg-slate-800 px-3 py-2 text-xs text-slate-400"
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </Card>
 

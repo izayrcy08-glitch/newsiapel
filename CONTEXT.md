@@ -8,7 +8,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main)
-- **Sesi terakhir:** 2026-07-08 — Status TK pegawai, pengajuan dua arah, sesi deviceId + reset manual admin
+- **Sesi terakhir:** 2026-07-08 — Dashboard: Perlu Perhatian tanpa sanksi, bidang live, riwayat pengajuan, reset per user developer
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth active ✅)
 - **Firebase Console:** Rules diperbaiki, Anonymous Auth: **enable** ✅
 - **Build:** `npm run build` ✅
@@ -65,6 +65,7 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-08 | `main` | **📋 PENGAJUAN TANPA UPLOAD (PILOT SPARK)** — Firebase Storage tidak tersedia di plan Spark (gratis); upload surat butuh upgrade Blaze. Keputusan pilot: pengajuan cukup **status baru + keterangan teks** (DD/DL/Izin/Sakit). `PengajuanStatusForm`: flag `UPLOAD_DOKUMEN_AKTIF = false`, hapus input file, banner peringatan kuning. Alur: pegawai kirim → admin tab Pengajuan di PanelKoreksi → Setujui/Tolak → absensi hari ini terupdate. Surat fisik tetap ke TU manual. Build ✅ |
 | 2026-07-08 | `main` | **🐛 FIX KOREKSI & PENGAJUAN (PILOT)** — (1) `handlePengajuanSubmit`: `pegawaiId` string. (2) Status efektif di koreksi. (3) Exclude akun sistem. Build ✅ |
 | 2026-07-08 | lokal | **📱 STATUS INDIVIDUAL + PENGAJUAN DUA ARAH + SESI** — (1) Dashboard pegawai: kartu TK merah setelah apel, warna status dinamis. (2) Fix Setujui pengajuan (`verifiedAt`/`alasanAdmin` di rules, hapus `approvedAt`). (3) Tolak wajib alasan admin; riwayat pengajuan di dashboard pegawai. (4) Sesi: reclaim by `deviceId`, hapus auto-kick, reset manual admin di Kelola Pegawai. **⚠️ Publish firebase-rules.json ke Console.** Belum push — tes lokal. Build ✅ |
+| 2026-07-08 | lokal | **📊 DASHBOARD PERBAIKAN** — (1) Perlu Perhatian: hapus teks sanksi, indikator warna berjenjang TK (`getTanpaKeteranganTone`). (2) Rata-rata bidang bulan ini live saat apel `ongoing` (`includeTodayLive` di `calcMonthlyBidangStats` saja). (3) Riwayat pengajuan hari ini (menunggu+disetujui+ditolak) di PanelKoreksi & DashboardPimpinan. (4) Developer: reset absensi per user (`handleResetPegawai`). Belum push. Build ✅ |
 
 ## Prioritas (Sekarang)
 

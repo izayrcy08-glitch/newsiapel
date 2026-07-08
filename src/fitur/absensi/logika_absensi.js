@@ -49,7 +49,12 @@ const ACCOUNTED_STATUSES = new Set([
 ]);
 
 /** Hari dihitung jika: bukan akhir pekan, apel diadakan (held=true), hari sudah selesai. */
-export const isDayCountable = (dayKey, monthKey, apelMeta, { todayMonthKey, todayDayKey, apelStatus }) => {
+export const isDayCountable = (
+  dayKey,
+  monthKey,
+  apelMeta,
+  { todayMonthKey, todayDayKey, apelStatus, includeTodayLive = false }
+) => {
   const [year, month] = monthKey.split("-").map(Number);
   const date = new Date(year, month - 1, Number(dayKey));
   const dayOfWeek = date.getDay();
@@ -61,6 +66,14 @@ export const isDayCountable = (dayKey, monthKey, apelMeta, { todayMonthKey, toda
   if (monthKey < todayMonthKey) return true;
   if (monthKey === todayMonthKey && dayKey < todayDayKey) return true;
   if (monthKey === todayMonthKey && dayKey === todayDayKey && apelStatus === "ended") return true;
+  if (
+    includeTodayLive &&
+    monthKey === todayMonthKey &&
+    dayKey === todayDayKey &&
+    apelStatus === "ongoing"
+  ) {
+    return true;
+  }
 
   return false;
 };
@@ -117,7 +130,14 @@ export const calcMonthlyBidangStats = (
     const dailyPersents = [];
 
     for (const [dayKey, dayAttendance] of Object.entries(monthlyAttendance || {})) {
-      if (!isDayCountable(dayKey, todayMonthKey, apelMeta, { todayMonthKey, todayDayKey, apelStatus })) {
+      if (
+        !isDayCountable(dayKey, todayMonthKey, apelMeta, {
+          todayMonthKey,
+          todayDayKey,
+          apelStatus,
+          includeTodayLive: true,
+        })
+      ) {
         continue;
       }
 

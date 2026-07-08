@@ -36,3 +36,12 @@ export const getDisciplineStatus = (count) => {
   if (count <= 4) return { icon: "🟠", label: "Pembinaan" };
   return { icon: "🔴", label: "Tindak Lanjut" };
 };
+
+/** Indikator warna akumulasi TK bulan ini (dashboard pimpinan). */
+export const getTanpaKeteranganTone = (count) => {
+  if (count >= 5) return { dot: "bg-red-600", text: "text-red-400" };
+  if (count === 4) return { dot: "bg-red-500", text: "text-red-400" };
+  if (count === 3) return { dot: "bg-orange-500", text: "text-orange-400" };
+  if (count === 2) return { dot: "bg-amber-500", text: "text-amber-400" };
+  return { dot: "bg-yellow-400", text: "text-yellow-300" };
+};
