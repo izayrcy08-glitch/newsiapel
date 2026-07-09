@@ -37,7 +37,6 @@ siapel/
 │   │   ├── useQrGenerator.js           # QR token lifecycle (Admin)
 │   │   └── useQrScanner.js             # Html5Qrcode lifecycle (Pegawai)
 │   ├── panels/                         # 🔥 BARU — Sub-panel DashboardAdmin
-│   │   ├── PanelAbsensi.jsx            # Daftar absensi + search
 │   │   ├── PanelKoreksi.jsx            # Koreksi absensi + verifikasi pengajuan
 │   │   ├── PanelApel.jsx               # Kontrol sesi apel (modal)
 │   │   └── PanelQR.jsx                 # QR display card
@@ -197,7 +196,7 @@ VITE_FIREBASE_APP_ID=
 ## 📋 Yang Perlu Dikerjakan
 
 1. **🔴 Autentikasi** — Firebase Auth + login password. Field password sudah ada di data pegawai. Struktur SessionContext sudah siap.
-2. **🔴 DashboardAdmin panel lazy loading** — PanelAbsensi dkk masih eager-loaded, bisa di-lazy-load.
+2. **🔴 DashboardAdmin panel lazy loading** — Panel koreksi/laporan dkk masih eager-loaded, bisa di-lazy-load.
 3. **🟡 TypeScript migrasi** — Struktur hooks dan contexts sudah siap untuk penambahan tipe.
 4. **🟢 ErrorBoundary integrasi penuh** — Komponen sudah ada, perlu dipasang di App.jsx wrapper.
 

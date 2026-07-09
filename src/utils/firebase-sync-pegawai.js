@@ -1,7 +1,28 @@
 import { database } from '../firebase';
 import { ref, set, get, child, update } from 'firebase/database';
+import { resolvePegawaiLoginId } from './login-username';
 
 export const MASTER_PEGAWAI_PATH = 'master_pegawai';
+
+/** Bentuk record yang lolos validasi Firebase Rules master_pegawai. */
+function buildFirebasePegawaiRecord(pegawai) {
+  const record = {
+    id: Number(pegawai.id),
+    nama: String(pegawai.nama || '').trim(),
+    nip: resolvePegawaiLoginId(pegawai),
+    nik: String(pegawai.nik || ''),
+    jabatan: String(pegawai.jabatan || ''),
+    bidang: String(pegawai.bidang || ''),
+    unit: String(pegawai.unit || ''),
+    role: String(pegawai.role || 'EMPLOYEE'),
+    password: String(pegawai.password || ''),
+    isActive: pegawai.isActive !== undefined ? Boolean(pegawai.isActive) : true,
+  };
+  if (pegawai.phoneFingerprint) {
+    record.phoneFingerprint = String(pegawai.phoneFingerprint);
+  }
+  return record;
+}
 
 export async function syncPegawaiToFirebase(pegawaiData) {
   if (!Array.isArray(pegawaiData)) {
@@ -11,28 +32,34 @@ export async function syncPegawaiToFirebase(pegawaiData) {
 
   try {
     const updates = {};
-    
+    let skipped = 0;
+
     pegawaiData.forEach((pegawai) => {
-      if (pegawai && pegawai.id) {
-        const pegawaiId = String(pegawai.id);
-        updates[`${MASTER_PEGAWAI_PATH}/${pegawaiId}`] = {
-          id: pegawai.id,
-          nama: pegawai.nama || '',
-          nip: pegawai.nip || '',
-          nik: pegawai.nik || '',
-          jabatan: pegawai.jabatan || '',
-          bidang: pegawai.bidang || '',
-          unit: pegawai.unit || '',
-          role: pegawai.role || 'EMPLOYEE',
-          password: pegawai.password || '',
-          phoneFingerprint: pegawai.phoneFingerprint || null,
-          isActive: pegawai.isActive !== undefined ? pegawai.isActive : true
-        };
+      if (!pegawai?.id) return;
+      const validation = validatePegawaiData(buildFirebasePegawaiRecord(pegawai));
+      if (!validation.isValid) {
+        skipped += 1;
+        console.warn(
+          `[Firebase] Skip sync pegawai id=${pegawai.id}:`,
+          validation.errors.join(', ')
+        );
+        return;
       }
+      const pegawaiId = String(pegawai.id);
+      updates[`${MASTER_PEGAWAI_PATH}/${pegawaiId}`] = buildFirebasePegawaiRecord(pegawai);
     });
 
-    await update(ref(database, MASTER_PEGAWAI_PATH), updates);
-    console.log(`✅ [Firebase] Synced ${pegawaiData.length} pegawai to ${MASTER_PEGAWAI_PATH}`);
+    const count = Object.keys(updates).length;
+    if (count === 0) {
+      console.warn('[Firebase] Tidak ada pegawai valid untuk disync');
+      return false;
+    }
+
+    await update(ref(database), updates);
+    console.log(
+      `✅ [Firebase] Synced ${count} pegawai ke ${MASTER_PEGAWAI_PATH}` +
+        (skipped ? ` (${skipped} dilewati — data tidak valid)` : '')
+    );
     return true;
   } catch (error) {
     console.error('Error syncing pegawai to Firebase:', error);
@@ -41,28 +68,20 @@ export async function syncPegawaiToFirebase(pegawaiData) {
 }
 
 export async function syncSinglePegawaiToFirebase(pegawai) {
-  if (!pegawai || !pegawai.id) {
+  if (!pegawai?.id) {
     console.error('Invalid pegawai object');
     return false;
   }
 
-  try {
-    const pegawaiRef = ref(database, `${MASTER_PEGAWAI_PATH}/${pegawai.id}`);
-    const pegawaiData = {
-      id: pegawai.id,
-      nama: pegawai.nama || '',
-      nip: pegawai.nip || '',
-      nik: pegawai.nik || '',
-      jabatan: pegawai.jabatan || '',
-      bidang: pegawai.bidang || '',
-      unit: pegawai.unit || '',
-      role: pegawai.role || 'EMPLOYEE',
-      password: pegawai.password || '',
-      phoneFingerprint: pegawai.phoneFingerprint || null,
-      isActive: pegawai.isActive !== undefined ? pegawai.isActive : true
-    };
+  const record = buildFirebasePegawaiRecord(pegawai);
+  const validation = validatePegawaiData(record);
+  if (!validation.isValid) {
+    console.error('[Firebase] Sync single pegawai gagal validasi:', validation.errors);
+    return false;
+  }
 
-    await set(pegawaiRef, pegawaiData);
+  try {
+    await set(ref(database, `${MASTER_PEGAWAI_PATH}/${pegawai.id}`), record);
     return true;
   } catch (error) {
     console.error('Error syncing single pegawai to Firebase:', error);
@@ -74,7 +93,7 @@ export async function loadPegawaiFromFirebase() {
   try {
     const dbRef = ref(database);
     const snapshot = await get(child(dbRef, MASTER_PEGAWAI_PATH));
-    
+
     if (snapshot.exists()) {
       const data = snapshot.val();
       const pegawaiArray = Object.values(data).map((pegawai) => ({
@@ -88,12 +107,12 @@ export async function loadPegawaiFromFirebase() {
         role: pegawai.role || 'EMPLOYEE',
         password: pegawai.password || '',
         phoneFingerprint: pegawai.phoneFingerprint || null,
-        isActive: pegawai.isActive !== undefined ? pegawai.isActive : true
+        isActive: pegawai.isActive !== undefined ? pegawai.isActive : true,
       }));
 
       return pegawaiArray.sort((a, b) => a.id - b.id);
     }
-    
+
     return [];
   } catch (error) {
     console.error('Error loading pegawai from Firebase:', error);
@@ -116,8 +135,8 @@ export function validatePegawaiData(pegawai) {
     errors.push('NIP harus diisi');
   }
 
-  if (!pegawai.nik || typeof pegawai.nik !== 'string') {
-    errors.push('NIK harus diisi');
+  if (typeof pegawai.nik !== 'string') {
+    errors.push('NIK harus berupa string');
   }
 
   if (!pegawai.unit || typeof pegawai.unit !== 'string' || pegawai.unit.trim().length === 0) {
@@ -138,7 +157,7 @@ export function validatePegawaiData(pegawai) {
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -155,7 +174,7 @@ export function normalizePegawaiData(pegawaiArray) {
       role: String(pegawai.role || 'EMPLOYEE'),
       password: String(pegawai.password || ''),
       phoneFingerprint: pegawai.phoneFingerprint ? String(pegawai.phoneFingerprint) : null,
-      isActive: Boolean(pegawai.isActive)
+      isActive: Boolean(pegawai.isActive),
     }))
     .sort((a, b) => a.id - b.id);
 }

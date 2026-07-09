@@ -2,6 +2,7 @@
   "rules": {
     "attendance": {
       "$month": {
+        ".read": "auth !== null",
         "$day": {
           ".read": "auth !== null",
           ".write": "auth !== null",
@@ -22,6 +23,7 @@
     },
     "apelMeta": {
       "$month": {
+        ".read": "auth !== null",
         "$day": {
           ".read": "auth !== null",
           ".write": "auth !== null",
@@ -48,7 +50,7 @@
         ".read": "auth !== null",
         ".write": "auth !== null",
         ".validate": "newData.isString() || newData.hasChildren(['id', 'text'])"
-      },
+      },  
       "$other": {
         ".write": false,
         ".read": false
@@ -143,6 +145,7 @@
     },
     "riwayatPerubahan": {
       "$month": {
+        ".read": "auth !== null",
         "$day": {
           ".read": "auth !== null",
           ".write": "auth !== null",
@@ -179,6 +182,9 @@
           ".validate": "newData.isString() && newData.val().length > 0"
         },
         "loginAt": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
+        },
+        "lastSeen": {
           ".validate": "newData.isNumber() && newData.val() > 0"
         },
         "$other": {

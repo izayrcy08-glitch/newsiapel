@@ -1,4 +1,18 @@
 export const SESSION_ID_KEY = "siapel_session_id";
+
+/** Hanya akun developer: heartbeat + sesi basi otomatis. */
+export const DEVELOPER_USER_ID = "developer";
+export const DEVELOPER_HEARTBEAT_INTERVAL_MS = 30_000;
+export const DEVELOPER_STALE_SESSION_MS = 60_000;
+
+/** Sesi developer dianggap basi jika tidak ada heartbeat dalam 60 detik. */
+export function isDeveloperSessionStale(session, now = Date.now()) {
+  if (!session) return true;
+  const lastSeen = Number(session.lastSeen ?? session.loginAt ?? 0);
+  if (!lastSeen) return true;
+  return now - lastSeen >= DEVELOPER_STALE_SESSION_MS;
+}
+
 export const generateUUID = () => {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();

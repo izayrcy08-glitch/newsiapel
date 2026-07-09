@@ -8,7 +8,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main)
-- **Sesi terakhir:** 2026-07-09 — Hapus heartbeat device lock (first-login-wins ketat) + Reset Semua Sesi (developer only)
+- **Sesi terakhir:** 2026-07-09 — Fix sync master_pegawai ke Firebase (path update salah)
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth active ✅)
 - **Firebase Console:** Rules diperbaiki, Anonymous Auth: **enable** ✅
 - **Build:** `npm run build` ✅
@@ -72,6 +72,11 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-09 | `main` | **🏅 Peringkat Bulan Lalu (Pimpinan)** — Ganti "Bulan Ini" → fetch `attendance`/`apelMeta` bulan sebelumnya; UI identik Peringkat Hari Ini; fix `calcMonthlyBidangStats` param `dataMonthKey`. Pegawai: Statistik Organisasi hari ini + kotak klik. Build ✅ |
 | 2026-07-09 | `main` | **🔓 Reset Semua Sesi Login (Developer only)** — `handleClearAllActiveSessions()` wipe `activeSessions` root; UI kartu di DeveloperConsole (konfirmasi ketik RESET). Reset per orang tetap di Kelola Pegawai (admin & developer). Admin tidak punya Reset All. Build ✅ |
 | 2026-07-09 | `main` | **🔒 Hapus heartbeat — device lock ketat** — Stop `lastSeen` interval 30s + ambang basi 90s. Sesi aktif sampai logout/reset manual. `handleRegisterSession`: perangkat lain selalu ditolak. Pesan login arahkan ke reset sesi. **⚠️ Publish firebase-rules.json** (hapus field `lastSeen`). Build ✅ |
+| 2026-07-09 | `main` | **🗑️ Hapus menu Absensi Hari Ini (Admin)** — Hapus kartu menu + routing `PanelAbsensi`; file `PanelAbsensi.jsx` dihapus (hanya dipakai admin). Stat hari ini & klik detail tetap di halaman utama admin. Build ✅ |
+| 2026-07-09 | `main` | **🔐 Fix Firebase Rules baca path bulan** — Tambah `.read: auth !== null` di `attendance/$month`, `apelMeta/$month`, `riwayatPerubahan/$month`. Fix `permission_denied` saat load data bulanan & peringkat bulan lalu pimpinan. **⚠️ Publish ke Console.** |
+| 2026-07-09 | `main` | **🐛 Fix sync master_pegawai** — `syncPegawaiToFirebase` pakai `update(ref(database))` dengan path benar (`master_pegawai/{id}`), bukan path ganda. Skip record tidak valid. Build ✅ |
+| 2026-07-09 | `main` | **👤 Username login tanpa gelar** — Util `login-username.js`: `stripGelar` + `resolvePegawaiLoginId`. 100 pegawai tanpa NIP resmi dapat `nip` = nama tanpa gelar (sync Firebase + login). Login tetap terima NIP angka, nama lengkap, & nama tanpa gelar. Build ✅ |
+| 2026-07-09 | `main` | **💓 Heartbeat khusus developer** — Sesi developer: heartbeat 30s, basi 60s (takeover otomatis). Pegawai/admin/pimpinan tetap device lock ketat tanpa heartbeat. Field `lastSeen` di `activeSessions`. **⚠️ Publish firebase-rules.json.** Build ✅ |
 
 ## Prioritas (Sekarang)
 
@@ -91,7 +96,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **ApelMeta:** `apelMeta/{YYYY-MM}/{DD}` = `{ held: boolean, reason?: string }` — catat hari apel diadakan/ditiadakan
 - **Akumulasi bulanan:** Baca `attendance/{YYYY-MM}` + `apelMeta/{YYYY-MM}` — TK per pegawai, peringkat bidang (rata-rata persen harian)
 - **Hooks:** useClock, usePegawaiSearch, useShowMore, useAttendanceStats, useQrGenerator, useQrScanner
-- **Panels:** PanelAbsensi, PanelKoreksi, PanelLaporan, PanelKelolaPegawai, PanelApel, PanelQR
+- **Panels:** PanelKoreksi, PanelLaporan, PanelKelolaPegawai, PanelApel, PanelQR
 - **ErrorBoundary:** Ada di App.jsx
 
 ## Source of Truth

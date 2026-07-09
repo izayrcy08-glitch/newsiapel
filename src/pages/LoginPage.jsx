@@ -5,6 +5,7 @@ import { cn } from "../lib/utils";
 import { useSession } from "../contexts/SessionContext";
 import { useFirebaseData } from "../contexts/FirebaseDataContext";
 import { getDeviceFingerprint } from "../utils/device-fingerprint";
+import { findPegawaiByLoginInput } from "../utils/login-username";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // CREDENTIAL HELPERS
@@ -14,25 +15,12 @@ import { getDeviceFingerprint } from "../utils/device-fingerprint";
 // For regular pegawai: resolvePegawai() matches username to masterPegawaiData entry
 
 const resolvePegawai = (masterData, username) => {
-  if (!username.trim()) return null;
-  const input = username.trim();
-  let match = masterData.find((p) => p.nip === input);
+  const match = findPegawaiByLoginInput(masterData, username);
   if (match) {
-    console.log(`✅ Match by NIP: ${match.nama} (role: ${match.role})`);
+    console.log(`✅ Login match: ${match.nama} (role: ${match.role})`);
     return match;
   }
-  match = masterData.find((p) => p.nik && p.nik === input);
-  if (match) {
-    console.log(`✅ Match by NIK: ${match.nama} (role: ${match.role})`);
-    return match;
-  }
-  const lower = input.toLowerCase();
-  match = masterData.find((p) => p.nama.toLowerCase() === lower);
-  if (match) {
-    console.log(`✅ Match by Nama: ${match.nama} (role: ${match.role})`);
-    return match;
-  }
-  console.warn(`❌ Username '${input}' tidak ditemukan di ${masterData.length} data`);
+  console.warn(`❌ Username '${String(username).trim()}' tidak ditemukan di ${masterData.length} data`);
   return null;
 };
 
@@ -224,12 +212,17 @@ const LoginPage = () => {
         console.log(`[LOGIN] Session registered result:`, sessionResult);
 
         if (!sessionResult.ok) {
+          const isDeveloperLogin = pegawai.role === "DEVELOPER";
           const pesan =
             sessionResult.reason === "device_lain"
-              ? "Akun ini sedang aktif di perangkat lain. Logout dulu di perangkat tersebut, atau minta admin/developer reset sesi."
+              ? isDeveloperLogin
+                ? "Akun developer aktif di perangkat lain. Tunggu ~60 detik tanpa aktivitas, atau minta reset sesi."
+                : "Akun ini sedang aktif di perangkat lain. Logout dulu di perangkat tersebut, atau minta admin/developer reset sesi."
               : sessionResult.reason === "sesi_lain"
                 ? "Akun ini sedang dipakai di tab/jendela lain. Tutup sesi tersebut dulu, atau minta reset sesi."
-                : "Gagal memulai sesi. Periksa koneksi internet lalu coba lagi.";
+                : sessionResult.reason === "permission"
+                  ? "Akses server ditolak. Pastikan Firebase Rules sudah dipublish, lalu coba lagi."
+                  : "Koneksi ke server gagal. Pastikan internet stabil, tunggu sebentar, lalu coba lagi.";
           console.error(`[LOGIN] ❌ Session registration failed:`, sessionResult.reason);
           setError(pesan);
           setLoading(false);

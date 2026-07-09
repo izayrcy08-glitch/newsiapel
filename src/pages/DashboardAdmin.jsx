@@ -10,7 +10,6 @@ import { excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
 import { AdminTimeLine } from "../components/AdminTimeLine";
 import { useQrGenerator } from "../hooks/useQrGenerator";
 import { FullscreenQR } from "../components/FullscreenQR";
-import PanelAbsensi from "../panels/PanelAbsensi";
 import PanelKoreksi from "../panels/PanelKoreksi";
 import PanelLaporan from "../panels/PanelLaporan";
 import PanelKelolaPegawai from "../panels/PanelKelolaPegawai";
@@ -62,7 +61,6 @@ const DashboardAdmin = ({
   }
 
   // ── Panel routing ──
-  if (activeMenu === "absensi") return <PanelAbsensi people={attendancePeople} attendance={attendance} onBack={() => setActiveMenu(null)} />;
   if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} apelStatus={apelStatus} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} pengajuan={pengajuan} riwayatPerubahan={riwayatPerubahan} onPengajuanVerifikasi={onPengajuanVerifikasi} readOnly={readOnly} />;
   if (activeMenu === "laporan") return <PanelLaporan people={attendancePeople} attendance={attendance} stats={stats} apelStatus={apelStatus} onBack={() => setActiveMenu(null)} />;
   if (activeMenu === "kelola") return <PanelKelolaPegawai people={people} readOnly={readOnly} onAddPegawai={onAddPegawai} onUpdatePegawai={onUpdatePegawai} onDeletePegawai={onDeletePegawai} onClearActiveSession={onClearActiveSession} onBack={() => setActiveMenu(null)} />;
@@ -133,7 +131,6 @@ const DashboardAdmin = ({
         {/* Menu Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           {[
-            { id: "absensi", label: "Absensi Hari Ini", icon: "📋", color: "from-cyan-500/20 to-sky-500/10", border: "hover:border-cyan-500/50" },
             { id: "laporan", label: "Laporan Harian", icon: "📊", color: "from-emerald-500/20 to-teal-500/10", border: "hover:border-emerald-500/50" },
             { id: "kelola", label: "Kelola Pegawai", icon: "👥", color: "from-blue-500/20 to-indigo-500/10", border: "hover:border-blue-500/50" },
             { id: "koreksi", label: "Koreksi Absensi", icon: "✏️", color: "from-amber-500/20 to-yellow-500/10", border: "hover:border-amber-500/50" },

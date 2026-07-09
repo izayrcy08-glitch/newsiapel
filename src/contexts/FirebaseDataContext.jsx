@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useMemo, useRef } from "react";
-import { ref, set, get } from "firebase/database";
+import { ref, set, get, update, onValue } from "firebase/database";
 import { database } from "../firebase";
 import { deleteStorageFile } from "../utils/storage-helper";
 import { useSession } from "./SessionContext";
@@ -22,6 +22,8 @@ import {
 import {
   getOrCreateSessionId,
   getDeviceId,
+  DEVELOPER_USER_ID,
+  DEVELOPER_HEARTBEAT_INTERVAL_MS,
 } from "../firebase/device-session";
 import { useFirebaseSubscriptions } from "../firebase/useFirebaseSubscriptions";
 import { useFirebaseMutations } from "../firebase/useFirebaseMutations";
@@ -181,6 +183,39 @@ export function FirebaseDataProvider({ children }) {
       cancelled = true;
     };
   }, [activeUserId, page, handleRegisterSession, goBack]);
+
+  // Developer: heartbeat 30s + logout jika sesi diambil alih perangkat lain
+  useEffect(() => {
+    if (role !== "developer" || page === "login") return;
+
+    const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${DEVELOPER_USER_ID}`);
+
+    const ping = () => {
+      update(sessionRef, { lastSeen: Date.now() }).catch((err) =>
+        console.warn("[DEV SESSION] Heartbeat gagal:", err?.message || err)
+      );
+    };
+
+    ping();
+    const heartbeatId = setInterval(ping, DEVELOPER_HEARTBEAT_INTERVAL_MS);
+
+    const unsub = onValue(sessionRef, (snapshot) => {
+      const val = snapshot.val();
+      if (!val) return;
+      if (
+        val.sessionId !== sessionIdRef.current &&
+        val.deviceId !== deviceIdRef.current
+      ) {
+        console.warn("[DEV SESSION] Sesi developer diambil alih — logout");
+        goBack();
+      }
+    });
+
+    return () => {
+      clearInterval(heartbeatId);
+      unsub();
+    };
+  }, [role, page, goBack]);
 
   const value = useMemo(
     () => ({

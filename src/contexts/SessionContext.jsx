@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useMemo, useCallback } 
 import pegawaiData from "../data/pegawai_master.json";
 import { buildPimpinanAccessRoles } from "../bersama/util_unit_dan_scope";
 import { syncPegawaiToFirebase } from "../utils/firebase-sync-pegawai";
+import { resolvePegawaiLoginId } from "../utils/login-username";
 
 const SessionContext = createContext(null);
 
@@ -15,7 +16,7 @@ const normalizePegawaiRecord = (pegawai, fallbackId) => {
     ...pegawai,
     id: pegawai.id ?? fallbackId,
     nama: pegawai.nama || "",
-    nip: pegawai.nip || "",
+    nip: resolvePegawaiLoginId(pegawai),
     nik: pegawai.nik || "",
     jabatan: pegawai.jabatan || "",
     unit,

@@ -33,6 +33,8 @@ import { formatJamHadir } from "./format-jam-hadir";
 import {
   SESSION_ID_KEY,
   generateUUID,
+  DEVELOPER_USER_ID,
+  isDeveloperSessionStale,
 } from "./device-session";
 
 /**
@@ -382,39 +384,51 @@ export function useFirebaseMutations({
   const handleRegisterSession = useCallback(async (userId) => {
     if (!userId) return { ok: true };
     const sessionRef = ref(database, `${ACTIVE_SESSION_PATH}/${userId}`);
-    try {
+    const isDeveloper = userId === DEVELOPER_USER_ID;
+
+    const attempt = async () => {
       const now = Date.now();
       const existing = (await get(sessionRef)).val();
 
-      if (existing && existing.deviceId === deviceIdRef.current) {
-        await set(sessionRef, {
-          sessionId: sessionIdRef.current,
-          deviceId: deviceIdRef.current,
-          loginAt: existing.loginAt || now,
-        });
-        return { ok: true };
-      }
-
       if (existing && existing.deviceId !== deviceIdRef.current) {
-        return { ok: false, reason: "device_lain" };
+        if (!(isDeveloper && isDeveloperSessionStale(existing, now))) {
+          return { ok: false, reason: "device_lain" };
+        }
       }
 
-      const newSessionData = {
+      const payload = {
         sessionId: sessionIdRef.current,
         deviceId: deviceIdRef.current,
-        loginAt: now,
+        loginAt:
+          existing?.deviceId === deviceIdRef.current
+            ? existing.loginAt || now
+            : now,
       };
-      await set(sessionRef, newSessionData);
-
-      const written = (await get(sessionRef)).val();
-      if (written?.deviceId === deviceIdRef.current) {
-        return { ok: true };
+      if (isDeveloper) {
+        payload.lastSeen = now;
       }
-      return { ok: false, reason: "verify_gagal" };
-    } catch (error) {
-      console.error("[LOGIN] Gagal register session:", error);
-      return { ok: false, reason: "error" };
+
+      await set(sessionRef, payload);
+      return { ok: true };
+    };
+
+    for (let i = 0; i < 3; i++) {
+      try {
+        return await attempt();
+      } catch (error) {
+        const code = String(error?.code || "");
+        if (i < 2) {
+          await new Promise((resolve) => setTimeout(resolve, 600 * (i + 1)));
+          continue;
+        }
+        console.error("[LOGIN] Gagal register session:", error);
+        if (code.includes("permission") || code.includes("PERMISSION")) {
+          return { ok: false, reason: "permission" };
+        }
+        return { ok: false, reason: "error" };
+      }
     }
+    return { ok: false, reason: "error" };
   }, [deviceIdRef, sessionIdRef]);
 
   return useMemo(
