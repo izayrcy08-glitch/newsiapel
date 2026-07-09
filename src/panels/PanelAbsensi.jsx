@@ -5,23 +5,22 @@ import { StatusBadge } from "../components/StatusBadge";
 import { useShowMore } from "../hooks/useShowMore";
 import { usePegawaiSearch } from "../hooks/usePegawaiSearch";
 
-export default function PanelAbsensi({ people, attendance, now, onBack }) {
+export default function PanelAbsensi({ people, attendance, onBack }) {
   const [search, setSearch] = useState("");
+  const todayLabel = new Date().toLocaleDateString("id-ID", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
   const { filtered } = usePegawaiSearch(people, search, {
     searchFields: ["nama", "nip", "bidang", "jabatan"],
   });
-  const { showAll, toggle, visibleItems } = useShowMore(filtered, 7);
+  const { showAll, toggle, visibleItems } = useShowMore(filtered, 10);
 
   return (
     <div className="min-h-screen bg-[#080c14] px-4 py-6">
       <div className="relative z-10 max-w-sm mx-auto">
         <BackButton onClick={onBack} />
         <h2 className="text-xl font-black text-white mb-1">Absensi Hari Ini</h2>
-        <p className="text-slate-500 text-xs mb-5">
-          {now.toLocaleDateString("id-ID", {
-            weekday: "long", day: "numeric", month: "long", year: "numeric",
-          })}
-        </p>
+        <p className="text-slate-500 text-xs mb-5">{todayLabel}</p>
 
         <div className="relative mb-4">
           <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -60,16 +59,16 @@ export default function PanelAbsensi({ people, attendance, now, onBack }) {
           )}
         </div>
 
-        {!showAll && filtered.length > 7 && (
+        {!showAll && filtered.length > 10 && (
           <button onClick={toggle}
             className="mt-3 w-full py-2.5 rounded-xl bg-slate-800/80 text-slate-300 text-xs font-bold border border-slate-700/70 hover:border-cyan-500/40 hover:text-cyan-200 active:scale-[0.98] transition-all">
-            Lihat Semua ({filtered.length} pegawai)
+            Lihat lebih banyak ({filtered.length} pegawai)
           </button>
         )}
-        {showAll && filtered.length > 7 && (
+        {showAll && filtered.length > 10 && (
           <button onClick={toggle}
             className="mt-3 w-full py-2.5 rounded-xl bg-slate-800/80 text-slate-300 text-xs font-bold border border-slate-700/70 hover:border-cyan-500/40 hover:text-cyan-200 active:scale-[0.98] transition-all">
-            Tampilkan 7 pegawai
+            Lihat lebih sedikit
           </button>
         )}
       </div>

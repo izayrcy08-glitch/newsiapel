@@ -44,3 +44,22 @@ export const isPengajuanHariIni = (item, todayStamp = getWibDayStamp()) => {
   if (!item?.createdAt) return false;
   return getWibDayStampFromTs(item.createdAt) === todayStamp;
 };
+
+/** Key bulan sebelumnya (WIB), format YYYY-MM. */
+export const getPreviousMonthKey = (date = getWibNow()) => {
+  const y = date.getFullYear();
+  const m = date.getMonth();
+  const prev = new Date(y, m - 1, 1);
+  const py = prev.getFullYear();
+  const pm = String(prev.getMonth() + 1).padStart(2, "0");
+  return `${py}-${pm}`;
+};
+
+export const buildRiwayatDayPath = (root, monthKey, dayKey) =>
+  `${root}/${monthKey}/${dayKey}`;
+
+/** Apakah timestamp berada dalam bulan YYYY-MM (WIB)? */
+export const isTimestampInMonth = (ts, monthKey) => {
+  if (!ts || !monthKey) return false;
+  return getWibDayStampFromTs(ts).startsWith(`${monthKey}-`);
+};

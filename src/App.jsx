@@ -1,10 +1,11 @@
-import { lazy, Suspense, useCallback, useEffect } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo } from "react";
 import { SessionProvider, useSession } from "./contexts/SessionContext";
 import { FirebaseDataProvider, useFirebaseData } from "./contexts/FirebaseDataContext";
 import { LoginPage } from "./pages/LoginPage";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { AuthInit } from "./components/AuthInit";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { buildActorInfo } from "./bersama/util_revisi";
 
 // Lazy import dengan retry — di jaringan HP yang tidak stabil, chunk kadang gagal
 // dimuat saat pertama kali navigasi (layar jadi blank). Coba ulang sekali sebelum menyerah.
@@ -34,9 +35,10 @@ function AppRouter() {
   const {
     attendance, monthlyAttendance, apelMeta, monthKey, dayKey,
     apelStatus, apelSession, apelReason, apelReasonText,
-    pengajuan, activeUserId,
+    pengajuan, riwayatPerubahan, activeUserId,
     handleClearActiveSession,
-    handleScan, handleScanSimulate, handleReset, handleResetPegawai, handleKoreksi,
+    handleClearAllActiveSessions,
+    handleScan, handleScanSimulate, handleReset, handleResetMonth, handleResetPegawai, handleKoreksi,
     handleApelSessionChange, handleApelReasonChange,
     handlePengajuanSubmit, handlePengajuanVerifikasi,
     handleSavePasswordOverride,
@@ -49,6 +51,23 @@ function AppRouter() {
     }
     goBack();
   }, [activeUserId, handleClearActiveSession, goBack]);
+
+  const actorInfo = useMemo(
+    () => buildActorInfo(role, { activePegawai, selectedPimpinan, masterPegawaiData }),
+    [role, activePegawai, selectedPimpinan, masterPegawaiData]
+  );
+
+  const handleKoreksiWithActor = useCallback(
+    (pegawaiId, newStatus, pegawaiMeta = {}) =>
+      handleKoreksi(pegawaiId, newStatus, actorInfo, pegawaiMeta),
+    [handleKoreksi, actorInfo]
+  );
+
+  const handlePengajuanVerifikasiWithActor = useCallback(
+    (submissionId, newStatus, alasanAdmin = "") =>
+      handlePengajuanVerifikasi(submissionId, newStatus, alasanAdmin, actorInfo),
+    [handlePengajuanVerifikasi, actorInfo]
+  );
 
   // Bridge: saat password pegawai diubah, simpan juga ke Firebase
   const handleUpdatePegawaiWithFirebase = (pegawaiId, updates) => {
@@ -117,12 +136,15 @@ function AppRouter() {
           monthKey={monthKey}
           dayKey={dayKey}
           pengajuan={pengajuan}
+          riwayatPerubahan={riwayatPerubahan}
           apelStatus={apelStatus}
           apelSession={apelSession}
           apelReason={apelReason}
           apelReasonText={apelReasonText}
           selectedPimpinan={selectedPimpinan}
           onLogout={handleLogout}
+          onKoreksi={handleKoreksiWithActor}
+          onPengajuanVerifikasi={handlePengajuanVerifikasiWithActor}
         />
       );
 
@@ -141,8 +163,9 @@ function AppRouter() {
           onScanSimulate={handleScanSimulate}
           onReset={handleReset}
           onLogout={handleLogout}
-          onKoreksi={handleKoreksi}
-          onPengajuanVerifikasi={handlePengajuanVerifikasi}
+          riwayatPerubahan={riwayatPerubahan}
+          onKoreksi={handleKoreksiWithActor}
+          onPengajuanVerifikasi={handlePengajuanVerifikasiWithActor}
           onAddPegawai={handleAddPegawai}
           onUpdatePegawai={handleUpdatePegawaiWithFirebase}
           onDeletePegawai={handleDeletePegawai}
@@ -156,23 +179,27 @@ function AppRouter() {
           masterPegawaiData={masterPegawaiData}
           attendance={attendance}
           pengajuan={pengajuan}
+          monthKey={monthKey}
           apelStatus={apelStatus}
           apelSession={apelSession}
           apelReason={apelReason}
           apelReasonText={apelReasonText}
           onScan={handleScan}
           onReset={handleReset}
+          onResetMonth={handleResetMonth}
           onResetPegawai={handleResetPegawai}
-          onKoreksi={handleKoreksi}
+          onKoreksi={handleKoreksiWithActor}
           onApelSessionChange={handleApelSessionChange}
           onApelReasonChange={handleApelReasonChange}
           onScanSimulate={handleScanSimulate}
           onPengajuanSubmit={handlePengajuanSubmit}
-          onPengajuanVerifikasi={handlePengajuanVerifikasi}
+          onPengajuanVerifikasi={handlePengajuanVerifikasiWithActor}
+          riwayatPerubahan={riwayatPerubahan}
           onAddPegawai={handleAddPegawai}
           onUpdatePegawai={handleUpdatePegawaiWithFirebase}
           onDeletePegawai={handleDeletePegawai}
           onClearActiveSession={handleClearActiveSession}
+          onClearAllActiveSessions={handleClearAllActiveSessions}
           onSavePasswordOverride={handleSavePasswordOverride}
           onLogout={handleLogout}
           syncStatus={syncStatus}

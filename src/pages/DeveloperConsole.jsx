@@ -1,17 +1,28 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import { Card } from "../components/Card";
 import { LogoutConfirm } from "../components/LogoutConfirm";
 import { BackButton } from "../components/BackButton";
 import { Eye, EyeOff } from "lucide-react";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
-import { DashboardPegawai } from "./DashboardPegawai";
-import { DashboardPimpinan } from "./DashboardPimpinan";
-import { DashboardAdmin } from "./DashboardAdmin";
 import { getUnitLabel, excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
 import { getEffectiveAttendanceStatus } from "../fitur/absensi/logika_absensi";
 import PanelKelolaPegawai from "../panels/PanelKelolaPegawai";
 import PanelKoreksi from "../panels/PanelKoreksi";
+
+const DashboardPegawai = lazy(() =>
+  import("./DashboardPegawai").then((m) => ({ default: m.DashboardPegawai }))
+);
+const DashboardPimpinan = lazy(() =>
+  import("./DashboardPimpinan").then((m) => ({ default: m.DashboardPimpinan }))
+);
+const DashboardAdmin = lazy(() =>
+  import("./DashboardAdmin").then((m) => ({ default: m.DashboardAdmin }))
+);
+
+const ViewAsFallback = () => (
+  <div className="py-12 text-center text-slate-500 text-sm">Memuat dashboard...</div>
+);
 
 // ══════════════════════════════════════════════════════════════════════════════
 // HELPERS
@@ -228,7 +239,10 @@ const DeveloperConsole = ({
   apelReasonText,
   onScan,
   onReset,
+  onResetMonth,
   onResetPegawai,
+  riwayatPerubahan = [],
+  monthKey,
   onKoreksi,
   onApelSessionChange,
   onApelReasonChange,
@@ -239,6 +253,7 @@ const DeveloperConsole = ({
   onUpdatePegawai,
   onDeletePegawai,
   onClearActiveSession,
+  onClearAllActiveSessions,
   onSavePasswordOverride,
   syncStatus = 'idle',
 }) => {
@@ -248,6 +263,9 @@ const DeveloperConsole = ({
   const [viewAsRole, setViewAsRole] = useState(null);
   const [viewAsPersonId, setViewAsPersonId] = useState("");
   const [activeMenu, setActiveMenu] = useState(null);
+  const [resetMonthKey, setResetMonthKey] = useState(monthKey || "");
+  const [sessionResetBusy, setSessionResetBusy] = useState(false);
+  const [sessionResetMsg, setSessionResetMsg] = useState("");
 
   const summaryCards = [
     { label: "Total Data", value: masterPegawaiData.length, tone: "text-white" },
@@ -327,6 +345,7 @@ const DeveloperConsole = ({
         onKoreksi={onKoreksi}
         onBack={() => setActiveMenu(null)}
         pengajuan={pengajuan}
+        riwayatPerubahan={riwayatPerubahan}
         onPengajuanVerifikasi={onPengajuanVerifikasi}
         readOnly={false}
       />
@@ -424,6 +443,7 @@ const DeveloperConsole = ({
             </div>
           )}
 
+          <Suspense fallback={<ViewAsFallback />}>
           {viewAsRole === "employee" && selectedViewPerson && (
             <DashboardPegawai
               pegawai={selectedViewPerson}
@@ -489,6 +509,7 @@ const DeveloperConsole = ({
               onDeletePegawai={onDeletePegawai}
             />
           )}
+          </Suspense>
         </div>
       </div>
     );
@@ -570,11 +591,11 @@ const DeveloperConsole = ({
             <div className="rounded-xl border border-red-800/40 bg-red-950/30 p-3">
               <div className="text-red-200 text-xs font-semibold mb-1">Reset Semua Hari Ini</div>
               <div className="text-red-400/70 text-[10px] mb-3">
-                Hapus seluruh absensi dan meta apel hari ini.
+                Hapus absensi, meta apel, pengajuan, dan riwayat koreksi hari ini.
               </div>
               <button
                 onClick={() => {
-                  if (window.confirm("Hapus semua data absensi hari ini? Tindakan ini tidak bisa dibatalkan.")) {
+                  if (window.confirm("Hapus semua data hari ini (absensi + pengajuan + riwayat)? Tidak bisa dibatalkan.")) {
                     onReset();
                   }
                 }}
@@ -663,6 +684,74 @@ const DeveloperConsole = ({
               )}
             </div>
           </div>
+        </Card>
+
+        <Card className="p-4 mb-3 border-red-900/40 bg-red-950/20">
+          <div className="text-sm font-bold text-red-300 mb-1">Reset Absensi 1 Bulan</div>
+          <div className="text-red-400/70 text-[10px] mb-3">
+            Bersihkan data pilot. Hapus absensi, apelMeta, pengajuan, dan riwayat koreksi bulan terpilih.
+          </div>
+          <label className="block text-red-200/80 text-[10px] font-semibold mb-1">Bulan (YYYY-MM)</label>
+          <input
+            type="text"
+            value={resetMonthKey}
+            onChange={(e) => setResetMonthKey(e.target.value)}
+            placeholder="2026-07"
+            className="w-full mb-3 rounded-xl border border-red-800/40 bg-red-950/30 px-3 py-2 text-xs text-red-100 placeholder-red-400/40"
+          />
+          <button
+            onClick={() => {
+              const mk = resetMonthKey.trim();
+              if (!/^\d{4}-\d{2}$/.test(mk)) {
+                window.alert("Format bulan harus YYYY-MM, contoh: 2026-07");
+                return;
+              }
+              const typed = window.prompt(`Ketik RESET untuk hapus seluruh data bulan ${mk}:`);
+              if (typed === "RESET") {
+                onResetMonth?.(mk);
+              }
+            }}
+            className="w-full rounded-xl border border-red-700/50 bg-red-800/40 px-4 py-2.5 text-xs font-bold text-red-200 transition-all hover:bg-red-700/50"
+          >
+            Reset Bulan
+          </button>
+        </Card>
+
+        <Card className="p-4 mb-3 border-amber-900/40 bg-amber-950/20">
+          <div className="text-sm font-bold text-amber-300 mb-1">Reset Semua Sesi Login</div>
+          <div className="text-amber-400/70 text-[10px] mb-3 leading-relaxed">
+            Hapus seluruh kunci perangkat di Firebase (<code className="text-amber-300/80">activeSessions</code>).
+            Semua pegawai/admin yang terkunci &quot;sudah login di perangkat lain&quot; bisa masuk lagi tanpa reset satu per satu.
+            Reset per orang tetap ada di menu Kelola Pegawai (admin &amp; developer).
+          </div>
+          {sessionResetMsg && (
+            <div className="mb-3 rounded-xl border border-emerald-700/40 bg-emerald-950/30 px-3 py-2 text-xs text-emerald-300">
+              {sessionResetMsg}
+            </div>
+          )}
+          <button
+            type="button"
+            disabled={sessionResetBusy || !onClearAllActiveSessions}
+            onClick={async () => {
+              const typed = window.prompt(
+                "Ketik RESET untuk menghapus SEMUA sesi login aktif:\n\n• Semua user bisa login ulang di perangkat mana pun\n• Tidak logout otomatis dari browser yang sedang terbuka\n• Hanya untuk keadaan darurat / persiapan pilot"
+              );
+              if (typed !== "RESET") return;
+              setSessionResetBusy(true);
+              setSessionResetMsg("");
+              try {
+                await onClearAllActiveSessions();
+                setSessionResetMsg("Semua sesi aktif dihapus. User yang terkunci bisa login ulang.");
+              } catch {
+                setSessionResetMsg("Gagal menghapus sesi. Cek koneksi dan Firebase Rules.");
+              } finally {
+                setSessionResetBusy(false);
+              }
+            }}
+            className="w-full rounded-xl border border-amber-700/50 bg-amber-900/40 px-4 py-2.5 text-xs font-bold text-amber-100 transition-all hover:bg-amber-800/50 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.97]"
+          >
+            {sessionResetBusy ? "Memproses..." : "Reset Semua Sesi"}
+          </button>
         </Card>
 
         {/* Pencarian — cari pegawai untuk View As */}

@@ -3,11 +3,11 @@ import pegawaiData from "../data/pegawai_master.json";
 import orgData from "../data/organization.json";
 import { Card } from "../components/Card";
 import { LogoutConfirm } from "../components/LogoutConfirm";
-import { getAttendanceStatItems, calcAttendanceStats } from "../fitur/absensi/logika_absensi";
+import { StatDetailModal } from "../components/StatDetailModal";
+import { getAttendanceStatItems, calcAttendanceStats, getPeopleByStatKey } from "../fitur/absensi/logika_absensi";
 import { REASON_OPTIONS, APEL_SESSIONS } from "../bersama/konstanta_aplikasi";
-import { formatTime } from "../bersama/util_waktu_dan_apel";
 import { excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
-import { useClock } from "../hooks/useClock";
+import { AdminTimeLine } from "../components/AdminTimeLine";
 import { useQrGenerator } from "../hooks/useQrGenerator";
 import { FullscreenQR } from "../components/FullscreenQR";
 import PanelAbsensi from "../panels/PanelAbsensi";
@@ -18,14 +18,14 @@ import PanelApel from "../panels/PanelApel";
 import PanelQR from "../panels/PanelQR";
 
 const DashboardAdmin = ({
-  people = pegawaiData, attendance, pengajuan = [], apelStatus, apelSession,
+  people = pegawaiData, attendance, pengajuan = [], riwayatPerubahan = [], apelStatus, apelSession,
   apelReason, apelReasonText, onAppealPhaseChange, onApelReasonChange,
   onScanSimulate, onReset, onLogout, onKoreksi, onPengajuanVerifikasi,
   onAddPegawai, onUpdatePegawai, onDeletePegawai, onClearActiveSession, readOnly = false,
 }) => {
-  const { now } = useClock();
   const [activeMenu, setActiveMenu] = useState(null);
   const [showFullscreenQr, setShowFullscreenQr] = useState(false);
+  const [selectedStat, setSelectedStat] = useState(null);
 
   const attendancePeople = useMemo(() => excludeSystemAccounts(people), [people]);
 
@@ -62,9 +62,9 @@ const DashboardAdmin = ({
   }
 
   // ── Panel routing ──
-  if (activeMenu === "absensi") return <PanelAbsensi people={attendancePeople} attendance={attendance} now={now} onBack={() => setActiveMenu(null)} />;
-  if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} apelStatus={apelStatus} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} pengajuan={pengajuan} onPengajuanVerifikasi={onPengajuanVerifikasi} readOnly={readOnly} />;
-  if (activeMenu === "laporan") return <PanelLaporan people={attendancePeople} attendance={attendance} stats={stats} now={now} apelStatus={apelStatus} onBack={() => setActiveMenu(null)} />;
+  if (activeMenu === "absensi") return <PanelAbsensi people={attendancePeople} attendance={attendance} onBack={() => setActiveMenu(null)} />;
+  if (activeMenu === "koreksi") return <PanelKoreksi people={people} attendance={attendance} apelStatus={apelStatus} onKoreksi={onKoreksi} onBack={() => setActiveMenu(null)} pengajuan={pengajuan} riwayatPerubahan={riwayatPerubahan} onPengajuanVerifikasi={onPengajuanVerifikasi} readOnly={readOnly} />;
+  if (activeMenu === "laporan") return <PanelLaporan people={attendancePeople} attendance={attendance} stats={stats} apelStatus={apelStatus} onBack={() => setActiveMenu(null)} />;
   if (activeMenu === "kelola") return <PanelKelolaPegawai people={people} readOnly={readOnly} onAddPegawai={onAddPegawai} onUpdatePegawai={onUpdatePegawai} onDeletePegawai={onDeletePegawai} onClearActiveSession={onClearActiveSession} onBack={() => setActiveMenu(null)} />;
 
   // ── Main menu ──
@@ -78,7 +78,7 @@ const DashboardAdmin = ({
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl font-black text-white">Admin Panel</h1>
-            <p className="text-slate-500 text-xs">{formatTime(now)}</p>
+            <AdminTimeLine />
           </div>
           <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${
             apelStatus === "ditiadakan"
@@ -110,9 +110,13 @@ const DashboardAdmin = ({
         ) : (
           <div className="grid grid-cols-3 gap-2 mb-5">
             {getAttendanceStatItems(apelStatus).map(item => ({
-              label: item.label, val: stats[item.key], icon: item.icon, color: item.color,
+              ...item, val: stats[item.key],
             })).map(s => (
-              <Card key={s.label} className="p-3 text-center">
+              <Card
+                key={s.label}
+                onClick={() => (s.val > 0 ? setSelectedStat(s) : null)}
+                className={`p-3 text-center ${s.val > 0 ? "" : "opacity-70"}`}
+              >
                 <div className="text-lg mb-0.5">{s.icon}</div>
                 <div className={`text-xl font-black ${s.color}`}>{s.val}</div>
                 <div className="text-slate-400 text-xs">{s.label}</div>
@@ -145,6 +149,14 @@ const DashboardAdmin = ({
       </div>
 
       {/* Apel Modal */}
+      {selectedStat && (
+        <StatDetailModal
+          statItem={selectedStat}
+          people={getPeopleByStatKey(attendancePeople, attendance, apelStatus, selectedStat.key)}
+          onClose={() => setSelectedStat(null)}
+        />
+      )}
+
       {activeMenu === "apel" && (
         <PanelApel apelStatus={apelStatus} apelReason={apelReason} apelReasonText={apelReasonText}
           onAppealPhaseChange={onAppealPhaseChange} onApelReasonChange={onApelReasonChange} onClose={() => setActiveMenu(null)} />

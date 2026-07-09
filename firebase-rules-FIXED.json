@@ -1,41 +1,28 @@
 {
   "rules": {
     "attendance": {
-      "$month": {
-        "$day": {
-          ".read": "auth !== null",
-          ".write": "auth !== null",
-          "$pegawaiId": {
-            ".validate": "newData.hasChildren(['status'])",
-            "status": {
-              ".validate": "newData.isString() && (newData.val() === 'Hadir' || newData.val() === 'Dinas Dalam' || newData.val() === 'Dinas Luar' || newData.val() === 'Izin' || newData.val() === 'Sakit' || newData.val() === 'Tanpa Keterangan')"
-            },
-            "jamHadir": {
-              ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^[0-9]{2}:[0-9]{2}$/))"
-            },
-            "$other": {
-              ".validate": false
-            }
-          }
-        }
-      }
-    },
-    "apelMeta": {
-      "$month": {
-        "$day": {
-          ".read": "auth !== null",
-          ".write": "auth !== null",
-          ".validate": "newData.hasChildren(['held'])",
-          "held": {
-            ".validate": "newData.isBoolean()"
+      ".indexOn": [
+        "status"
+      ],
+      "today": {
+        ".read": "auth !== null",
+        ".write": "auth !== null",
+        "$pegawaiId": {
+          ".validate": "newData.hasChildren(['status']) && newData.child('status').isString()",
+          "status": {
+            ".validate": "newData.isString() && (newData.val() === 'Hadir' || newData.val() === 'Dinas Dalam' || newData.val() === 'Dinas Luar' || newData.val() === 'Izin' || newData.val() === 'Sakit' || newData.val() === 'Tanpa Keterangan')"
           },
-          "reason": {
-            ".validate": "!newData.exists() || newData.isString()"
+          "jamHadir": {
+            ".validate": "!newData.exists() || (newData.isString() && newData.val().matches(/^[0-9]{2}:[0-9]{2}$/))"
           },
           "$other": {
             ".validate": false
           }
         }
+      },
+      "$other": {
+        ".write": false,
+        ".read": false
       }
     },
     "apel": {
@@ -121,48 +108,8 @@
         "createdAt": {
           ".validate": "newData.isNumber()"
         },
-        "verifiedAt": {
-          ".validate": "!newData.exists() || newData.isNumber()"
-        },
-        "alasanAdmin": {
-          ".validate": "!newData.exists() || (newData.isString() && newData.val().length >= 1)"
-        },
-        "verifiedById": {
-          ".validate": "!newData.exists() || newData.isString()"
-        },
-        "verifiedByNama": {
-          ".validate": "!newData.exists() || newData.isString()"
-        },
-        "verifiedByRole": {
-          ".validate": "!newData.exists() || newData.isString()"
-        },
         "$other": {
           ".validate": false
-        }
-      }
-    },
-    "riwayatPerubahan": {
-      "$month": {
-        "$day": {
-          ".read": "auth !== null",
-          ".write": "auth !== null",
-          "$recordId": {
-            ".validate": "newData.hasChildren(['pegawaiId', 'nama', 'statusBaru', 'sumber', 'olehNama', 'olehRole', 'createdAt'])",
-            "pegawaiId": { ".validate": "newData.isString()" },
-            "nama": { ".validate": "newData.isString()" },
-            "nip": { ".validate": "!newData.exists() || newData.isString()" },
-            "statusLama": { ".validate": "!newData.exists() || newData.isString()" },
-            "statusBaru": { ".validate": "newData.isString()" },
-            "keterangan": { ".validate": "!newData.exists() || newData.isString()" },
-            "sumber": { ".validate": "newData.isString()" },
-            "olehId": { ".validate": "!newData.exists() || newData.isString()" },
-            "olehNama": { ".validate": "newData.isString()" },
-            "olehRole": { ".validate": "newData.isString()" },
-            "waktu": { ".validate": "!newData.exists() || newData.isString()" },
-            "createdAt": { ".validate": "newData.isNumber()" },
-            "pengajuanId": { ".validate": "!newData.exists() || newData.isString()" },
-            "$other": { ".validate": false }
-          }
         }
       }
     },

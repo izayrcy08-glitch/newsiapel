@@ -123,14 +123,16 @@ export function useQrScanner({
           }
           if (result.type === "valid") {
             await stopScanning();
+          } else {
+            isValidatingScan.current = false;
           }
         } catch (error) {
           if (!cancelledRef.current) {
             console.error("Gagal validasi QR:", error);
-            setScanResult({ type: "invalid", label: "INVALID TOKEN" });
+            setScanResult({ type: "invalid", label: "Token tidak valid — coba lagi" });
+            isValidatingScan.current = false;
           }
           if (onScanError && !cancelledRef.current) onScanError(error);
-          await stopScanning();
         }
       };
 

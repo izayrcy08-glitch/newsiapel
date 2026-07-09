@@ -1,28 +1,54 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { LogOut } from "lucide-react";
+import { ref, get } from "firebase/database";
+import { database } from "../firebase";
 import pegawaiData from "../data/pegawai_master.json";
 import orgData from "../data/organization.json";
 import { Card } from "../components/Card";
 import { ProgressRing } from "../components/ProgressRing";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
-import { REASON_OPTIONS } from "../bersama/konstanta_aplikasi";
+import { RevisiActorNote } from "../components/RevisiActorNote";
+import { StatDetailModal } from "../components/StatDetailModal";
+import PanelKoreksi from "../panels/PanelKoreksi";
+import { REASON_OPTIONS, ATTENDANCE_ROOT, APEL_META_ROOT } from "../bersama/konstanta_aplikasi";
 import { getStatusIcon, getTanpaKeteranganTone } from "../bersama/util_status_dan_warna";
 import { getUnitLabel, getScopedPeople, excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
-import { isPengajuanHariIni } from "../bersama/util_tanggal";
-import { getAttendanceStatItems, calcAttendanceStats, calcMonthlyTanpaKeterangan, calcMonthlyBidangStats } from "../fitur/absensi/logika_absensi";
+import { isPengajuanHariIni, getPreviousMonthKey } from "../bersama/util_tanggal";
+import { buildPerubahanStatusList } from "../bersama/util_revisi";
+import { getAttendanceStatItems, calcAttendanceStats, calcMonthlyTanpaKeterangan, calcMonthlyBidangStats, getPeopleByStatKey } from "../fitur/absensi/logika_absensi";
 import { getBidangPerformanceStatus, RANK_MEDALS } from "../bersama/util_dashboard_ringkasan";
-import { useClock } from "../hooks/useClock";
+import { getGreeting } from "../bersama/util_waktu_dan_apel";
+import ClockDisplay from "../components/ClockDisplay";
 import { useAttendanceStats } from "../hooks/useAttendanceStats";
 import { useShowMore } from "../hooks/useShowMore";
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE: DASHBOARD PIMPINAN
 // ══════════════════════════════════════════════════════════════════════════════
-const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance, apelMeta, monthKey, dayKey, pengajuan = [], apelStatus, apelSession, apelReason, apelReasonText, selectedPimpinan, onLogout }) => {
-  const { now, greeting, dateStr, timeWIB } = useClock();
+const DashboardPimpinan = ({
+  people = pegawaiData,
+  attendance,
+  monthlyAttendance,
+  apelMeta,
+  monthKey,
+  dayKey,
+  pengajuan = [],
+  riwayatPerubahan = [],
+  apelStatus,
+  apelSession,
+  apelReason,
+  apelReasonText,
+  selectedPimpinan,
+  onLogout,
+  onKoreksi,
+  onPengajuanVerifikasi,
+}) => {
+  const greeting = getGreeting();
   const [showDetailPengajuan, setShowDetailPengajuan] = useState(false);
   const [selectedBidang, setSelectedBidang] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [selectedStat, setSelectedStat] = useState(null);
 
   const attendancePeople = excludeSystemAccounts(people);
   const displayPimpinan = selectedPimpinan;
@@ -60,17 +86,67 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
     .filter(b => b.stats.total > 0);
   const todayRanking = [...bidangAnalytics].sort((a, b) => b.stats.persen - a.stats.persen || b.stats.hadir - a.stats.hadir || a.nama.localeCompare(b.nama));
   const { showAll: showAllBidangToday, toggle: toggleBidangToday, visibleItems: visibleTodayRanking } = useShowMore(todayRanking, 3);
-  const monthlyBidangStats = calcMonthlyBidangStats(
-    monthlyAttendance,
-    apelMeta,
+
+  const previousMonthKey = useMemo(() => getPreviousMonthKey(), []);
+  const [prevMonthAttendance, setPrevMonthAttendance] = useState(null);
+  const [prevMonthApelMeta, setPrevMonthApelMeta] = useState(null);
+  const [prevMonthLoading, setPrevMonthLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setPrevMonthLoading(true);
+    Promise.all([
+      get(ref(database, `${ATTENDANCE_ROOT}/${previousMonthKey}`)),
+      get(ref(database, `${APEL_META_ROOT}/${previousMonthKey}`)),
+    ])
+      .then(([attSnap, metaSnap]) => {
+        if (cancelled) return;
+        setPrevMonthAttendance(attSnap.val() || {});
+        setPrevMonthApelMeta(metaSnap.val() || {});
+      })
+      .catch((err) => {
+        console.error("Gagal memuat data bulan lalu (pimpinan):", err);
+        if (!cancelled) {
+          setPrevMonthAttendance({});
+          setPrevMonthApelMeta({});
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setPrevMonthLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [previousMonthKey]);
+
+  const prevMonthRanking = useMemo(() => {
+    if (!prevMonthAttendance) return [];
+    return calcMonthlyBidangStats(
+      prevMonthAttendance,
+      prevMonthApelMeta || {},
+      bidangList,
+      attendancePeople,
+      {
+        todayMonthKey: monthKey,
+        todayDayKey: dayKey,
+        apelStatus: "ended",
+        dataMonthKey: previousMonthKey,
+      }
+    )
+      .filter((b) => b.daysCounted > 0)
+      .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
+  }, [
+    prevMonthAttendance,
+    prevMonthApelMeta,
     bidangList,
     attendancePeople,
-    { todayMonthKey: monthKey, todayDayKey: dayKey, apelStatus }
-  );
-  const monthlyRanking = [...monthlyBidangStats]
-    .filter((b) => b.daysCounted > 0)
-    .sort((a, b) => b.persen - a.persen || a.nama.localeCompare(b.nama));
-  const { showAll: showAllLastMonth, toggle: toggleLastMonth, visibleItems: visibleLastMonthRanking } = useShowMore(monthlyRanking, 3);
+    monthKey,
+    dayKey,
+    previousMonthKey,
+  ]);
+
+  const { showAll: showAllPrevMonth, toggle: togglePrevMonth, visibleItems: visiblePrevMonthRanking } =
+    useShowMore(prevMonthRanking, 3);
 
   const scopedPegawaiIds = useMemo(
     () => new Set(scopePeople.map((p) => String(p.id))),
@@ -85,8 +161,21 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
     [pengajuan, scopedPegawaiIds]
   );
   const pengajuanMenunggu = pengajuanHariIni.filter((p) => p.statusVerifikasi === "menunggu");
-  const pengajuanDisetujui = pengajuanHariIni.filter((p) => p.statusVerifikasi === "disetujui");
-  const pengajuanDitolak = pengajuanHariIni.filter((p) => p.statusVerifikasi === "ditolak");
+
+  const perubahanStatusList = useMemo(
+    () =>
+      buildPerubahanStatusList(pengajuan, riwayatPerubahan, {
+        todayOnly: true,
+        scopedPegawaiIds,
+      }),
+    [pengajuan, riwayatPerubahan, scopedPegawaiIds]
+  );
+
+  const pengajuanDisetujui = perubahanStatusList.filter(
+    (p) => p.statusVerifikasi === "disetujui" || p.sumber === "koreksi_manual"
+  );
+  const pengajuanDitolak = perubahanStatusList.filter((p) => p.statusVerifikasi === "ditolak");
+  const totalPerubahan = pengajuanMenunggu.length + perubahanStatusList.length;
 
   const renderVerifikasiBadge = (status) => {
     if (status === "disetujui") {
@@ -100,8 +189,24 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
 
   if (!displayPimpinan) return null;
 
+  if (activeMenu === "koreksi") {
+    return (
+      <PanelKoreksi
+        people={people}
+        attendance={attendance}
+        apelStatus={apelStatus}
+        onKoreksi={onKoreksi}
+        onBack={() => setActiveMenu(null)}
+        pengajuan={pengajuan}
+        riwayatPerubahan={riwayatPerubahan}
+        onPengajuanVerifikasi={onPengajuanVerifikasi}
+        scopeSource={displayPimpinan}
+        scope={displayPimpinan.scope}
+      />
+    );
+  }
+
   const isDitiadakan = apelStatus === "ditiadakan";
-  const todayHeld = apelMeta?.[dayKey]?.held === true;
 
   const getReasonDisplay = () => {
     if (apelReason === "lainnya") return apelReasonText || "Lainnya";
@@ -205,16 +310,24 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
               />
               <p className="text-slate-400 text-xs mt-1">{displayPimpinan.group} · {displayPimpinan.scope === "ALL" ? "Scope ALL" : `Scope ${getUnitLabel(displayPimpinan.unit)}`} · {orgData.dinas}</p>
             </div>
-            <div className="text-right shrink-0 hidden sm:block">
-              <div className="text-amber-200/90 text-xs font-medium leading-tight">{dateStr}</div>
-              <div className="text-white text-lg font-bold font-mono tracking-wide mt-1">{timeWIB} <span className="text-amber-200/60 text-xs font-normal">WIB</span></div>
-            </div>
+            <ClockDisplay className="text-right shrink-0 hidden sm:block" />
           </div>
-          <div className="sm:hidden mt-3 pt-3 border-t border-amber-200/10 flex items-center justify-between">
-            <span className="text-amber-200/80 text-xs">{dateStr}</span>
-            <span className="text-white text-sm font-bold font-mono">{timeWIB} <span className="text-amber-200/60 text-xs font-normal">WIB</span></span>
+          <div className="sm:hidden mt-3 pt-3 border-t border-amber-200/10">
+            <ClockDisplay showSeconds={false} />
           </div>
         </div>
+
+        <button
+          onClick={() => setActiveMenu("koreksi")}
+          className="w-full mb-4 py-3 rounded-xl bg-blue-900/30 backdrop-blur-md border border-blue-700/30 text-slate-200 text-sm font-semibold hover:bg-blue-800/40 transition-all active:scale-[0.98]"
+        >
+          ✏️ Koreksi Absensi
+          {pengajuanMenunggu.length > 0 && (
+            <span className="ml-2 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-amber-500/30 text-amber-300 text-[10px] font-bold">
+              {pengajuanMenunggu.length}
+            </span>
+          )}
+        </button>
 
         {/* Banner Apel Ditiadakan */}
         {isDitiadakan && (
@@ -253,7 +366,13 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
 
             <div className="grid grid-cols-3 gap-2 mb-4">
               {statItems.map(s => (
-                <Card key={s.label} className="p-3 text-center border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+                <Card
+                  key={s.label}
+                  onClick={() => (s.value > 0 ? setSelectedStat(s) : null)}
+                  className={`p-3 text-center border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.18)] ${
+                    s.value > 0 ? "cursor-pointer hover:border-amber-200/30 active:scale-[0.98]" : "opacity-70"
+                  }`}
+                >
                   <div className="text-xl mb-1">{s.icon}</div>
                   <div className={`text-lg font-black ${s.color}`}>{s.value}</div>
                   <div className="text-slate-400 text-xs leading-tight">{s.label}</div>
@@ -315,7 +434,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
           <Card className="p-4 border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_18px_55px_rgba(0,0,0,0.26)]">
             <div className="mb-4 border-b border-amber-200/10 pb-3">
               <div className="text-amber-100/90 text-xs font-semibold uppercase tracking-[0.18em]">Kehadiran Per Bidang</div>
-              <div className="text-slate-600 text-[11px] mt-0.5">Analitik performa bidang hari ini dan bulan ini</div>
+              <div className="text-slate-600 text-[11px] mt-0.5">Analitik performa bidang hari ini dan bulan lalu</div>
             </div>
 
             <div className="rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3.5 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
@@ -384,21 +503,27 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
             <div className="rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <div className="text-slate-50 text-sm font-black">🏅 Rata-rata Kehadiran Harian Bidang/UPT Bulan Ini</div>
-                  <div className="text-slate-500 text-[11px]">Rata-rata persen kehadiran harian (hanya status Hadir)</div>
+                  <div className="text-slate-50 text-sm font-black">🏅 Peringkat Kehadiran Bulan Lalu</div>
+                  <div className="text-slate-500 text-[11px]">
+                    Rata-rata % harian (Hadir) · {previousMonthKey}
+                  </div>
                 </div>
                 <button
-                  onClick={() => showOperationalStats && toggleLastMonth()}
-                  disabled={!showOperationalStats}
+                  onClick={() => showOperationalStats && togglePrevMonth()}
+                  disabled={!showOperationalStats || prevMonthLoading}
                   className="text-xs font-bold rounded-lg px-2.5 py-1.5 transition-all active:scale-[0.98] border border-blue-700/30 bg-blue-900/30 text-slate-300 disabled:cursor-not-allowed disabled:opacity-60 hover:border-amber-200/25 hover:text-amber-100"
                 >
-                  {showOperationalStats ? (showAllLastMonth ? "Tutup" : "Lihat Semua") : "—"}
+                  {showOperationalStats ? (showAllPrevMonth ? "Tutup" : "Lihat Semua") : "—"}
                 </button>
               </div>
 
-              {visibleLastMonthRanking.length > 0 ? (
+              {prevMonthLoading ? (
+                <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 px-4 py-5 text-center">
+                  <div className="text-slate-300 text-sm font-semibold">Memuat data bulan lalu...</div>
+                </div>
+              ) : visiblePrevMonthRanking.length > 0 ? (
                 <div className="space-y-2">
-                  {visibleLastMonthRanking.map((b, index) => {
+                  {visiblePrevMonthRanking.map((b, index) => {
                     const status = getBidangPerformanceStatus(b.persen);
                     return (
                       <button
@@ -407,27 +532,47 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
                         className="w-full rounded-xl border border-blue-700/20 bg-black/30 backdrop-blur-md p-3 text-left transition-all active:scale-[0.98] hover:border-amber-200/25 hover:bg-black/50"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">{RANK_MEDALS[index] || `#${index + 1}`}</div>
+                          <div className="w-8 text-xl text-center drop-shadow-[0_0_8px_rgba(245,158,11,0.18)]">
+                            {RANK_MEDALS[index] || `#${index + 1}`}
+                          </div>
                           <div className="min-w-0 flex-1">
                             <div className="text-white text-sm font-bold truncate">{b.nama}</div>
                             <div className={`text-[11px] font-semibold ${status.color}`}>{status.label}</div>
                           </div>
-                          <div className="text-lg font-black text-blue-300 shrink-0">{b.persen}%</div>
+                          <div className="text-right shrink-0">
+                            <div
+                              className={`text-lg font-black ${
+                                b.persen >= 80 ? "text-emerald-400" : b.persen >= 60 ? "text-amber-400" : "text-red-400"
+                              }`}
+                            >
+                              {b.persen}%
+                            </div>
+                            <div className="text-slate-600 text-[10px]">
+                              {b.daysCounted} hari · {b.memberCount} org
+                            </div>
+                          </div>
                         </div>
                       </button>
                     );
                   })}
                 </div>
               ) : (
-                <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 px-4 py-5 text-center">
-                  <div className="text-slate-300 text-sm font-semibold">
-                    {!todayHeld ? "Admin belum memulai apel hari ini" : "Belum ada data bulan ini"}
-                  </div>
-                  <div className="text-slate-500 text-xs mt-1">
-                    {!todayHeld
-                      ? "Statistik bulanan akan terisi setelah admin memulai apel (Saat Apel) di dashboard operasional."
-                      : "Data akan muncul setelah hari apel selesai dihitung."}
-                  </div>
+                <div className="space-y-2">
+                  {[1, 2, 3].map((index) => (
+                    <div key={index} className="w-full rounded-xl border border-dashed border-blue-700/20 bg-black/20 p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 text-xl text-center text-slate-500">—</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-slate-300 text-sm font-bold truncate">Data bulan lalu belum tersedia</div>
+                          <div className="text-slate-500 text-[11px]">Peringkat {previousMonthKey} belum ada</div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <div className="text-lg font-black text-slate-500">—</div>
+                          <div className="text-slate-600 text-[10px]">—/—</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -447,7 +592,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
 
           {showOperationalStats && !isDitiadakan ? (
             (() => {
-              if (pengajuanHariIni.length === 0) {
+              if (totalPerubahan === 0) {
                 return (
                   <div className="text-slate-500 text-xs text-center py-4">
                     Belum ada perubahan status hari ini
@@ -457,7 +602,7 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
               return (
                 <>
                   <div className="text-center mb-4">
-                    <div className="text-2xl font-black text-white mb-1">{pengajuanHariIni.length}</div>
+                    <div className="text-2xl font-black text-white mb-1">{totalPerubahan}</div>
                     <div className="text-slate-500 text-xs">Perubahan Status Hari Ini</div>
                   </div>
                   <div className="flex justify-center gap-4 mb-4 flex-wrap">
@@ -501,6 +646,14 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
         </Card>
 
         {/* DETAIL PENGAJUAN MODAL */}
+        {selectedStat && (
+          <StatDetailModal
+            statItem={selectedStat}
+            people={getPeopleByStatKey(scopePeople, attendance, apelStatus, selectedStat.key)}
+            onClose={() => setSelectedStat(null)}
+          />
+        )}
+
         {showDetailPengajuan && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end justify-center p-4">
             <div className="bg-black/40 backdrop-blur-xl border border-blue-700/20 rounded-2xl p-5 w-full max-w-sm max-h-[85vh] overflow-y-auto shadow-[0_18px_60px_rgba(0,0,0,0.5)]">
@@ -518,10 +671,31 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
                 </button>
               </div>
               <div className="space-y-3">
-                {pengajuanHariIni.length === 0 ? (
+                {totalPerubahan === 0 ? (
                   <div className="text-slate-500 text-xs text-center py-4">Belum ada perubahan status hari ini</div>
                 ) : (
-                  pengajuanHariIni.map((p) => (
+                  <>
+                    {pengajuanMenunggu.map((p) => (
+                      <div key={p.id} className="border-t border-slate-800/60 pt-3 first:border-t-0 first:pt-0">
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-slate-400 shrink-0">⏳</span>
+                            <span className="text-white text-sm font-semibold truncate">{p.nama}</span>
+                          </div>
+                          {renderVerifikasiBadge("menunggu")}
+                        </div>
+                        <div className="text-slate-600 text-[10px] mb-2 ml-6">NIP: {p.nip}</div>
+                        <div className="bg-slate-800/60 rounded-xl p-3 mb-2 ml-6">
+                          <div className="flex items-center gap-2">
+                            <span className="text-slate-500 text-xs">{p.statusLama}</span>
+                            <span className="text-slate-600">↓</span>
+                            <span className="text-blue-300 text-xs">{p.statusBaru}</span>
+                          </div>
+                        </div>
+                        {p.keterangan && <div className="text-slate-400 text-xs mb-2 ml-6 italic">"{p.keterangan}"</div>}
+                      </div>
+                    ))}
+                    {perubahanStatusList.map((p) => (
                   <div key={p.id} className="border-t border-slate-800/60 pt-3 first:border-t-0 first:pt-0">
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2 min-w-0">
@@ -548,12 +722,18 @@ const DashboardPimpinan = ({ people = pegawaiData, attendance, monthlyAttendance
                         Alasan tolak: {p.alasanAdmin}
                       </div>
                     )}
+                    <div className="ml-6 mb-2">
+                      <RevisiActorNote
+                        record={p}
+                        variant={p.sumber === "koreksi_manual" ? "koreksi" : "auto"}
+                      />
+                    </div>
                     <div className="flex items-center gap-4 text-slate-500 text-xs ml-6 mb-2">
-                      <span>📄 {p.dokumen || "—"}</span>
                       <span>🕘 {p.waktu || "—"} WIB</span>
                     </div>
                   </div>
-                  ))
+                    ))}
+                  </>
                 )}
               </div>
               <button onClick={() => setShowDetailPengajuan(false)} className="w-full mt-4 py-3 rounded-xl bg-blue-900/30 backdrop-blur-md hover:bg-blue-800/40 text-slate-300 text-sm font-semibold transition-colors border border-blue-700/30">

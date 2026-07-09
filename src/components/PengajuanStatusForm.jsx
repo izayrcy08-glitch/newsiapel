@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card } from "../components/Card";
 import { StatusBadge } from "../components/StatusBadge";
+import { RevisiActorNote } from "./RevisiActorNote";
 import { STATUS_OPTIONS } from "../bersama/konstanta_aplikasi";
 
 // Upload dokumen membutuhkan Firebase Storage (plan Blaze). Nonaktif sementara di pilot Spark.
@@ -53,7 +54,11 @@ const PengajuanStatusForm = ({ myStatus, pegawai, myPengajuan = [], onSubmit }) 
       setShowForm(false);
     } catch (err) {
       console.error("Gagal mengirim pengajuan:", err);
-      showToast("Gagal mengirim — periksa koneksi dan coba lagi", true);
+      if (err?.message === "pengajuan_pending") {
+        showToast("Anda masih punya pengajuan yang menunggu verifikasi", true);
+      } else {
+        showToast("Gagal mengirim — periksa koneksi dan coba lagi", true);
+      }
     } finally {
       setUploading(false);
     }
@@ -231,14 +236,17 @@ const PengajuanRiwayatList = ({ items }) => (
               <p className="text-slate-400 text-[11px] italic mb-1">"{p.keterangan}"</p>
             )}
             {isDisetujui && (
-              <p className="text-emerald-300/80 text-[11px]">
-                Status diubah ke {p.statusBaru}
-              </p>
+              <RevisiActorNote record={p} className="mb-1" />
             )}
-            {isDitolak && p.alasanAdmin && (
-              <p className="text-red-300/80 text-[11px]">
-                Alasan: {p.alasanAdmin}
-              </p>
+            {isDitolak && (
+              <>
+                <RevisiActorNote record={p} variant="ditolak" className="mb-1" />
+                {p.alasanAdmin && (
+                  <p className="text-red-300/80 text-[11px]">
+                    Alasan: {p.alasanAdmin}
+                  </p>
+                )}
+              </>
             )}
             <div className="text-slate-500 text-[10px] mt-1">🕘 {p.waktu || "—"} WIB</div>
           </div>

@@ -1,3 +1,5 @@
+import { getAttendanceRecord } from "../../bersama/util_attendance";
+
 const getStatItemsForPhase = (apelStatus) => {
   if (apelStatus === "ended") {
     return [
@@ -100,7 +102,7 @@ export const calcMonthlyTanpaKeterangan = (
     if (!dayAttendance || typeof dayAttendance !== "object") continue;
 
     for (const p of people) {
-      const status = dayAttendance[p.id]?.status;
+      const status = getAttendanceRecord(dayAttendance, p.id)?.status;
       if (isTanpaKeteranganOnDay(status)) {
         counts[p.id]++;
       }
@@ -119,23 +121,25 @@ export const calcMonthlyBidangStats = (
   apelMeta,
   bidangList,
   people = [],
-  { todayMonthKey, todayDayKey, apelStatus }
+  { todayMonthKey, todayDayKey, apelStatus, dataMonthKey }
 ) => {
+  const evalMonthKey = dataMonthKey || todayMonthKey;
+
   return bidangList.map((bidang) => {
     const members = people.filter((p) => p.bidang === bidang.nama);
     if (members.length === 0) {
-      return { ...bidang, persen: 0, daysCounted: 0 };
+      return { ...bidang, persen: 0, daysCounted: 0, memberCount: 0 };
     }
 
     const dailyPersents = [];
 
     for (const [dayKey, dayAttendance] of Object.entries(monthlyAttendance || {})) {
       if (
-        !isDayCountable(dayKey, todayMonthKey, apelMeta, {
+        !isDayCountable(dayKey, evalMonthKey, apelMeta, {
           todayMonthKey,
           todayDayKey,
           apelStatus,
-          includeTodayLive: true,
+          includeTodayLive: dataMonthKey ? false : true,
         })
       ) {
         continue;
@@ -143,7 +147,7 @@ export const calcMonthlyBidangStats = (
 
       let hadir = 0;
       for (const p of members) {
-        if (dayAttendance?.[p.id]?.status === "Hadir") hadir++;
+        if (getAttendanceRecord(dayAttendance, p.id)?.status === "Hadir") hadir++;
       }
       dailyPersents.push(Math.round((hadir / members.length) * 100));
     }
@@ -153,7 +157,7 @@ export const calcMonthlyBidangStats = (
         ? Math.round(dailyPersents.reduce((a, b) => a + b, 0) / dailyPersents.length)
         : 0;
 
-    return { ...bidang, persen, daysCounted: dailyPersents.length };
+    return { ...bidang, persen, daysCounted: dailyPersents.length, memberCount: members.length };
   });
 };
 
@@ -172,7 +176,7 @@ export const calcAttendanceStats = (attendance, apelStatus, people = [], { inclu
   let hadir = 0, unaccounted = 0, dinasD = 0, dinasL = 0, izin = 0, sakit = 0, recorded = 0;
 
   for (const p of people) {
-    const status = attendance[p.id]?.status;
+    const status = getAttendanceRecord(attendance, p.id)?.status;
 
     if (!status) {
       if (includeMissingAsUnrecorded) unaccounted++;
@@ -195,4 +199,53 @@ export const calcAttendanceStats = (attendance, apelStatus, people = [], { inclu
   const belumAbsen = includeMissingAsUnrecorded ? (apelStatus === "ended" ? 0 : unaccounted) : 0;
 
   return { total, recorded, hadir, unaccounted, tanpaKet, belumAbsen, dinasD, dinasL, izin, sakit, persen };
+};
+
+const parseJamHadir = (jam) => {
+  if (!jam || typeof jam !== "string") return 9999;
+  const [h, m] = jam.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return 9999;
+  return h * 60 + m;
+};
+
+/** Daftar pegawai per kotak stat — Hadir diurut jam absen ascending. */
+export const getPeopleByStatKey = (people, attendance, apelStatus, statKey) => {
+  const rows = [];
+
+  for (const p of people) {
+    const record = getAttendanceRecord(attendance, p.id);
+    const status = getEffectiveAttendanceStatus(record, apelStatus);
+    const effectiveKey =
+      statKey === "tanpaKet" || statKey === "belumAbsen"
+        ? (apelStatus === "ended" ? "tanpaKet" : "belumAbsen")
+        : statKey;
+
+    let match = false;
+    if (effectiveKey === "hadir") match = status === "Hadir";
+    else if (effectiveKey === "tanpaKet") match = status === "Tanpa Keterangan";
+    else if (effectiveKey === "belumAbsen") match = status === "Belum Hadir";
+    else if (effectiveKey === "dinasD") match = status === "Dinas Dalam";
+    else if (effectiveKey === "dinasL") match = status === "Dinas Luar";
+    else if (effectiveKey === "izin") match = status === "Izin";
+    else if (effectiveKey === "sakit") match = status === "Sakit";
+
+    if (match) {
+      rows.push({
+        id: p.id,
+        nama: p.nama,
+        nip: p.nip,
+        bidang: p.bidang,
+        status,
+        jamHadir: record?.jamHadir || null,
+      });
+    }
+  }
+
+  if (statKey === "hadir") {
+    rows.sort((a, b) => parseJamHadir(a.jamHadir) - parseJamHadir(b.jamHadir));
+  } else {
+    rows.sort((a, b) => a.nama.localeCompare(b.nama));
+  }
+
+  return rows;
 };

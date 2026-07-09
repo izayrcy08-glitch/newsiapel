@@ -27,7 +27,7 @@ export default function PanelKelolaPegawai({ people, readOnly, onAddPegawai, onU
   const isPimpinanTab = tab === "pimpinan";
   const customFilter = (person) => (isPimpinanTab ? person.role !== "EMPLOYEE" : true);
   const { filtered: visiblePeople } = usePegawaiSearch(people, search, { customFilter });
-  const { showAll, toggle, visibleItems } = useShowMore(visiblePeople, 7);
+  const { showAll, toggle, visibleItems } = useShowMore(visiblePeople, 10);
 
   const selectedPegawai = selectedPegawaiId
     ? people.find((item) => String(item.id) === String(selectedPegawaiId)) || null
@@ -178,16 +178,16 @@ export default function PanelKelolaPegawai({ people, readOnly, onAddPegawai, onU
                 </Card>
               ))
             )}
-            {!showAll && visiblePeople.length > 7 && (
+            {!showAll && visiblePeople.length > 10 && (
               <button onClick={toggle}
                 className="w-full py-2.5 rounded-xl bg-slate-800/80 text-slate-300 text-xs font-bold border border-slate-700/70 hover:border-blue-500/40 hover:text-blue-200 active:scale-[0.98] transition-all">
-                Lihat Semua ({visiblePeople.length} pegawai)
+                Lihat lebih banyak ({visiblePeople.length} pegawai)
               </button>
             )}
-            {showAll && visiblePeople.length > 7 && (
+            {showAll && visiblePeople.length > 10 && (
               <button onClick={toggle}
                 className="w-full py-2.5 rounded-xl bg-slate-800/80 text-slate-300 text-xs font-bold border border-slate-700/70 hover:border-blue-500/40 hover:text-blue-200 active:scale-[0.98] transition-all">
-                Tampilkan 7 pegawai
+                Lihat lebih sedikit
               </button>
             )}
           </div>

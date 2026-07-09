@@ -1,16 +1,20 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Card } from "../components/Card";
 import { BackButton } from "../components/BackButton";
 import { StatusBadge } from "../components/StatusBadge";
+import { RevisiActorNote } from "../components/RevisiActorNote";
 import { usePegawaiSearch } from "../hooks/usePegawaiSearch";
+import { useShowMore } from "../hooks/useShowMore";
 import { getStatusIcon } from "../bersama/util_status_dan_warna";
-import { excludeSystemAccounts } from "../bersama/util_unit_dan_scope";
+import { excludeSystemAccounts, getScopedPeople } from "../bersama/util_unit_dan_scope";
 import { isPengajuanHariIni } from "../bersama/util_tanggal";
 import { getEffectiveAttendanceStatus } from "../fitur/absensi/logika_absensi";
+import { getAttendanceRecord } from "../bersama/util_attendance";
 
 export default function PanelKoreksi({
   people, attendance, apelStatus, onKoreksi, onBack,
-  pengajuan = [], onPengajuanVerifikasi, readOnly = false,
+  pengajuan = [], riwayatPerubahan = [], onPengajuanVerifikasi, readOnly = false,
+  scopeSource = null, scope = "ALL",
 }) {
   const [tab, setTab] = useState("koreksi");
   const [search, setSearch] = useState("");
@@ -18,7 +22,26 @@ export default function PanelKoreksi({
   const [rejectingId, setRejectingId] = useState(null);
   const [alasanTolak, setAlasanTolak] = useState("");
 
-  const attendancePeople = useMemo(() => excludeSystemAccounts(people), [people]);
+  const attendancePeople = useMemo(() => {
+    const base = excludeSystemAccounts(people);
+    if (!scopeSource || scope === "ALL") return base;
+    return getScopedPeople(base, scopeSource, scope);
+  }, [people, scopeSource, scope]);
+
+  const scopedPegawaiIds = useMemo(
+    () => new Set(attendancePeople.map((p) => String(p.id))),
+    [attendancePeople]
+  );
+
+  const scopedPengajuan = useMemo(
+    () => pengajuan.filter((p) => scopedPegawaiIds.has(String(p.pegawaiId))),
+    [pengajuan, scopedPegawaiIds]
+  );
+
+  const scopedRiwayat = useMemo(
+    () => riwayatPerubahan.filter((r) => scopedPegawaiIds.has(String(r.pegawaiId))),
+    [riwayatPerubahan, scopedPegawaiIds]
+  );
 
   // Daftar bidang unik (untuk filter) — tanpa akun sistem
   const bidangList = useMemo(
@@ -33,29 +56,49 @@ export default function PanelKoreksi({
 
   // Perlu ada pencarian atau filter bidang dulu — hindari render 300+ kartu sekaligus
   const koreksiActive = search.trim().length > 0 || Boolean(bidangFilter);
-  const displayKoreksi = !koreksiActive
+  const displayKoreksiAll = !koreksiActive
     ? []
-    : (bidangFilter
-        ? filteredKoreksi.filter((p) => p.bidang === bidangFilter)
-        : filteredKoreksi
-      ).slice(0, 50);
+    : bidangFilter
+      ? filteredKoreksi.filter((p) => p.bidang === bidangFilter)
+      : filteredKoreksi;
+
+  const { showAll: showAllKoreksi, toggle: toggleKoreksi, visibleItems: displayKoreksi } =
+    useShowMore(displayKoreksiAll, 10);
 
   const KOREKSI_STATUS_OPTIONS = ["Hadir", "Izin", "Sakit", "Dinas Dalam", "Dinas Luar", "Tanpa Keterangan"];
 
   // ── Tab: Pengajuan ──
   const pendingPengajuan = useMemo(
-    () => pengajuan.filter((p) => p.statusVerifikasi === "menunggu" && isPengajuanHariIni(p)),
-    [pengajuan]
+    () => scopedPengajuan.filter((p) => p.statusVerifikasi === "menunggu" && isPengajuanHariIni(p)),
+    [scopedPengajuan]
   );
+
+  const hasAutoSwitched = useRef(false);
+
+  useEffect(() => {
+    if (hasAutoSwitched.current) return;
+    if (pendingPengajuan.length > 0) {
+      setTab("pengajuan");
+      hasAutoSwitched.current = true;
+    }
+  }, [pendingPengajuan.length]);
 
   const verifiedPengajuanHariIni = useMemo(
     () =>
-      pengajuan.filter(
+      scopedPengajuan.filter(
         (p) =>
           isPengajuanHariIni(p) &&
           (p.statusVerifikasi === "disetujui" || p.statusVerifikasi === "ditolak")
       ),
-    [pengajuan]
+    [scopedPengajuan]
+  );
+
+  const riwayatKoreksiHariIni = useMemo(
+    () =>
+      scopedRiwayat.filter(
+        (r) => r.sumber === "koreksi_manual" && isPengajuanHariIni({ createdAt: r.createdAt })
+      ),
+    [scopedRiwayat]
   );
 
   // Enrich pengajuan dengan bidang dari data pegawai
@@ -265,7 +308,10 @@ export default function PanelKoreksi({
             ) : (
               <div className="space-y-3">
                 {displayKoreksi.map((p) => {
-                  const effectiveStatus = getEffectiveAttendanceStatus(attendance[p.id], apelStatus);
+                  const effectiveStatus = getEffectiveAttendanceStatus(
+                    getAttendanceRecord(attendance, p.id),
+                    apelStatus
+                  );
                   return (
                     <Card key={p.id} className="p-3.5">
                       <div className="flex items-start justify-between gap-2 mb-3">
@@ -287,7 +333,15 @@ export default function PanelKoreksi({
                           return (
                             <button
                               key={s}
-                              onClick={() => !readOnly && !isActive && onKoreksi(p.id, s)}
+                              onClick={() =>
+                                !readOnly &&
+                                !isActive &&
+                                onKoreksi(p.id, s, {
+                                  nama: p.nama,
+                                  nip: p.nip,
+                                  statusLama: effectiveStatus,
+                                })
+                              }
                               disabled={readOnly || isActive}
                               className={`text-xs py-1.5 px-2 rounded-lg border transition-all active:scale-[0.97] ${
                                 isActive
@@ -303,6 +357,16 @@ export default function PanelKoreksi({
                     </Card>
                   );
                 })}
+                {displayKoreksiAll.length > 10 && (
+                  <button
+                    onClick={toggleKoreksi}
+                    className="w-full py-2.5 rounded-xl bg-slate-800/80 text-slate-300 text-xs font-bold border border-slate-700/70"
+                  >
+                    {showAllKoreksi
+                      ? "Lihat lebih sedikit"
+                      : `Lihat lebih banyak (${displayKoreksiAll.length} pegawai)`}
+                  </button>
+                )}
               </div>
             )}
           </>
@@ -417,10 +481,31 @@ export default function PanelKoreksi({
                           {renderPengajuanDetail(p)}
 
                           {p.statusVerifikasi === "ditolak" && p.alasanAdmin && (
-                            <div className="text-red-400/90 text-xs bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                            <div className="text-red-400/90 text-xs bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mb-2">
                               Alasan tolak: {p.alasanAdmin}
                             </div>
                           )}
+                          <RevisiActorNote record={p} />
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {riwayatKoreksiHariIni.length > 0 && (
+                  <div>
+                    <div className="text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">
+                      Koreksi Manual Hari Ini ({riwayatKoreksiHariIni.length})
+                    </div>
+                    <div className="space-y-3">
+                      {riwayatKoreksiHariIni.map((r) => (
+                        <Card key={r.id} className="p-4 border-blue-700/30">
+                          <div className="text-white text-sm font-semibold">{r.nama}</div>
+                          <div className="text-slate-500 text-[10px] mb-2">NIP: {r.nip}</div>
+                          <div className="text-slate-400 text-xs mb-2">
+                            {r.statusLama || "—"} → {r.statusBaru}
+                          </div>
+                          <RevisiActorNote record={r} variant="koreksi" />
                         </Card>
                       ))}
                     </div>

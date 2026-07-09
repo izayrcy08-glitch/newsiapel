@@ -8,7 +8,7 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main)
-- **Sesi terakhir:** 2026-07-08 — Preview PDF laporan harian + push batch perbaikan pilot & fitur laporan
+- **Sesi terakhir:** 2026-07-09 — Hapus heartbeat device lock (first-login-wins ketat) + Reset Semua Sesi (developer only)
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth active ✅)
 - **Firebase Console:** Rules diperbaiki, Anonymous Auth: **enable** ✅
 - **Build:** `npm run build` ✅
@@ -68,19 +68,22 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-08 | lokal | **📊 DASHBOARD PERBAIKAN** — (1) Perlu Perhatian: hapus teks sanksi, indikator warna berjenjang TK (`getTanpaKeteranganTone`). (2) Rata-rata bidang bulan ini live saat apel `ongoing` (`includeTodayLive` di `calcMonthlyBidangStats` saja). (3) Riwayat pengajuan hari ini (menunggu+disetujui+ditolak) di PanelKoreksi & DashboardPimpinan. (4) Developer: reset absensi per user (`handleResetPegawai`). Belum push. Build ✅ |
 | 2026-07-08 | main | **🐛 FIX BUG PILOT** — (1) Restore pimpinan: persist objek access-role lengkap + `pegawaiId`, hapus fallback KADIS. (2) Session lock: persist `role`, auto-expire sesi basi 90s, logout/heartbeat pimpinan jalan. (3) Pengajuan pimpinan difilter scope (KADIS/Sekdin ALL, unit leader UNIT). (4) Pesan UI bidang bulanan jika admin belum mulai apel. Build ✅ |
 | 2026-07-08 | main | **📄 DOWNLOAD PDF LAPORAN HARIAN** — Admin/Laporan: tombol download PDF per bidang & semua bidang (satu file, dikelompokkan per bidang). Isi: ringkasan kehadiran + bar persentase, lalu tabel No/Nama/NIP(-)/Keterangan Absen. Library `jspdf` + `jspdf-autotable` di-load lazy (dynamic import) → tidak membebani bundle awal. File baru: `src/utils/laporan-pdf.js`. `PanelLaporan` terima `apelStatus`. Build ✅ |
-| 2026-07-08 | main | **👁️ PREVIEW PDF LAPORAN** — Tombol Preview per bidang & semua bidang: modal fullscreen + iframe, download dari preview tanpa generate ulang. Refactor `laporan-pdf.js` (builder bersama preview/download). Build ✅ |
+| 2026-07-09 | `main` | **🔧 PAKET PERBAIKAN PILOT TUNTAS (Fase 1+2)** — (1) Audit trail `riwayatPerubahan` + pelacak pelaku (`verifiedBy*` / `oleh*`) + `RevisiActorNote` di pimpinan, admin, pegawai. (2) Fix pengajuan: normalisasi ID `getAttendanceRecord`, approve baca Firebase langsung, cegah duplikat pending, auto-tab pengajuan. (3) QR: Scan Ulang tanpa tutup modal, TTL 10s mutlak. (4) Reset hari + reset bulan developer. (5) Koreksi Absensi pimpinan scoped. (6) Stat clickable + modal nama/jam. (7) Peringkat bulan lalu di dashboard pegawai. (8) Pagination daftar pegawai 10 item. **⚠️ Publish firebase-rules.json** (path `riwayatPerubahan` + `verifiedBy*`). Build ✅ |
+| 2026-07-09 | `main` | **🏅 Peringkat Bulan Lalu (Pimpinan)** — Ganti "Bulan Ini" → fetch `attendance`/`apelMeta` bulan sebelumnya; UI identik Peringkat Hari Ini; fix `calcMonthlyBidangStats` param `dataMonthKey`. Pegawai: Statistik Organisasi hari ini + kotak klik. Build ✅ |
+| 2026-07-09 | `main` | **🔓 Reset Semua Sesi Login (Developer only)** — `handleClearAllActiveSessions()` wipe `activeSessions` root; UI kartu di DeveloperConsole (konfirmasi ketik RESET). Reset per orang tetap di Kelola Pegawai (admin & developer). Admin tidak punya Reset All. Build ✅ |
+| 2026-07-09 | `main` | **🔒 Hapus heartbeat — device lock ketat** — Stop `lastSeen` interval 30s + ambang basi 90s. Sesi aktif sampai logout/reset manual. `handleRegisterSession`: perangkat lain selalu ditolak. Pesan login arahkan ke reset sesi. **⚠️ Publish firebase-rules.json** (hapus field `lastSeen`). Build ✅ |
 
 ## Prioritas (Sekarang)
 
 0. 🔴 **WAJIB: Publish Firebase Rules baru** — Copy `firebase-rules.json` ke Firebase Console → Realtime Database → Rules → Publish. Struktur baru: `attendance/$month/$day` + `apelMeta/$month/$day`. Tanpa ini, scan QR ke path baru ditolak.
 1. 🟢 **Absensi per-tanggal WIB** ✅ — Reset harian otomatis, riwayat tersimpan per tanggal.
 2. 🟢 **Akumulasi bulanan nyata** ✅ — TK per pegawai + peringkat bidang bulan ini (rata-rata persen harian, hanya Hadir).
-3. 🟢 **FIXED: Device lock 1 akun = 1 perangkat** ✅ — first-login-wins + heartbeat 30s + basi 90s.
+3. 🟢 **FIXED: Device lock 1 akun = 1 perangkat** ✅ — first-login-wins ketat (tanpa heartbeat); unlock via logout atau reset sesi (admin/developer).
 4. 🟢 **FIXED: Scan berhasil + kamera QR** ✅ — jamHadir `HH:MM`, startScanning distabilkan.
 5. 🟢 **Pengajuan tanpa lampiran file** ✅ — Pilot Spark: status + keterangan teks; upload dokumen dinonaktifkan sampai upgrade Blaze + Storage.
 6. 🟢 **Fix bug pilot koreksi & pengajuan** ✅ — pegawaiId string, status efektif di koreksi, exclude akun sistem dari absensi.
 7. 🟡 **Upload dokumen pengajuan** — Butuh Firebase Blaze + Storage Rules; aktifkan kembali via `UPLOAD_DOKUMEN_AKTIF` di `PengajuanStatusForm.jsx`.
-8. 🟡 **Peringkat bulan lalu** — Butuh baca node bulan sebelumnya (belum termasuk)
+8. 🟢 **Peringkat bulan lalu (Pimpinan)** ✅ — Ganti bagian Bulan Ini; fetch `attendance`/`apelMeta` bulan sebelumnya; UI sama Peringkat Hari Ini
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx

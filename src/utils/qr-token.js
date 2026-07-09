@@ -21,19 +21,19 @@ export const validateQrToken = async (token, timeoutMs = 5000) => {
     const currentQr = snapshot.val();
 
     if (!currentQr?.token || submittedToken !== currentQr.token) {
-      return { type: "invalid", label: "INVALID TOKEN" };
+      return { type: "invalid", label: "Token tidak valid — coba lagi" };
     }
 
     if (Date.now() > currentQr.expiresAt) {
-      return { type: "expired", label: "EXPIRED TOKEN" };
+      return { type: "expired", label: "Token kedaluwarsa — arahkan ke QR baru" };
     }
 
-    return { type: "valid", label: "VALID TOKEN" };
+    return { type: "valid", label: "Token valid — absensi tercatat" };
   } catch (error) {
     if (error.message === "Firebase validation timeout") {
-      return { type: "timeout", label: "VALIDATION TIMEOUT" };
+      return { type: "timeout", label: "Validasi timeout — periksa koneksi" };
     }
     console.error("QR validation error:", error);
-    return { type: "error", label: "VALIDATION ERROR" };
+    return { type: "error", label: "Gagal validasi — coba lagi" };
   }
 };

@@ -11,7 +11,7 @@ import {
   downloadFromPreviewDoc,
 } from "../utils/laporan-pdf";
 
-export default function PanelLaporan({ people, attendance, stats, now, apelStatus, onBack }) {
+export default function PanelLaporan({ people, attendance, stats, apelStatus, onBack }) {
   const [busy, setBusy] = useState(null); // null | "preview-semua" | "download-semua" | "preview:bidang" | "download:bidang"
   const [error, setError] = useState("");
   const [preview, setPreview] = useState(null); // { blobUrl, filename, title, doc }
@@ -27,7 +27,10 @@ export default function PanelLaporan({ people, attendance, stats, now, apelStatu
     setPreview(null);
   };
 
-  const pdfParams = { people, attendance, apelStatus, now };
+  const pdfParams = { people, attendance, apelStatus, now: new Date() };
+  const todayLabel = new Date().toLocaleDateString("id-ID", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
   const isBusy = busy !== null;
 
   const bidangStats = orgData.bidang
@@ -116,11 +119,7 @@ export default function PanelLaporan({ people, attendance, stats, now, apelStatu
       <div className="relative z-10 max-w-sm mx-auto">
         <BackButton onClick={onBack} />
         <h2 className="text-xl font-black text-white mb-1">Laporan Harian</h2>
-        <p className="text-slate-500 text-xs mb-5">
-          {now.toLocaleDateString("id-ID", {
-            weekday: "long", day: "numeric", month: "long", year: "numeric",
-          })}
-        </p>
+        <p className="text-slate-500 text-xs mb-5">{todayLabel}</p>
 
         <Card className="p-4 mb-4">
           <div className="grid grid-cols-3 gap-3 text-center">

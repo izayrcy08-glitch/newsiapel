@@ -43,6 +43,22 @@ export const getScopedPeople = (people, sourcePerson, scope = "ALL") => {
   return people.filter((person) => getPegawaiGroupKey(person) === scopeKey);
 };
 
+/** Rekan satu kelompok organisasi: Sekretariat (unit), UPT ALKAL, atau bidang teknis. */
+export const getOrganisasiPeers = (people, pegawai) =>
+  getScopedPeople(people, pegawai, "UNIT");
+
+/**
+ * Label tampilan Statistik Organisasi pegawai.
+ * Sekretariat = unit, ALKAL = UPT, sisanya = nama bidang.
+ */
+export const getOrganisasiScopeLabel = (pegawai) => {
+  const unit = pegawai?.unit || "";
+  if (unit === "SEKRETARIAT") return "Sekretariat";
+  if (unit === "ALKAL") return "UPT ALKAL";
+  if (pegawai?.bidang) return pegawai.bidang;
+  return getUnitLabel(unit) || "Organisasi";
+};
+
 const normalizeIdentity = (value) =>
   String(value ?? "")
     .trim()

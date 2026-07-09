@@ -8,7 +8,7 @@ import { useState, useMemo } from "react";
  * @param {number} [threshold=7] — jumlah awal yang ditampilkan
  * @returns {{ showAll: boolean, toggle: () => void, visibleItems: Array }}
  */
-export function useShowMore(items = [], threshold = 7) {
+export function useShowMore(items = [], threshold = 10) {
   const [showAll, setShowAll] = useState(false);
 
   const visibleItems = useMemo(() => {

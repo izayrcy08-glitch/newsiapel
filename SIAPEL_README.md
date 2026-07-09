@@ -20,9 +20,15 @@ siapel/
 │   ├── App.jsx                         # Provider shell + routing (120 baris)
 │   ├── index.css                       # Tailwind + scrollbar
 │   ├── firebase.js                     # Firebase init dari .env
-│   ├── contexts/                       # 🔥 BARU — React Context API
+│   ├── contexts/                       # React Context API
 │   │   ├── SessionContext.jsx           # Routing, master data, session persistence
-│   │   └── FirebaseDataContext.jsx      # Semua Firebase subscriptions + mutations
+│   │   └── FirebaseDataContext.jsx      # Provider tipis — orkestrasi hooks Firebase
+│   ├── firebase/                       # 🔥 Fase 3 — modul Firebase terpisah
+│   │   ├── useFirebaseSubscriptions.js  # Listener RTDB per tier halaman
+│   │   ├── useFirebaseMutations.js      # Scan, koreksi, reset, pengajuan, sesi
+│   │   ├── get-subscription-tier.js     # Login/pegawai/admin tier listener
+│   │   ├── device-session.js            # UUID, deviceId, sessionId
+│   │   └── format-jam-hadir.js          # Format HH:MM (wajib untuk Firebase Rules)
 │   ├── hooks/                          # 🔥 BARU — Custom hooks
 │   │   ├── useClock.js                 # Current time, greeting, formatters
 │   │   ├── usePegawaiSearch.js         # Generic search+filter+group
@@ -43,19 +49,12 @@ siapel/
 │   │   ├── DashboardAdmin.jsx          # Menu grid + panel routing (130 baris)
 │   │   ├── DashboardPimpinan.jsx       # Analitik eksekutif
 │   │   └── DeveloperConsole.jsx        # Developer tools
-│   ├── components/                     # 12 UI components
-│   │   ├── Card.jsx                    # Glass card wrapper
-│   │   ├── BackButton.jsx              # Navigasi kembali
-│   │   ├── StatusBadge.jsx             # Badge warna status absen
-│   │   ├── ProgressRing.jsx            # SVG progress ring
-│   │   ├── Countdown.jsx               # Countdown timer apel
-│   │   ├── QRDisplay.jsx               # QR Code render
-│   │   ├── TokenFeedback.jsx           # Valid/invalid token message
-│   │   ├── FullscreenQR.jsx            # Layar penuh QR display
-│   │   ├── PengajuanStatusForm.jsx     # Form pengajuan perubahan status
-│   │   ├── LoadingSpinner.jsx          # Loading state
-│   │   ├── ErrorDisplay.jsx            # Error state
-│   │   └── ErrorBoundary.jsx           # 🔥 BARU — Error boundary component
+│   ├── components/                     # UI components
+│   │   ├── ClockDisplay.jsx            # Jam/tanggal live (isolasi re-render)
+│   │   ├── AdminTimeLine.jsx           # Baris waktu admin (isolasi re-render)
+│   │   ├── RevisiActorNote.jsx         # Pelacak pelaku revisi
+│   │   ├── StatDetailModal.jsx         # Modal daftar pegawai per stat
+│   │   └── ... (Card, BackButton, StatusBadge, dll)
 │   ├── bersama/                        # Utilities lintas fitur
 │   │   ├── konstanta_aplikasi.js       # Firebase paths, session enums
 │   │   ├── util_waktu_dan_apel.js      # Greeting, format time, getApelStatus
@@ -126,10 +125,11 @@ State global tidak lagi di App.jsx — dipisah ke dua Context:
 - Actions: `handleRoleSelect`, `handlePegawaiLogin`, `handlePimpinanSelect`, `goBack`
 - Persistence: sessionStorage untuk session, localStorage untuk master data
 
-**FirebaseDataContext** — realtime data + mutations:
+**FirebaseDataContext** — realtime data + mutations (provider tipis):
 - `attendance` (hari ini), `monthlyAttendance` (bulan ini), `apelMeta`, `monthKey`, `dayKey`
-- `apelSession`, `apelReason`, `apelReasonText`, `apelStatus`, `pengajuan`, `firebaseReady`, `firebaseError`
+- `apelSession`, `apelReason`, `apelReasonText`, `apelStatus`, `pengajuan`, `riwayatPerubahan`
 - Actions: `handleScan`, `handleKoreksi`, `handleReset`, `handleApelSessionChange`, `handlePengajuanSubmit`, dll
+- **Lazy subscribe:** login tanpa listener; pegawai tanpa `riwayatPerubahan`; admin/pimpinan/dev penuh
 
 ### Flow Data Firebase → Dashboard
 ```
