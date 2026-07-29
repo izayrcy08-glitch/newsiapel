@@ -180,17 +180,45 @@ export function useFirebaseMutations({
     ]).catch((err) => console.error("Gagal reset hari ini:", err));
   }, [dateKeysRef, deleteTodayPengajuan]);
 
+  /** Hapus semua anak hari di path bulan (jalan meski write level $month belum dipublish). */
+  const wipeMonthByDays = useCallback(async (rootPath, monthKey) => {
+    const monthRef = ref(database, `${rootPath}/${monthKey}`);
+    const snap = await get(monthRef);
+    const val = snap.val();
+    if (!val || typeof val !== "object") {
+      await set(monthRef, null).catch(() => {});
+      return;
+    }
+    await Promise.all(
+      Object.keys(val).map((dayKey) =>
+        set(ref(database, `${rootPath}/${monthKey}/${dayKey}`), null)
+      )
+    );
+    // Bersihkan node bulan kosong (butuh .write di $month setelah rules dipublish)
+    await set(monthRef, null).catch(() => {});
+  }, []);
+
   const handleResetMonth = useCallback(
     async (targetMonthKey) => {
       const mk = targetMonthKey || dateKeysRef.current.monthKey;
-      await Promise.all([
-        set(ref(database, `${ATTENDANCE_ROOT}/${mk}`), null),
-        set(ref(database, `${APEL_META_ROOT}/${mk}`), null),
-        set(ref(database, `${RIWAYAT_PERUBAHAN_ROOT}/${mk}`), null),
-        deletePengajuanByMonth(mk),
-      ]).catch((err) => console.error("Gagal reset bulan:", mk, err));
+      try {
+        await Promise.all([
+          wipeMonthByDays(ATTENDANCE_ROOT, mk),
+          wipeMonthByDays(APEL_META_ROOT, mk),
+          wipeMonthByDays(RIWAYAT_PERUBAHAN_ROOT, mk),
+          deletePengajuanByMonth(mk),
+        ]);
+        return { ok: true, monthKey: mk };
+      } catch (err) {
+        console.error("Gagal reset bulan:", mk, err);
+        return {
+          ok: false,
+          monthKey: mk,
+          error: err?.message || "Gagal menghapus data bulan",
+        };
+      }
     },
-    [dateKeysRef, deletePengajuanByMonth]
+    [dateKeysRef, deletePengajuanByMonth, wipeMonthByDays]
   );
 
   const handleResetPegawai = useCallback((pegawaiId) => {

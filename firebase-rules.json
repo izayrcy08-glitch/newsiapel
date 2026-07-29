@@ -3,6 +3,7 @@
     "attendance": {
       "$month": {
         ".read": "auth !== null",
+        ".write": "auth !== null",
         "$day": {
           ".read": "auth !== null",
           ".write": "auth !== null",
@@ -24,6 +25,7 @@
     "apelMeta": {
       "$month": {
         ".read": "auth !== null",
+        ".write": "auth !== null",
         "$day": {
           ".read": "auth !== null",
           ".write": "auth !== null",
@@ -146,6 +148,7 @@
     "riwayatPerubahan": {
       "$month": {
         ".read": "auth !== null",
+        ".write": "auth !== null",
         "$day": {
           ".read": "auth !== null",
           ".write": "auth !== null",

@@ -1,4 +1,4 @@
-import { useState, useMemo, lazy, Suspense } from "react";
+import { useState, useMemo, useEffect, lazy, Suspense } from "react";
 import pegawaiData from "../data/pegawai_master.json";
 import { Card } from "../components/Card";
 import { LogoutConfirm } from "../components/LogoutConfirm";
@@ -264,8 +264,14 @@ const DeveloperConsole = ({
   const [viewAsPersonId, setViewAsPersonId] = useState("");
   const [activeMenu, setActiveMenu] = useState(null);
   const [resetMonthKey, setResetMonthKey] = useState(monthKey || "");
+  const [resetMonthBusy, setResetMonthBusy] = useState(false);
+  const [resetMonthMsg, setResetMonthMsg] = useState("");
   const [sessionResetBusy, setSessionResetBusy] = useState(false);
   const [sessionResetMsg, setSessionResetMsg] = useState("");
+
+  useEffect(() => {
+    if (monthKey) setResetMonthKey(monthKey);
+  }, [monthKey]);
 
   const summaryCards = [
     { label: "Total Data", value: masterPegawaiData.length, tone: "text-white" },
@@ -688,32 +694,62 @@ const DeveloperConsole = ({
 
         <Card className="p-4 mb-3 border-red-900/40 bg-red-950/20">
           <div className="text-sm font-bold text-red-300 mb-1">Reset Absensi 1 Bulan</div>
-          <div className="text-red-400/70 text-[10px] mb-3">
+          <div className="text-red-400/70 text-[10px] mb-3 leading-relaxed">
             Bersihkan data pilot. Hapus absensi, apelMeta, pengajuan, dan riwayat koreksi bulan terpilih.
+            Termasuk daftar Pegawai Perlu Perhatian (akumulasi TK bulan).
           </div>
           <label className="block text-red-200/80 text-[10px] font-semibold mb-1">Bulan (YYYY-MM)</label>
           <input
             type="text"
             value={resetMonthKey}
-            onChange={(e) => setResetMonthKey(e.target.value)}
+            onChange={(e) => {
+              setResetMonthKey(e.target.value);
+              setResetMonthMsg("");
+            }}
             placeholder="2026-07"
             className="w-full mb-3 rounded-xl border border-red-800/40 bg-red-950/30 px-3 py-2 text-xs text-red-100 placeholder-red-400/40"
           />
+          {resetMonthMsg && (
+            <div
+              className={`mb-3 rounded-xl border px-3 py-2 text-xs ${
+                resetMonthMsg.startsWith("Gagal")
+                  ? "border-red-700/50 bg-red-950/40 text-red-200"
+                  : "border-emerald-700/40 bg-emerald-950/30 text-emerald-300"
+              }`}
+            >
+              {resetMonthMsg}
+            </div>
+          )}
           <button
-            onClick={() => {
+            disabled={resetMonthBusy || !onResetMonth}
+            onClick={async () => {
               const mk = resetMonthKey.trim();
               if (!/^\d{4}-\d{2}$/.test(mk)) {
                 window.alert("Format bulan harus YYYY-MM, contoh: 2026-07");
                 return;
               }
               const typed = window.prompt(`Ketik RESET untuk hapus seluruh data bulan ${mk}:`);
-              if (typed === "RESET") {
-                onResetMonth?.(mk);
+              if (typed !== "RESET") return;
+              setResetMonthBusy(true);
+              setResetMonthMsg("");
+              try {
+                const result = await onResetMonth(mk);
+                if (result?.ok === false) {
+                  setResetMonthMsg(`Gagal: ${result.error || "cek koneksi / Firebase Rules"}`);
+                } else {
+                  setResetMonthMsg(
+                    `Data bulan ${mk} dihapus. Daftar Pegawai Perlu Perhatian untuk bulan ini kosong.`
+                  );
+                }
+              } catch (err) {
+                setResetMonthMsg(`Gagal: ${err?.message || "cek koneksi / Firebase Rules"}`);
+              } finally {
+                setResetMonthBusy(false);
               }
             }}
-            className="w-full rounded-xl border border-red-700/50 bg-red-800/40 px-4 py-2.5 text-xs font-bold text-red-200 transition-all hover:bg-red-700/50"
+            className="w-full rounded-xl border border-red-700/50 bg-red-800/40 px-4 py-2.5 text-xs font-bold text-red-200 transition-all hover:bg-red-700/50 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Reset Bulan
+            {resetMonthBusy ? "Memproses..." : "Reset Bulan"}
           </button>
         </Card>
 

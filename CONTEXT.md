@@ -8,9 +8,9 @@ Status proyek terkini. Update tiap selesai sesi.
 - **Branch:** `main` (production)
 - **Deploy:** https://siapel.vercel.app ✅
 - **GitHub:** https://github.com/izayrcy08-glitch/newsiapel (main)
-- **Sesi terakhir:** 2026-07-09 — Fix sync master_pegawai ke Firebase (path update salah)
+- **Sesi terakhir:** 2026-07-29 — Fix Reset Bulan (rules $month.write + hapus per-hari) + UI Perhatian modal searchable
 - **Firebase:** Live — Realtime Database + Storage lazy load + Rules `auth !== null` (Anonymous Auth active ✅)
-- **Firebase Console:** Rules diperbaiki, Anonymous Auth: **enable** ✅
+- **Firebase Console:** **⚠️ Publish ulang rules** (tambah `.write` di `$month` attendance/apelMeta/riwayatPerubahan) — hapus per-hari sudah jalan tanpa publish
 - **Build:** `npm run build` ✅
 - **Persistensi data pegawai:** Admin edits permanen via localStorage (key v3) + Firebase sync master_pegawai (conditional: hanya admin/developer)
 - **MASALAH FIXED:** ✅ Admin/Developer login — Add safety check untuk admin/dev entries + comprehensive logging di LoginPage
@@ -76,19 +76,23 @@ Status proyek terkini. Update tiap selesai sesi.
 | 2026-07-09 | `main` | **🔐 Fix Firebase Rules baca path bulan** — Tambah `.read: auth !== null` di `attendance/$month`, `apelMeta/$month`, `riwayatPerubahan/$month`. Fix `permission_denied` saat load data bulanan & peringkat bulan lalu pimpinan. **⚠️ Publish ke Console.** |
 | 2026-07-09 | `main` | **🐛 Fix sync master_pegawai** — `syncPegawaiToFirebase` pakai `update(ref(database))` dengan path benar (`master_pegawai/{id}`), bukan path ganda. Skip record tidak valid. Build ✅ |
 | 2026-07-09 | `main` | **👤 Username login tanpa gelar** — Util `login-username.js`: `stripGelar` + `resolvePegawaiLoginId`. 100 pegawai tanpa NIP resmi dapat `nip` = nama tanpa gelar (sync Firebase + login). Login tetap terima NIP angka, nama lengkap, & nama tanpa gelar. Build ✅ |
-| 2026-07-09 | `main` | **💓 Heartbeat khusus developer** — Sesi developer: heartbeat 30s, basi 60s (takeover otomatis). Pegawai/admin/pimpinan tetap device lock ketat tanpa heartbeat. Field `lastSeen` di `activeSessions`. **⚠️ Publish firebase-rules.json.** Build ✅ |
+| 2026-07-09 | `main` | **💓 Heartbeat khusus developer** — Sesi developer: heartbeat 30s, basi 60s (takeover otomatis). Pegawai/admin/pimpinan tetap device lock ketat tanpa heartbeat. Field `lastSeen` di `activeSessions`. Build ✅ |
+| 2026-07-10 | `main` | **✅ Firebase Rules dipublish** — Rules terbaru aktif di Console (`lastSeen`, baca path bulan, `master_pegawai` sync). Heartbeat developer & load data bulanan siap dipakai production. |
+| 2026-07-15 | `main` | **🎯 Scope Perhatian UNIT_LEADER** — Daftar Pegawai Perlu Perhatian pakai `scopePeople` (hanya unit sendiri). Peringkat bidang tetap seluruh dinas (banding antar unit). Build ✅ |
+| 2026-07-29 | `main` | **🐛 Fix Reset Bulan + UI Perhatian** — Akar: rules tanpa `.write` di `$month` → wipe bulan `PERMISSION_DENIED` diam-diam. Fix: (1) rules `$month.write` attendance/apelMeta/riwayatPerubahan; (2) `handleResetMonth` hapus per-hari + return `{ok}`; (3) feedback UI DeveloperConsole. UI: `PerhatianListModal` (search+filter+showMore), StatDetailModal sama. **⚠️ WAJIB publish firebase-rules.json ke Console.** Build ✅ |
 
 ## Prioritas (Sekarang)
 
-0. 🔴 **WAJIB: Publish Firebase Rules baru** — Copy `firebase-rules.json` ke Firebase Console → Realtime Database → Rules → Publish. Struktur baru: `attendance/$month/$day` + `apelMeta/$month/$day`. Tanpa ini, scan QR ke path baru ditolak.
+0. 🟡 **Firebase Rules** — Publish ulang ke Console (2026-07-29): tambah `.write` di `$month` untuk `attendance`, `apelMeta`, `riwayatPerubahan` agar Reset Bulan bisa wipe node induk. Hapus per-hari di kode tetap jalan dengan rules lama.
 1. 🟢 **Absensi per-tanggal WIB** ✅ — Reset harian otomatis, riwayat tersimpan per tanggal.
 2. 🟢 **Akumulasi bulanan nyata** ✅ — TK per pegawai + peringkat bidang bulan ini (rata-rata persen harian, hanya Hadir).
-3. 🟢 **FIXED: Device lock 1 akun = 1 perangkat** ✅ — first-login-wins ketat (tanpa heartbeat); unlock via logout atau reset sesi (admin/developer).
+3. 🟢 **FIXED: Device lock 1 akun = 1 perangkat** ✅ — pegawai/admin/pimpinan: first-login-wins ketat; developer: heartbeat 30s + basi 60s.
 4. 🟢 **FIXED: Scan berhasil + kamera QR** ✅ — jamHadir `HH:MM`, startScanning distabilkan.
 5. 🟢 **Pengajuan tanpa lampiran file** ✅ — Pilot Spark: status + keterangan teks; upload dokumen dinonaktifkan sampai upgrade Blaze + Storage.
 6. 🟢 **Fix bug pilot koreksi & pengajuan** ✅ — pegawaiId string, status efektif di koreksi, exclude akun sistem dari absensi.
 7. 🟡 **Upload dokumen pengajuan** — Butuh Firebase Blaze + Storage Rules; aktifkan kembali via `UPLOAD_DOKUMEN_AKTIF` di `PengajuanStatusForm.jsx`.
 8. 🟢 **Peringkat bulan lalu (Pimpinan)** ✅ — Ganti bagian Bulan Ini; fetch `attendance`/`apelMeta` bulan sebelumnya; UI sama Peringkat Hari Ini
+9. 🟢 **Fix Reset Bulan + UI Perhatian** ✅ — Hapus per-hari + feedback; modal Perhatian searchable
 
 ## Arsitektur Inti
 - **State:** SessionContext (routing + master data) + FirebaseDataContext (realtime) — pisah dari App.jsx
@@ -123,7 +127,7 @@ Firebase /apel/session    → FirebaseDataContext → apelSession
 Firebase /apel/reason     → FirebaseDataContext → apelReason + apelReasonText
 Firebase /pengajuan       → FirebaseDataContext → pengajuan[]
 Firebase /fingerprints/{id} → handleSaveFingerprint (device fingerprint saat login)
-Firebase /activeSessions/{userId} → sessionId + loginAt (last-login-wins, deteksi login tabrakan)
+Firebase /activeSessions/{userId} → sessionId + deviceId + loginAt; developer + lastSeen (heartbeat 30s, basi 60s)
 Firebase Cloud Storage    → Upload file dokumen pengajuan (via PengajuanStatusForm)
 QR /qr/current            → useQrGenerator (Admin) → Pegawai scan (TTL 10 detik)
 ```

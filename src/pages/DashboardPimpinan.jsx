@@ -9,6 +9,7 @@ import { ProgressRing } from "../components/ProgressRing";
 import { ProfileLines } from "../fitur/bersama/profile_lines";
 import { RevisiActorNote } from "../components/RevisiActorNote";
 import { StatDetailModal } from "../components/StatDetailModal";
+import { PerhatianListModal } from "../components/PerhatianListModal";
 import PanelKoreksi from "../panels/PanelKoreksi";
 import { REASON_OPTIONS, ATTENDANCE_ROOT, APEL_META_ROOT } from "../bersama/konstanta_aplikasi";
 import { getStatusIcon, getTanpaKeteranganTone } from "../bersama/util_status_dan_warna";
@@ -49,6 +50,7 @@ const DashboardPimpinan = ({
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [selectedStat, setSelectedStat] = useState(null);
+  const [showPerhatianModal, setShowPerhatianModal] = useState(false);
 
   const attendancePeople = excludeSystemAccounts(people);
   const displayPimpinan = selectedPimpinan;
@@ -64,7 +66,7 @@ const DashboardPimpinan = ({
     return calcAttendanceStats(attendance, apelStatus, members, { includeMissingAsUnrecorded: true });
   };
 
-  const monthlyTK = calcMonthlyTanpaKeterangan(monthlyAttendance, apelMeta, attendancePeople, {
+  const monthlyTK = calcMonthlyTanpaKeterangan(monthlyAttendance, apelMeta, scopePeople, {
     todayMonthKey: monthKey,
     todayDayKey: dayKey,
     apelStatus,
@@ -73,12 +75,12 @@ const DashboardPimpinan = ({
     .filter(([, count]) => count > 0)
     .map(([pegawaiId, totalTanpaKeterangan]) => ({
       pegawaiId,
-      pegawai: attendancePeople.find((p) => String(p.id) === String(pegawaiId)),
+      pegawai: scopePeople.find((p) => String(p.id) === String(pegawaiId)),
       totalTanpaKeterangan,
     }))
     .filter((r) => r.pegawai)
     .sort((a, b) => b.totalTanpaKeterangan - a.totalTanpaKeterangan || a.pegawai.nama.localeCompare(b.pegawai.nama));
-  const { showAll: showAllPerhatian, toggle: togglePerhatian, visibleItems: visiblePerhatianList } = useShowMore(perhatianList, 3);
+  const { visibleItems: visiblePerhatianList } = useShowMore(perhatianList, 3);
 
   const bidangList = orgData.bidang.filter(b => b.id !== "pimpinan");
   const bidangAnalytics = bidangList
@@ -386,7 +388,10 @@ const DashboardPimpinan = ({
         <Card className="p-4 mb-4 border-blue-700/20 bg-black/40 backdrop-blur-xl shadow-[0_14px_42px_rgba(0,0,0,0.24)]">
           <div className="mb-3 border-b border-slate-700/50 pb-3">
             <div className="text-slate-50 font-bold text-sm">Pegawai Perlu Perhatian</div>
-            <div className="text-slate-500 text-xs mt-0.5">Diurutkan dari tanpa keterangan terbanyak</div>
+            <div className="text-slate-500 text-xs mt-0.5">
+              Diurutkan dari tanpa keterangan terbanyak
+              {perhatianList.length > 0 ? ` · ${perhatianList.length} pegawai` : ""}
+            </div>
           </div>
           {visiblePerhatianList.length === 0 ? (
             <div className="rounded-xl border border-dashed border-blue-700/20 bg-black/20 px-4 py-5 text-center">
@@ -419,12 +424,15 @@ const DashboardPimpinan = ({
                   );
                 })}
               </div>
-              <button
-                onClick={togglePerhatian}
-                className="mt-3 w-full py-2.5 rounded-xl bg-blue-900/30 backdrop-blur-md text-slate-300 text-xs font-bold border border-blue-700/30 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
-              >
-                {showAllPerhatian ? "Tutup Detail" : "Lihat Semua"}
-              </button>
+              {perhatianList.length > 3 && (
+                <button
+                  type="button"
+                  onClick={() => setShowPerhatianModal(true)}
+                  className="mt-3 w-full py-2.5 rounded-xl bg-blue-900/30 backdrop-blur-md text-slate-300 text-xs font-bold border border-blue-700/30 hover:border-amber-200/25 hover:text-amber-100 active:scale-[0.98] transition-all"
+                >
+                  Lihat Semua ({perhatianList.length})
+                </button>
+              )}
             </>
           )}
         </Card>
@@ -651,6 +659,13 @@ const DashboardPimpinan = ({
             statItem={selectedStat}
             people={getPeopleByStatKey(scopePeople, attendance, apelStatus, selectedStat.key)}
             onClose={() => setSelectedStat(null)}
+          />
+        )}
+
+        {showPerhatianModal && (
+          <PerhatianListModal
+            items={perhatianList}
+            onClose={() => setShowPerhatianModal(false)}
           />
         )}
 
